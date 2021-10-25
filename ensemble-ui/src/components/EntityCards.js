@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Col, Card, Button } from "react-bootstrap";
 import "../data/entities";
 import entities from "../data/entities";
 
@@ -12,7 +12,7 @@ export default function EntityCards() {
               <Card.Body>
                 <Card.Title>{Object.keys(entity)}</Card.Title>
                 <Card.Text>{Object.values(entity)}</Card.Text>
-                <Button>{"Manage " + Object.keys(entity)}</Button>
+                <Button href={`/${Object.keys(entity)}`}>{"Manage " + Object.keys(entity)}</Button>
               </Card.Body>
             </Card>
             </Col>
