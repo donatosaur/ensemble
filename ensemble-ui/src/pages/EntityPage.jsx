@@ -1,5 +1,5 @@
 import React from "react";
-import EntityFormProvider from "../components/EntityFormProvider.js";
+import EntityFormProvider from "../components/EntityFormProvider.jsx";
 import DataTableProvider from "../components/DataTableProvider";
 
 export default function EntityPage({ match }) {
