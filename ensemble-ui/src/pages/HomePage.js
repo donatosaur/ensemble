@@ -1,6 +1,5 @@
 import React from "react";
-import { Container, Row, CardGroup } from "react-bootstrap";
-import NavigationBar from "../components/NavigationBar";
+import { Container, Row } from "react-bootstrap";
 import EntityCards from "../components/EntityCards";
 
 export default function HomePage() {
@@ -8,17 +7,11 @@ export default function HomePage() {
     <>
       <Container fluid>
         <Row>
-          <NavigationBar />
-        </Row>
-
-        <Row>
           <h1>Ensemble</h1>
         </Row>
 
-        <Row >
-          <CardGroup>
-            <EntityCards></EntityCards>
-          </CardGroup>
+        <Row>
+        <EntityCards />
         </Row>
       </Container>
     </>

@@ -1,0 +1,18 @@
+// id selectors
+
+#entityCardGroup {
+  padding: 1vh 10vw;
+  //max-width: 750px;
+
+  > .card {
+    justify-content: center;
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    margin: 10px;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 1px solid $border-color;
+  }
+}

@@ -1,23 +1,18 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './scss/app.scss'
 import EntityPage from './pages/EntityPage';
 
 
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import HomePage from './pages/HomePage';
+import NavigationBar from './components/NavigationBar';
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Route path="/" exact>
-          <HomePage/>
-        </Route>
-
-        <Route path="/:entityName" component={EntityPage}/>
-        
-      </Router>
-    </div>
+    <Router>
+      <NavigationBar />
+      <Route path="/" exact component={HomePage} />
+      <Route path="/:entityName" component={EntityPage}/>
+    </Router>
   );
 }
 

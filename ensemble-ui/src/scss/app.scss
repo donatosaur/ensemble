@@ -1,0 +1,35 @@
+/* ------------------------------------- import bootstrap variable definitions ------------------------------------- */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+
+/* ---------------------------------------------- variable overrides ---------------------------------------------- */
+$theme-colors: (
+  "primary":  #4444ff,
+  // "secondary": $secondary,
+  // "success": $success,
+  // "info": $info,,
+  // "warning" $warning,
+  // "danger": $danger
+);
+
+$body-text-align:       center;
+
+$font-family-sans-serif: Roboto, -apple-system, system-ui, "Segoe UI", "Helvetica Neue", Arial, sans-serif !default;
+$font-family-serif:      Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:  Menlo, "Liberation Mono", "Courier New", monospace !default;
+$font-family-base:       $font-family-sans-serif !default;
+
+$table-border-width: 2px;
+
+
+/* -------------------------------------- import bootstrap defaults & icons -------------------------------------- */
+
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons";
+
+
+/* -------------------------------------------- import css overrides --------------------------------------------- */
+
+@import "./cards";
+@import "./datagrid";

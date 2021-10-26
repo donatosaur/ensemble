@@ -1,6 +1,6 @@
 import React from "react";
-import NavigationBar from "../components/NavigationBar";
 import EntityFormProvider from "../components/EntityFormProvider.js";
+import DataTableProvider from "../components/DataTableProvider";
 
 export default function EntityPage({ match }) {
   const {
@@ -10,10 +10,13 @@ export default function EntityPage({ match }) {
 
   return (
     <>
-      <NavigationBar></NavigationBar>
-      
-      <h1>{entityName}</h1>   
-      <EntityFormProvider entityName={entityName}></EntityFormProvider>     
+      <h1>{entityName}</h1>
+      <br />
+
+      <DataTableProvider entityName={entityName}/>
+
+      <br />
+      <EntityFormProvider entityName={entityName} />
     </>
   );
 }

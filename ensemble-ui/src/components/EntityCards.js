@@ -1,23 +1,28 @@
 import React from "react";
-import { Col, Card, Button } from "react-bootstrap";
-import "../data/entities";
-import entities from "../data/entities";
+import { CardGroup, Card, Button } from "react-bootstrap";
+import entityDescriptions from "../data/entityDescriptions";
 
 export default function EntityCards() {
-  return (<>
-      {entities.map((entity, id) => {
-        return (
-            <Col lg={4}>
+  return (
+      <CardGroup id="entityCardGroup">
+        {entityDescriptions.map((entity, _) => {
+          return (
             <Card>
+              <Card.Header>
+                <Card.Title> {Object.keys(entity)} </Card.Title>
+              </Card.Header>
               <Card.Body>
-                <Card.Title>{Object.keys(entity)}</Card.Title>
-                <Card.Text>{Object.values(entity)}</Card.Text>
-                <Button href={`/${Object.keys(entity)}`}>{"Manage " + Object.keys(entity)}</Button>
+                <Card.Text> {Object.values(entity)} </Card.Text>
               </Card.Body>
+              <Card.Footer>
+                <Button href={`/${Object.keys(entity)}`}>
+                  {"Manage"}
+                </Button>
+              </Card.Footer>
             </Card>
-            </Col>
-        );
-      })}
-      </>
+          );
+        }
+       )}
+      </CardGroup>
   );
 }
