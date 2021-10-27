@@ -53,19 +53,19 @@ const entityColumnMap = new Map([
     { field: "instrumentation", headerName: "Instrumentation", flex: 1, minWidth: 180, editable: true }
   ]],
   ["MusiciansInstruments", [
-    { field: "id", headerName: "ID", flex: 0, width: 90, editable: false, hidden: true },
-    { field: "musicianID", headerName: "Musician", flex: 0, width: 90, editable: false },
-    { field: "instrumentID", headerName: "instrument", flex: 0, width: 90, editable: false }
+    { field: "id", headerName: "Row #", flex: 0, width: 100, editable: false, hidden: true },
+    { field: "musicianID", headerName: "Musician", flex: 1, width: 100, editable: false },
+    { field: "instrumentID", headerName: "Instrument", flex: 1, width: 100, editable: false }
   ]],
   ["MusiciansConcertCycles", [
-    { field: "id", headerName: "ID", flex: 0, width: 90, editable: false, hidden: true },
-    { field: "concertID", headerName: "Concert Cycle", flex: 0, width: 90, editable: false },
-    { field: "musicianID", headerName: "Musician", flex: 0, width: 90, editable: false }
+    { field: "id", headerName: "Row #", flex: 0, width: 100, editable: false, hidden: true },
+    { field: "musicianID", headerName: "Musician", flex: 1, width: 100, editable: false },
+    { field: "concertID", headerName: "Concert Cycle", flex: 1, width: 100, editable: false }
   ]],
   ["PiecesConcertCycles", [
-    { field: "id", headerName: "ID", flex: 0, width: 90, editable: false, hidden: true },
-    { field: "concertID", headerName: "Concert Cycle", flex: 0, width: 90, editable: false },
-    { field: "pieceID", headerName: "Piece", flex: 0, width: 90, editable: false }
+    { field: "id", headerName: "Row #", flex: 0, width: 100, editable: false, hidden: true },
+    { field: "pieceID", headerName: "Piece", flex: 1, width: 100, editable: false },
+    { field: "concertID", headerName: "Concert Cycle", flex: 1, width: 100, editable: false }
   ]]
 ]);
 
