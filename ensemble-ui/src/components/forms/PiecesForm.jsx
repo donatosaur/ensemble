@@ -5,6 +5,11 @@ export default function PiecesForm(){
 
     return(
         <Form>
+          <Row className="entityForm">
+            <Form.Label>Add a Piece</Form.Label>
+          </Row>
+
+
         <Row className="entityForm">
           {/* <Form.Group as={Col} controlId="pieceID">
             <FloatingLabel controlId="pieceID" label="Piece ID">

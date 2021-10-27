@@ -4,6 +4,10 @@ import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
 export default function VenuesForm() {
   return ( 
     <Form>
+      <Row className="entityForm">
+        <Form.Label>Add a Venue</Form.Label>
+      </Row>
+
     <Row className="entityForm">
       {/* <Form.Group as={Col} controlId="venueID">
         <FloatingLabel controlId="venueID" label="Venue ID">
