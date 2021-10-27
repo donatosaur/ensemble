@@ -7,11 +7,11 @@ export default function ConcertCyclesForm() {
 
     <Form>
       <Row className="entityForm">
-        <Form.Group as={Col} controlId="concertID">
+        {/* <Form.Group as={Col} controlId="concertID">
           <FloatingLabel controlId="concertID" label="Concert ID">
             <Form.Control type="text" placeholder="Enter Concert ID" />
           </FloatingLabel>
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group as={Col} controlId="concertTitle">
           <FloatingLabel controlId="concertTitle" label="Concert Title">

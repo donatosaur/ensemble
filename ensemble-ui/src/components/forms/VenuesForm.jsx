@@ -5,11 +5,11 @@ export default function VenuesForm() {
   return ( 
     <Form>
     <Row className="entityForm">
-      <Form.Group as={Col} controlId="venueID">
+      {/* <Form.Group as={Col} controlId="venueID">
         <FloatingLabel controlId="venueID" label="Venue ID">
           <Form.Control type="text" placeholder="Enter Venue ID" />
         </FloatingLabel>
-      </Form.Group>
+      </Form.Group> */}
 
       <Form.Group as={Col} controlId="capacity">
         <FloatingLabel controlId="capacity" label="Capacity">
