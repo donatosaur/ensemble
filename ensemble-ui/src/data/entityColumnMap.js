@@ -4,13 +4,14 @@ const entityColumnMap = new Map([
     { field: "firstName", headerName: "First Name", flex: 1, minWidth: 180, editable: true },
     { field: "lastName", headerName: "Last Name", flex: 1, minWidth: 180, editable: true },
     { field: "birthdate", headerName: "Date of Birth", type: "date", flex: 1, minWidth: 180, editable: true },
-    { field: "email", headerName: "email", flex: 1, minWidth: 180, editable: true },
+    { field: "email", headerName: "Email", flex: 1, minWidth: 180, editable: true },
+    { field: "phoneNumber", headerName: "Phone", flex: 1, minWidth: 180, editable: true},
     { field: "street", headerName: "Street", flex: 1, minWidth: 180, editable: true },
     { field: "city", headerName: "City", flex: 1, minWidth: 180, editable: true },
-    { field: "state", headerName: "State", flex: 1, minWidth: 180, editable: true },
-    { field: "zip", headerName: "Zip", flex: 1, minWidth: 180, editable: true },
-    { field: "inEnsemble", headerName: "Ensemble", type: "boolean", flex: 1, minWidth: 180, editable: true },
-    { field: "active", headerName: "Active", type: "boolean", flex: 1, minWidth: 180, editable: true }
+    { field: "state", headerName: "State", flex: 1, minWidth: 90, editable: true },
+    { field: "zip", headerName: "Zip", flex: 1, minWidth: 90, editable: true },
+    { field: "inEnsemble", headerName: "Ensemble", type: "boolean", flex: 1, minWidth: 120, editable: true },
+    { field: "active", headerName: "Active", type: "boolean", flex: 1, minWidth: 120, editable: true}
   ]],
   ["Instruments", [
     { field: "id", headerName: "ID", flex: 0, width: 90, editable: false },

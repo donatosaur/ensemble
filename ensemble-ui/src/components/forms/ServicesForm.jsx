@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 import Datetime from 'react-datetime';
 
 import "react-datetime/css/react-datetime.css";
@@ -9,48 +9,54 @@ import "react-datetime/css/react-datetime.css";
 export default function ServicesForm(){
 
     return(
-        <Form>
-        <Row className="mb-3">
+      <Form>
+        <Row className="entityForm">
           <Form.Group as={Col} controlId="serviceID">
-            <Form.Label>Service ID</Form.Label>
-            <Form.Control type="text" placeholder="Enter Service ID" />
+            <FloatingLabel controlId="serviceID" label="Service ID">
+              <Form.Control type="text" placeholder="Enter Service ID" />
+            </FloatingLabel>
           </Form.Group>
-          
-       
-  
+
           <Form.Group as={Col} controlId="startTime">
-            <Form.Label>Start Time</Form.Label>
-            <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+            {/*<FloatingLabel controlId="startTime" label="Start Date/Time">*/}
+            <Form.Label>Start Date/Time</Form.Label>
+              <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+            {/*</FloatingLabel>*/}
           </Form.Group>
-  
+
           <Form.Group as={Col} controlId="endTime">
-            <Form.Label>End Time</Form.Label>
-            <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+            {/*<FloatingLabel controlId="endTime" label="End Date/Time">*/}
+            <Form.Label>End Date/Time</Form.Label>
+              <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+            {/*</FloatingLabel>*/}
         </Form.Group>
 
-        <Form.Group as={Col} className="mt-4" id="isRehearsal">
-        <Form.Check type="checkbox" label="isRehearsal?" />
-      </Form.Group>
-  
-         
+        <Col>
+        <br/> {/* todo replace with css */}
+        <Form.Group as={Col} className="entityFormCheckbox" id="isRehearsal">
+          <Form.Check type="checkbox" label="Rehearsal?" />
+        </Form.Group>
+        </Col>
         </Row>
   
         
-      <Row className="mb-3">
-      <Form.Group as={Col} controlId="venueID">
-            <Form.Label>Venue ID</Form.Label>
+        <Row className="entityForm">
+        <Form.Group as={Col} controlId="venueID">
+          <FloatingLabel controlId="venueID" label="Venue ID">
             <Form.Control type="text" placeholder="Enter Venue ID" />
+          </FloatingLabel>
           </Form.Group>
-  
+
           <Form.Group as={Col} controlId="concertID">
-            <Form.Label>Concert ID</Form.Label>
-            <Form.Control type="text" placeholder="Enter Concert ID" />
+            <FloatingLabel controlId="concertID" label="Concert ID">
+              <Form.Control type="text" placeholder="Enter Concert ID" />
+            </FloatingLabel>
           </Form.Group>
-        
-  
-       </Row>
+
+
+        </Row>
       
-        <Button variant="primary" type="submit">
+        <Button className="formButton" variant="primary" type="submit">
           Submit
         </Button>
       </Form>

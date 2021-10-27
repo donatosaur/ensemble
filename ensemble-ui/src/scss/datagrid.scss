@@ -1,0 +1,38 @@
+// see https://v4.mui.com/api/data-grid/data-grid/#css
+
+
+.MuiDataGridContainer {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+// data grid root element
+.MuiDataGrid-root {
+  padding: 0px 0px;
+  color: $primary;
+  // background-color: $secondary;
+
+}
+
+.MuiDataGrid-columnHeader {
+  justify-content: center;
+}
+
+.MuiDataGrid-cell {
+  text-align: center;
+}
+
+.MuiCheckbox {
+  color: #3f51b5;
+}
+
+// override default bootstrap css for toolbar button to match mui data grid
+.toolbarButton {
+  color: #3f51b5;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+.toolbarButton:hover {
+  color: #3f51b5;
+  background-color: #f7f8fc;
+}

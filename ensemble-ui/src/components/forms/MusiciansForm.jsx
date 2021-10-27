@@ -1,81 +1,102 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 
 export default function MusiciansForm() {
   return (
     <Form>
-      <Row className="mb-3">
+      <Row className="entityForm">
         <Form.Group as={Col} controlId="musicianID">
-          <Form.Label>Musician ID</Form.Label>
-          <Form.Control type="text" placeholder="Enter Musician ID" />
+          <FloatingLabel controlId="musicianID" label="Musician ID">
+            <Form.Control type="text" placeholder="Enter Musician ID" />
+          </FloatingLabel>
         </Form.Group>
 
-        <Form.Group as={Col} controlId="firstName">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control type="text" placeholder="Enter Musician First Name" />
-        </Form.Group>
-        
-      <Form.Group as={Col} controlId="lastName">
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control type="text" placeholder="Enter Musician Last Name" />
+        <Form.Group as={Col} controlId="initialInstrumentID">
+          <FloatingLabel controlId="initialInstrumentID" label="Initial InstrumentID">
+            <Form.Control type="text" placeholder="Enter an initial instrumentID" />
+          </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="birthdate">
-          <Form.Label>Birthdate</Form.Label>
-          <Form.Control type="date" placeholder="Enter Musician DOB" />
+          <FloatingLabel controlId="birthdate" label="Birthdate">
+            <Form.Control type="date" placeholder="Enter Musician DOB" />
+          </FloatingLabel>
+        </Form.Group>
+      </Row>
+
+
+      <Row className="entityForm">
+        <Form.Group as={Col} controlId="firstName">
+          <FloatingLabel controlId="firstName" label="First Name">
+            <Form.Control type="text" placeholder="Enter Musician First Name" />
+          </FloatingLabel>
+        </Form.Group>
+        
+        <Form.Group as={Col} controlId="lastName">
+          <FloatingLabel controlId="lastName" label="Last Name">
+            <Form.Control type="text" placeholder="Enter Musician Last Name" />
+          </FloatingLabel>
+        </Form.Group>
+      </Row>
+
+      <Row className="entityForm">
+
+        <Form.Group as={Col} controlId="email">
+          <FloatingLabel controlId="email" label="Email">
+            <Form.Control type="email" placeholder="Enter Musician Email Address" />
+          </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="phoneNumber">
-          <Form.Label>Phone Number</Form.Label>
-          <Form.Control type="text" placeholder="Enter Musician Phone Number" />
+          <FloatingLabel controlId="phoneNumber" label="Phone">
+            <Form.Control type="text" placeholder="Enter Musician Phone Number" />
+          </FloatingLabel>
         </Form.Group>
 
-         
-        <Form.Group as={Col} className="mt-4" id="inEnsemble">
-        <Form.Check type="checkbox" label="In Ensemble?" />
-        
-      </Form.Group>
-      <Form.Group as={Col} className="mt-4" id="active">
-        <Form.Check type="checkbox" label="Active?" />
-      </Form.Group>
-
-       
+        <Col>
+        <Form.Group  className="entityFormCheckbox" id="inEnsemble">
+          <Form.Check type="checkbox" label="Ensemble?" />
+        </Form.Group>
+        <Form.Group className="entityFormCheckbox" id="active">
+          <Form.Check type="checkbox" label="Active?" />
+        </Form.Group>
+        </Col>
       </Row>
 
-      
-    <Row className="mb-3">
-      <Form.Group as={Col} className="mb-3" controlId="street">
-        <Form.Label>Address</Form.Label>
-        <Form.Control placeholder="1234 Main St" />
-      </Form.Group>
-      
 
+    <Row className="entityForm">
+      <Form.Group as={Col} className="entityForm" controlId="street">
+        <FloatingLabel controlId="street" label="Street Address">
+          <Form.Control placeholder="1234 Main St" />
+        </FloatingLabel>
+      </Form.Group>
      </Row>
 
-      <Row className="mb-3">
+      <Row className="entityForm">
         <Form.Group as={Col} controlId="city">
-          <Form.Label>City</Form.Label>
-          <Form.Control />
+          <FloatingLabel controlId="city" label="City">
+            <Form.Control />
+          </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="state">
-          <Form.Label>State</Form.Label>
-          <Form.Select defaultValue="Choose...">
-            <option>TX</option>
-            <option>NY</option>
-          </Form.Select>
+          <FloatingLabel controlId="state" label="State">
+            <Form.Select defaultValue="Choose...">
+              <option>TX</option>
+              <option>NY</option>
+            </Form.Select>
+          </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="zip">
-          <Form.Label>Zip</Form.Label>
-          <Form.Control />
+          <FloatingLabel controlId="zip" label="Zip Code">
+            <Form.Control />
+          </FloatingLabel>
         </Form.Group>
       </Row>
 
-      
-
-      <Button variant="primary" type="submit">
+      <Button className="formButton" variant="primary" type="submit">
         Submit
       </Button>
     </Form>

@@ -1,21 +1,24 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 export default function InstrumentsForm() {
   return (
     <Form>
-      <Row className="mb-3">
+      <Row className="entityForm">
         <Form.Group as={Col} controlId="instrumentID">
-          <Form.Label>Instrument ID</Form.Label>
-          <Form.Control type="text" placeholder="Enter Instrument ID" />
+          <FloatingLabel controlId="instrumentID" label="Instrument ID">
+            <Form.Control type="text" placeholder="Enter Instrument ID" />
+          </FloatingLabel>
         </Form.Group>
 
-        <Form.Group as={Col} controlId="name">
-          <Form.Label>Instrument Name</Form.Label>
-          <Form.Control type="text" placeholder="Enter Instrument Name" />
+        <Form.Group as={Col} controlId="instrumentName">
+        <FloatingLabel controlId="instrumentName" label="Name">
+            <Form.Control type="text" placeholder="Enter Instrument Name" />
+          </FloatingLabel>
         </Form.Group>
       </Row>
-      <Button variant="primary" type="submit">
+
+      <Button className="formButton" variant="primary" type="submit">
         Submit
       </Button>
     </Form>

@@ -2,29 +2,39 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
-
 /* ---------------------------------------------- variable overrides ---------------------------------------------- */
+
+// colors
 $theme-colors: (
   "primary":  #4444ff,
-  // "secondary": $secondary,
-  // "success": $success,
-  // "info": $info,,
-  // "warning" $warning,
-  // "danger": $danger
+  // "secondary":  $secondary,
+  // "success":    $success,
+  // "info":       $info,
+  // "warning":    $warning,
+  // "danger":     $danger,
+  // "light":      $light,
+  // "dark":       $dark
 );
 
-$body-text-align:       center;
+$mui-default-color:     #3f51b5; // DO NOT CHANGE
 
+// text
+$body-text-align:        center;
 $font-family-sans-serif: Roboto, -apple-system, system-ui, "Segoe UI", "Helvetica Neue", Arial, sans-serif !default;
-$font-family-serif:      Georgia, "Times New Roman", Times, serif !default;
-$font-family-monospace:  Menlo, "Liberation Mono", "Courier New", monospace !default;
 $font-family-base:       $font-family-sans-serif !default;
 
-$table-border-width: 2px;
+// containers
+$container-padding-x:    2vw;
+$container-padding-y:    2vh;
+$navbar-padding-x:       1.5vw;
+$navbar-padding-y:       1vh;
 
+// buttons
+$btn-margin-y:           1em;
 
 /* -------------------------------------- import bootstrap defaults & icons -------------------------------------- */
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
 
@@ -33,3 +43,4 @@ $table-border-width: 2px;
 
 @import "./cards";
 @import "./datagrid";
+@import "./forms";
