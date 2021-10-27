@@ -4,8 +4,11 @@ import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 export default function ConcertCyclesForm() {
   return (
-
     <Form>
+      <Row className="entityForm">
+        <Form.Label>Add a Concert Cycle</Form.Label>
+      </Row>
+
       <Row className="entityForm">
         {/* <Form.Group as={Col} controlId="concertID">
           <FloatingLabel controlId="concertID" label="Concert ID">

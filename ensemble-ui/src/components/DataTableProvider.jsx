@@ -4,7 +4,15 @@ import entityColumnMap from "../data/entityColumnMap";
 import entityDemoDataMap from "../data/entityDemoDataMap";
 
 
-export default function DataTableProvider({entityName}){
+/**
+ * Provides a DataTable for a specified Entity
+ *
+ * @param entityName the entity for which the DataTable should be provided
+ * @param entityFormToggle a function that toggles the display state of the entity page's EntityForm
+ * @returns {JSX.Element|null} JSX.Element if the entity has all the required properties
+ * @constructor
+ */
+export default function DataTableProvider({entityName, entityFormToggle}){
 
   // get the column definitions
   let columns = entityColumnMap.has(entityName) ? entityColumnMap.get(entityName) : null;
@@ -30,7 +38,7 @@ export default function DataTableProvider({entityName}){
      onCreate={onCreate}
      onUpdate={onUpdate}
      onDelete={onDelete}
+     entityFormToggle={entityFormToggle}
    />
   );
-
 }
