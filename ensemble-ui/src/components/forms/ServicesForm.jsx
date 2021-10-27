@@ -9,7 +9,11 @@ import "react-datetime/css/react-datetime.css";
 export default function ServicesForm(){
 
     return(
-      <Form>        
+      <Form>
+        <Row className="entityForm">
+          <Form.Label>Add a Service</Form.Label>
+        </Row>
+
         <Row className="entityForm">
         <Form.Group as={Col} controlId="venueID">
           <FloatingLabel controlId="venueID" label="Venue ID">

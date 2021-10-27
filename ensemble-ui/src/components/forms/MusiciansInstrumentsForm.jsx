@@ -5,6 +5,10 @@ export default function MusiciansInstrumentsForm() {
   return (
     <Form>
       <Row className="entityForm">
+        <Form.Label>Link a Musician to an Instrument</Form.Label>
+      </Row>
+
+      <Row className="entityForm">
         <Form.Group as={Col} controlId="musicianID">
           <FloatingLabel controlId="musicianID" label="Musician ID">
             <Form.Control type="text" placeholder="Enter Musician ID" />

@@ -6,6 +6,10 @@ export default function MusiciansForm() {
   return (
     <Form>
       <Row className="entityForm">
+        <Form.Label>Add a Musician</Form.Label>
+      </Row>
+
+      <Row className="entityForm">
         {/* <Form.Group as={Col} controlId="musicianID">
           <FloatingLabel controlId="musicianID" label="Musician ID">
             <Form.Control type="text" placeholder="Enter Musician ID" />

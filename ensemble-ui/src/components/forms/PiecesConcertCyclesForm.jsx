@@ -5,6 +5,10 @@ export default function PiecesConcertCyclesForm() {
   return (
     <Form>
       <Row className="entityForm">
+        <Form.Label>Link a Piece to a Concert Cycle</Form.Label>
+      </Row>
+
+      <Row className="entityForm">
         <Form.Group as={Col} controlId="pieceID">
           <FloatingLabel controlId="pieceID" label="Piece ID">
             <Form.Control type="text" placeholder="Enter Piece ID" />
