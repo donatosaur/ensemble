@@ -6,11 +6,11 @@ export default function PiecesForm(){
     return(
         <Form>
         <Row className="entityForm">
-          <Form.Group as={Col} controlId="pieceID">
+          {/* <Form.Group as={Col} controlId="pieceID">
             <FloatingLabel controlId="pieceID" label="Piece ID">
               <Form.Control type="text" placeholder="Enter Piece ID" />
             </FloatingLabel>
-          </Form.Group>
+          </Form.Group> */}
   
           <Form.Group as={Col} controlId="pieceTitle">
             <FloatingLabel controlId="pieceTitle" label="Piece Title">

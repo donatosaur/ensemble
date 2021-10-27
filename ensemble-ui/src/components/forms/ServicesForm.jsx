@@ -9,13 +9,27 @@ import "react-datetime/css/react-datetime.css";
 export default function ServicesForm(){
 
     return(
-      <Form>
+      <Form>        
         <Row className="entityForm">
-          <Form.Group as={Col} controlId="serviceID">
+        <Form.Group as={Col} controlId="venueID">
+          <FloatingLabel controlId="venueID" label="Venue ID">
+            <Form.Control type="text" placeholder="Enter Venue ID" />
+          </FloatingLabel>
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="concertID">
+            <FloatingLabel controlId="concertID" label="Concert ID">
+              <Form.Control type="text" placeholder="Enter Concert ID" />
+            </FloatingLabel>
+          </Form.Group>
+        </Row>
+
+        <Row className="entityForm">
+          {/* <Form.Group as={Col} controlId="serviceID">
             <FloatingLabel controlId="serviceID" label="Service ID">
               <Form.Control type="text" placeholder="Enter Service ID" />
             </FloatingLabel>
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group as={Col} controlId="startTime">
             {/*<FloatingLabel controlId="startTime" label="Start Date/Time">*/}
@@ -37,23 +51,6 @@ export default function ServicesForm(){
           <Form.Check type="checkbox" label="Rehearsal?" />
         </Form.Group>
         </Col>
-        </Row>
-  
-        
-        <Row className="entityForm">
-        <Form.Group as={Col} controlId="venueID">
-          <FloatingLabel controlId="venueID" label="Venue ID">
-            <Form.Control type="text" placeholder="Enter Venue ID" />
-          </FloatingLabel>
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="concertID">
-            <FloatingLabel controlId="concertID" label="Concert ID">
-              <Form.Control type="text" placeholder="Enter Concert ID" />
-            </FloatingLabel>
-          </Form.Group>
-
-
         </Row>
       
         <Button className="formButton" variant="primary" type="submit">

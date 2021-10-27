@@ -5,11 +5,11 @@ export default function InstrumentsForm() {
   return (
     <Form>
       <Row className="entityForm">
-        <Form.Group as={Col} controlId="instrumentID">
+        {/* <Form.Group as={Col} controlId="instrumentID">
           <FloatingLabel controlId="instrumentID" label="Instrument ID">
             <Form.Control type="text" placeholder="Enter Instrument ID" />
           </FloatingLabel>
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group as={Col} controlId="instrumentName">
         <FloatingLabel controlId="instrumentName" label="Name">
