@@ -9,7 +9,6 @@ export default function HomePage() {
         <Row>
           <h1>Ensemble</h1>
         </Row>
-
         <Row>
         <EntityCards />
         </Row>

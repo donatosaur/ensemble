@@ -1,60 +1,64 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 export default function PiecesForm(){
 
     return(
         <Form>
-        <Row className="mb-3">
+        <Row className="entityForm">
           <Form.Group as={Col} controlId="pieceID">
-            <Form.Label>Piece ID</Form.Label>
-            <Form.Control type="text" placeholder="Enter Piece ID" />
+            <FloatingLabel controlId="pieceID" label="Piece ID">
+              <Form.Control type="text" placeholder="Enter Piece ID" />
+            </FloatingLabel>
           </Form.Group>
   
           <Form.Group as={Col} controlId="pieceTitle">
-            <Form.Label>Piece Title</Form.Label>
-            <Form.Control type="text" placeholder="Enter Piece Title" />
+            <FloatingLabel controlId="pieceTitle" label="Piece Title">
+              <Form.Control type="text" placeholder="Enter Piece Title" />
+            </FloatingLabel>
           </Form.Group>
-          
         </Row>
   
         
-      <Row className="mb-3">
-      <Form.Group as={Col} controlId="composerFirstName">
-            <Form.Label>Composer First Name</Form.Label>
+      <Row className="entityForm">
+        <Form.Group as={Col} controlId="composerFirstName">
+          <FloatingLabel controlId="composerFirstName" label="Composer First Name">
             <Form.Control type="text" placeholder="Enter Composer's First Name" />
+          </FloatingLabel>
           </Form.Group>
   
           <Form.Group as={Col} controlId="composerLastName">
-            <Form.Label>Composer Last Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter Composer's Last Name" />
+            <FloatingLabel controlId="composerLastName" label="Composer Last Name">
+              <Form.Control type="text" placeholder="Enter Composer's Last Name" />
+            </FloatingLabel>
           </Form.Group>
-        
-  
-       </Row>
-       <Row className= "mb-3">
-  
-       <Form.Group as={Col} controlId="arrangerFirstName">
-            <Form.Label>Arranger First Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter Arranger's First Name" />
-          </Form.Group>
-  
-          <Form.Group as={Col} controlId="soloistLastName">
-            <Form.Label>Arranger Last Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter Arranger's Last Name" />
-          </Form.Group>
+      </Row>
 
-          <Form.Group as={Col} controlId="instrumentation">
-            <Form.Label>Instrumentation</Form.Label>
-            <Form.Control type="text" placeholder="Instrumentation" />
-          </Form.Group>
+
+      <Row className= "entityForm">
+        <Form.Group as={Col} controlId="arrangerFirstName">
+          <FloatingLabel controlId="arrangerFirstName" label="Arranger First Name">
+            <Form.Control type="text" placeholder="Enter Arranger's First Name" />
+          </FloatingLabel>
+        </Form.Group>
   
-         
-  
+        <Form.Group as={Col} controlId="arrangeLastName">
+          <FloatingLabel controlId="arrangeLastName" label="Arranger Last Name">
+            <Form.Control type="text" placeholder="Enter Arranger's Last Name" />
+          </FloatingLabel>
+        </Form.Group>
+      </Row>
+
+      <Row className= "entityForm">
+        <Form.Group as={Col} controlId="instrumentation">
+          <FloatingLabel controlId="instrumentation" label="Instrumentation">
+            <Form.Control as="textarea" type="text" placeholder="Instrumentation" />
+          </FloatingLabel>
+        </Form.Group>
       </Row>
         
   
-        <Button variant="primary" type="submit">
+        <Button className="formButton" variant="primary" type="submit">
           Submit
         </Button>
       </Form>

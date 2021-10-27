@@ -1,63 +1,62 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
 
 export default function VenuesForm() {
   return ( 
     <Form>
-    <Row className="mb-3">
+    <Row className="entityForm">
       <Form.Group as={Col} controlId="venueID">
-        <Form.Label>Venue ID</Form.Label>
-        <Form.Control type="text" placeholder="Enter Venue ID" />
+        <FloatingLabel controlId="venueID" label="Venue ID">
+          <Form.Control type="text" placeholder="Enter Venue ID" />
+        </FloatingLabel>
       </Form.Group>
 
       <Form.Group as={Col} controlId="capacity">
-        <Form.Label>Capacity</Form.Label>
-        <Form.Control type="text" placeholder="Enter Venue Capacity" />
+        <FloatingLabel controlId="capacity" label="Capacity">
+          <Form.Control type="number" placeholder="Enter Venue Capacity" />
+        </FloatingLabel>
       </Form.Group>
       
-    <Form.Group as={Col} controlId="name">
-        <Form.Label>Venue Name</Form.Label>
-        <Form.Control type="text" placeholder="Enter Venue Name" />
+      <Form.Group as={Col} controlId="name">
+        <FloatingLabel controlId="name" label="Venue Name">
+          <Form.Control type="text" placeholder="Enter Venue Name" />
+        </FloatingLabel>
       </Form.Group>
-
-      
-
-     
     </Row>
 
-    
-  <Row className="mb-3">
-    <Form.Group as={Col} className="mb-3" controlId="street">
-      <Form.Label>Address</Form.Label>
-      <Form.Control placeholder="1234 Main St" />
-    </Form.Group>
-    
+    <Row className="entityForm">
+      <Form.Group as={Col} className="entityForm" controlId="street">
+        <FloatingLabel controlId="street" label="Street Address">
+          <Form.Control placeholder="1234 Main St" />
+        </FloatingLabel>
+      </Form.Group>
+    </Row>
 
-   </Row>
-
-    <Row className="mb-3">
+    <Row className="entityForm">
       <Form.Group as={Col} controlId="city">
-        <Form.Label>City</Form.Label>
-        <Form.Control />
+        <FloatingLabel controlId="city" label="City">
+          <Form.Control />
+        </FloatingLabel>
       </Form.Group>
 
       <Form.Group as={Col} controlId="state">
-        <Form.Label>State</Form.Label>
-        <Form.Select defaultValue="Choose...">
-          <option>TX</option>
-          <option>NY</option>
-        </Form.Select>
+        <FloatingLabel controlId="state" label="State">
+          <Form.Select defaultValue="Choose...">
+            <option>TX</option>
+            <option>NY</option>
+          </Form.Select>
+        </FloatingLabel>
       </Form.Group>
 
       <Form.Group as={Col} controlId="zip">
-        <Form.Label>Zip</Form.Label>
-        <Form.Control />
+        <FloatingLabel controlId="zip" label="Zip Code">
+          <Form.Control />
+        </FloatingLabel>
       </Form.Group>
     </Row>
 
-    
 
-    <Button variant="primary" type="submit">
+    <Button className="formButton" variant="primary" type="submit">
       Submit
     </Button>
   </Form>
