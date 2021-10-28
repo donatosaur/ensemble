@@ -1,8 +1,12 @@
 import React from "react";
 import { CardGroup, Card, Button } from "react-bootstrap";
 import entityDescriptions from "../data/entityDescriptions";
+import { useHistory } from "react-router";
+
 
 export default function EntityCards() {
+
+  const history= useHistory()
   return (
       <CardGroup id="entityCardGroup">
         {entityDescriptions.map((entity, _) => {
@@ -15,7 +19,9 @@ export default function EntityCards() {
                 <Card.Text> {Object.values(entity)} </Card.Text>
               </Card.Body>
               <Card.Footer>
-                <Button href={`/${Object.keys(entity)}`}>
+                <Button onClick={(e)=>{
+                  e.preventDefault()
+                  history.push(`/${Object.keys(entity)}`)}}>
                   {"Manage"}
                 </Button>
               </Card.Footer>
