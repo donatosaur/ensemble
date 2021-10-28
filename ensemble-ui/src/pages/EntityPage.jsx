@@ -10,10 +10,10 @@ export default function EntityPage({ match }) {
 
   // state hook to set the display state of the entity form
   const [entityFormOpen, setEntityFormOpen] = useState(false);
-  const entityFormToggle = () => {
-    setEntityFormOpen(!entityFormOpen);
+  const entityFormToggle = (newState) => {
+    setEntityFormOpen(newState === undefined ? !entityFormOpen : newState);
   }
- 
+
   return (
     <>
       <h1>{entityName}</h1>

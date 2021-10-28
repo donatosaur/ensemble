@@ -1,15 +1,16 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { CardGroup, Card, Button } from "react-bootstrap";
 import entityDescriptions from "../data/entityDescriptions";
-import { useHistory } from "react-router";
+
 
 
 export default function EntityCards() {
+  const history= useHistory();
 
-  const history= useHistory()
   return (
       <CardGroup id="entityCardGroup">
-        {entityDescriptions.map((entity, _) => {
+        {entityDescriptions.map((entity) => {
           return (
             <Card>
               <Card.Header>
