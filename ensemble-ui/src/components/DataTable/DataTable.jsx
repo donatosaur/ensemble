@@ -1,51 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { 
+import React, { useContext, useEffect, useState } from "react";
+import {
   DataGrid, 
   GridToolbarContainer, 
   GridToolbarDensitySelector,
-  GridToolbarColumnsButton,
   GridToolbarExport,
-  GridFooter, 
-  GridFooterContainer 
 } from "@mui/x-data-grid";
-import { Button, Container, Row } from "react-bootstrap";
-
+import Button from "@material-ui/core/Button";
+import { Container } from "react-bootstrap";
 
 /**
+ * Creates a MUI Data Grid for an Entity using the passed in props
  *
  * @param columns an array of columns, formatted to MUI spec ()
  * @param getRows a function that calls the api to fetch rows (SELECT -> GET)
  * @param onCreate a function that calls the api when a row is added (INSERT -> POST)
  * @param onUpdate a function that calls the api to update a row (UPDATE -> PUT)
  * @param onDelete a function that calls the api to delete a row (DELETE -> DELETE)
+ * @param entityFormToggle a function that toggles the display state of the EntityForm
  * @returns {JSX.Element}
  * @constructor
  */
-export default function DataTable({ columns, fetchRows, onCreate, onUpdate, onDelete }) {
-  // state hooks
+export default function DataTable({
+  columns,
+  fetchRows,
+  onCreate,
+  onUpdate,
+  onDelete,
+  entityFormToggle,
+}) {
+  // ---------------------------- State Hooks ----------------------------
+  // data model
   const [fetchNewData, setFetchNewData] = useState(true);
-  const [alert, setAlert] = useState(null);
-  const [selectedRows, setSelectedRows] = useState({});
   const [rows, setRows] = useState([]);
 
+  // eslint-disable-next-line no-unused-vars
+  const [alertContent, setAlertContent] = useState(null);
 
-  // effect hooks
+  // edit model (to commit changes and update rows)
+  const [rowEditModel, setRowEditModel] = useState({});
+  const [editsToCommit] = useState(new Map());
+
+
+  // selection model (to perform operations on selected rows)
+  const [selectedRows, setSelectedRows] = useState([]);
+
+
+
+  // ---------------------------- Effect Hooks ----------------------------
+
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    // if we get here and there's no new data to be fetched, do nothing instead
-    if (!fetchNewData) {
-      return;
-    }
-    
-    setFetchNewData(false);  // we're fetching new data, so update the state hook to reflect that
+    // if there's no new data to be fetched, do nothing instead
+    if (!fetchNewData) return;
+
     const abortController = new AbortController();
     void async function getData() {
       try {
         const rowData = await fetchRows();
-        setRows(rowData);
+        setRows(rowData); // set the data model
+        setFetchNewData(false); // update the state hook
       } catch (err) {
         // todo: placeholder; push alert onto stack
-        setAlert(err);
+        setAlertContent(err);
       }
     }();
     // prevent memory leaks by aborting request if component is no longer mounted or request times out
@@ -54,69 +70,108 @@ export default function DataTable({ columns, fetchRows, onCreate, onUpdate, onDe
   }, [fetchNewData]);
 
 
-
-  // top toolbar
+  /* -------------------------------- Grid Toolbar -------------------------------- */
   const Toolbar = () => {
-    const addEntry = (event) => {
+    const onAddButtonClick = (event) => {
       event.preventDefault();
+      entityFormToggle();
     }
   
-    const editEntry = (event) => {
+    const onEditButtonClick = (event) => {
       event.preventDefault();
+      // do nothing if no rows were selected
+      if (selectedRows.length === 0) return;
+
+      // TODO: placeholder
+      const selectedIDs = selectedRows.filter(i => editsToCommit.has(i.toString()));
+      alert(`This is a placeholder.\nCommitting edits made to selected rows with edits made: ${selectedIDs}`);
+      onUpdate();
     }
   
-    const deleteEntry = (event) => {
+    const onDeleteButtonClick = (event) => {
       event.preventDefault();
+
+      // do nothing if no rows were selected
+      if (selectedRows.length === 0) return;
+
+      // TODO: placeholder
+      // otherwise, display a popup, ask the user to confirm the delete
+      alert(`This is a placeholder.\nDeleting rows: ${selectedRows}`);
+      onDelete();
+    }
+
+    const onSearchButtonClick = (event) => {
+      event.preventDefault();
+      // TODO: placeholder
+      alert("This will open a search pane");
     }
   
     return (
       <GridToolbarContainer>
-        
+        <Container fluid className="toolbarContainer">
         <Button
           className="toolbarButton"
-          variant="outline-light"
+          variant="text"
+          color="primary"
+          size="small"
           aria-label="Add Entity"
-          onClick={addEntry}
+          onClick={onAddButtonClick}
         >
           <i className="bi bi-plus-lg" />
           {` Add New`}
         </Button>
-
+        {` `}
         <Button
           className="toolbarButton"
-          variant="outline-light"
-          aria-label="Edit Entity"
-          onClick={editEntry}
+          variant="text"
+          color="primary"
+          size="small"
+          aria-label="Search"
+          onClick={onSearchButtonClick}
         >
-          <i class="bi bi-pencil" />
-          {` Edit`}
+          <i className="bi bi-search" />
+          {` Search`}
         </Button>
-
+        {` `}
         <Button
           className="toolbarButton"
-          variant="outline-light"
-          aria-label="Edit Entity"
-          onClick={deleteEntry}
+          variant="text"
+          color="primary"
+          size="small"
+          aria-label="Commit Selected Edits"
+          onClick={onEditButtonClick}
         >
-          <i class="bi-trash" />
-          {` Delete Checked`}
+          <i className="bi bi-pencil" />
+          {` Commit Edits to Selected`}
         </Button>
-  
+        {` `}
+        <Button
+          className="toolbarButton"
+          variant="text"
+          color="primary"
+          size="small"
+          aria-label="Delete Entity"
+          onClick={onDeleteButtonClick}
+        >
+          <i className="bi-trash" />
+          {` Delete Selected`}
+        </Button>
+        {` `}
         <GridToolbarDensitySelector />
+        {` `}
         <GridToolbarExport />
-  
+        </Container>
       </GridToolbarContainer>
     );
   }
 
+
+  /* ---------------------------- Data Table JSX Element ---------------------------- */
   return (
     <div style={{ height: 500, width: '100%' }}>
       <DataGrid
         // style
-        disableSelectionOnClick // make users actually click the selector
-
-        // disable double-click to edit cells (we'll handle this with checkboxes instead)
-        onCellDoubleClick = { (params, event) => {event.defaultMuiPrevented=true} }
+        disableSelectionOnClick // make users actually click the checkbox to select
 
         // pagination options
         autoPageSize
@@ -131,14 +186,16 @@ export default function DataTable({ columns, fetchRows, onCreate, onUpdate, onDe
         rows={rows}
         columns={columns}
 
-        // row edit options: populate checkboxes at left and track all the row ids that the user has selected
+        // row edit options
         editMode="row"
-        checkboxSelection
-        selectionModel={selectedRows}
-        onSelectionModelChange={ (newSelectedRows) => {
-          setSelectedRows(newSelectedRows);
-          console.log(newSelectedRows); // debugging
+        editRowsModel={rowEditModel}
+        onEditRowsModelChange={(rowBeingEdited) => setRowEditModel(rowBeingEdited)}
+        onRowEditStop={() => {
+          for (const key in rowEditModel) editsToCommit.set(key, rowEditModel[key]);
         }}
+        checkboxSelection // populate checkboxes
+        selectionModel={selectedRows}
+        onSelectionModelChange={(newSelectedRows) => setSelectedRows(newSelectedRows)}
 
         // prop overrides
         components={{

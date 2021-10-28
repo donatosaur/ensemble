@@ -107,14 +107,22 @@ const entityDemoDataMap = new Map([
       inEnsemble: true,
       active: true
     },
-
-
    ]],
    ["Instruments", [
-    //  { field: "id", headerName: "ID", flex: 0, width: 90, editable: false },
-    //  { field: "name", headerName: "Name", flex: 1, minWidth: 180, editable: true }
+     { id: 1,   name: "Piano" },
+     { id: 2,   name: "Harpsichord" },
+     { id: 3,   name: "Clavichord" },
+     { id: 4,   name: "Violin" },
+     { id: 5,   name: "Guitar" },
+     { id: 16,  name: "Flute" },
+     { id: 17,  name: "Harp" },
+     { id: 18,  name: "Cello" },
+     { id: 19,  name: "Sitar" },
+     { id: 20,  name: "Ocarina" },
+     { id: 21,  name: "Hurdy-gurdy"},
+     { id: 22,  name: "Hammond"},
    ]],
-   ["Venues", [
+     ["Venues", [
     //  { field: "id", headerName: "ID", flex: 0, width: 90, editable: false },
     //  { field: "capacity", headerName: "Capacity", type: "number", flex: 1, minWidth: 180, editable: true },
     //  { field: "name", headerName: "Name", flex: 1, minWidth: 180, editable: true },
@@ -191,10 +199,18 @@ const entityDemoDataMap = new Map([
     //  { field: "arrangerLastName", headerName: "Arranger Last Name", flex: 1, minWidth: 180, editable: true },
     //  { field: "instrumentation", headerName: "Instrumentation", flex: 1, minWidth: 180, editable: true }
    ]],
-
-
    ["MusiciansInstruments", [
-
+     { id: 1,   musicianID: 1,   instrumentID: 21},
+     { id: 2,   musicianID: 2,   instrumentID: 16},
+     { id: 3,   musicianID: 3,   instrumentID: 3},
+     { id: 4,   musicianID: 4,   instrumentID: 1},
+     { id: 5,   musicianID: 5,   instrumentID: 1},
+     { id: 6,   musicianID: 6,   instrumentID: 1},
+     { id: 7,   musicianID: 7,   instrumentID: 2},
+     { id: 8,   musicianID: 8,   instrumentID: 5},
+     { id: 9,   musicianID: 1,   instrumentID: 1},
+     { id: 10,  musicianID: 1,   instrumentID: 2},
+     { id: 11,  musicianID: 1,   instrumentID: 22},
    ]],
    ["MusiciansConcertCycles", [
 
