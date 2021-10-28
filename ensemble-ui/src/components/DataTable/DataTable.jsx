@@ -1,12 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  DataGrid, 
-  GridToolbarContainer, 
+  DataGrid,
+  GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import Button from "@material-ui/core/Button";
 import { Container } from "react-bootstrap";
+// button components for Grid Toolbar override
+import HelpButton from "./HelpButton";
+import DeleteButton from "./DeleteButton";
+import EditButton from "./EditButton";
+import SearchButton from "./SearchButton";
+import AddButton from "./AddButton";
+import SearchForm from "./SearchForm";
 
 /**
  * Creates a MUI Data Grid for an Entity using the passed in props
@@ -28,10 +34,12 @@ export default function DataTable({
   onDelete,
   entityFormToggle,
 }) {
-  // ---------------------------- State Hooks ----------------------------
+  /* ------------------------------ State Hooks ------------------------------ */
   // data model
   const [fetchNewData, setFetchNewData] = useState(true);
   const [rows, setRows] = useState([]);
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
+  const [searchParameters, setSearchParameters] = useState([]);
 
   // eslint-disable-next-line no-unused-vars
   const [alertContent, setAlertContent] = useState(null);
@@ -40,13 +48,10 @@ export default function DataTable({
   const [rowEditModel, setRowEditModel] = useState({});
   const [editsToCommit] = useState(new Map());
 
-
   // selection model (to perform operations on selected rows)
   const [selectedRows, setSelectedRows] = useState([]);
 
-
-
-  // ---------------------------- Effect Hooks ----------------------------
+  /* ------------------------------ Effect Hooks ------------------------------ */
 
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
@@ -75,13 +80,18 @@ export default function DataTable({
     const onAddButtonClick = (event) => {
       event.preventDefault();
       entityFormToggle();
+      setSearchPanelOpen(false);  // only one form panel open at a time
     }
-  
+
+    const onSearchButtonClick = (event) => {
+      event.preventDefault();
+      entityFormToggle(false);  // only one form panel open at a time
+      setSearchPanelOpen(!searchPanelOpen);
+    }
+
     const onEditButtonClick = (event) => {
       event.preventDefault();
-      // do nothing if no rows were selected
-      if (selectedRows.length === 0) return;
-
+      if (selectedRows.length === 0) return;  // do nothing if no rows were selected
       // TODO: placeholder
       const selectedIDs = selectedRows.filter(i => editsToCommit.has(i.toString()));
       alert(`This is a placeholder.\nCommitting edits made to selected rows with edits made: ${selectedIDs}`);
@@ -90,76 +100,23 @@ export default function DataTable({
   
     const onDeleteButtonClick = (event) => {
       event.preventDefault();
-
-      // do nothing if no rows were selected
-      if (selectedRows.length === 0) return;
-
+      if (selectedRows.length === 0) return;  // do nothing if no rows were selected
       // TODO: placeholder
       // otherwise, display a popup, ask the user to confirm the delete
       alert(`This is a placeholder.\nDeleting rows: ${selectedRows}`);
       onDelete();
     }
 
-    const onSearchButtonClick = (event) => {
-      event.preventDefault();
-      // TODO: placeholder
-      alert("This will open a search pane");
-    }
-  
     return (
       <GridToolbarContainer>
         <Container fluid className="toolbarContainer">
-        <Button
-          className="toolbarButton"
-          variant="text"
-          color="primary"
-          size="small"
-          aria-label="Add Entity"
-          onClick={onAddButtonClick}
-        >
-          <i className="bi bi-plus-lg" />
-          {` Add New`}
-        </Button>
-        {` `}
-        <Button
-          className="toolbarButton"
-          variant="text"
-          color="primary"
-          size="small"
-          aria-label="Search"
-          onClick={onSearchButtonClick}
-        >
-          <i className="bi bi-search" />
-          {` Search`}
-        </Button>
-        {` `}
-        <Button
-          className="toolbarButton"
-          variant="text"
-          color="primary"
-          size="small"
-          aria-label="Commit Selected Edits"
-          onClick={onEditButtonClick}
-        >
-          <i className="bi bi-pencil" />
-          {` Commit Edits to Selected`}
-        </Button>
-        {` `}
-        <Button
-          className="toolbarButton"
-          variant="text"
-          color="primary"
-          size="small"
-          aria-label="Delete Entity"
-          onClick={onDeleteButtonClick}
-        >
-          <i className="bi-trash" />
-          {` Delete Selected`}
-        </Button>
-        {` `}
-        <GridToolbarDensitySelector />
-        {` `}
-        <GridToolbarExport />
+        <AddButton onClick={onAddButtonClick} />
+        {` `}<SearchButton onClick={onSearchButtonClick}/>
+        {` `}<EditButton onClick={onEditButtonClick}/>
+        {` `}<DeleteButton onClick={onDeleteButtonClick} />
+        {` `}<GridToolbarDensitySelector />
+        {` `}<GridToolbarExport />
+        {` `}<HelpButton />
         </Container>
       </GridToolbarContainer>
     );
@@ -168,10 +125,11 @@ export default function DataTable({
 
   /* ---------------------------- Data Table JSX Element ---------------------------- */
   return (
+    <>
     <div style={{ height: 500, width: '100%' }}>
       <DataGrid
         // style
-        disableSelectionOnClick // make users actually click the checkbox to select
+        disableSelectionOnClick // make users actually click the checkbox to select a row
 
         // pagination options
         autoPageSize
@@ -184,7 +142,13 @@ export default function DataTable({
 
         // data
         rows={rows}
-        columns={columns}
+        columns={columns.map(
+          column => ({
+            ...column,
+            sortable: false,  // disable client-side sorting
+            flex: 1,          // make all columns flex-grow by default
+          })
+        )}
 
         // row edit options
         editMode="row"
@@ -200,10 +164,18 @@ export default function DataTable({
         // prop overrides
         components={{
           Toolbar: Toolbar,
+          // LoadingOverlay:
         }}
         // componentProps={{
         // }}
       />
+
+      { searchPanelOpen &&
+        <Container className={"entityFormContainer"}>
+          <SearchForm columns={columns} setSearchParameters={setSearchParameters} />
+        </Container>
+      }
     </div>
+    </>
   );
 }

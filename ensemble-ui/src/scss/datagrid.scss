@@ -31,7 +31,17 @@
   color: #3f51b5;
 }
 
+// add padding to custom popover elements
+.toolbarPopoverContainer {
+  padding: 1em 1em;
+  max-width: 30em;
+  text-align: justify;
+}
 
+// add padding to bootstrap icons to match MUI
+.bi {
+  padding-right: 0.5em;
+}
 
 // override default bootstrap css for toolbar button to match mui data grid
 .toolbarButton {
