@@ -24,9 +24,10 @@ export default function SearchForm({ columns, setSearchParameters }) {
         {
           columns.map(
             (column) => {
+              if (column.searchable === false) return null;
+
               return(
                 <>
-
                   <Form.Group as={Col} controlId={column.field} className="entityForm">
                     <FloatingLabel controlId={column.field} label={column.headerName}>
                       <SearchFormControlProvider
