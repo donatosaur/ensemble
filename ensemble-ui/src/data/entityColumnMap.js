@@ -53,17 +53,17 @@ const entityColumnMap = new Map([
     { field: "instrumentation", headerName: "Instrumentation", minWidth: 180, editable: true }
   ]],
   ["MusiciansInstruments", [
-    { field: "id", headerName: "Row #", width: 100, editable: false, hidden: true },
+    { field: "id", headerName: "Row #", width: 100, editable: false, hide: true, searchable: false },
     { field: "musicianID", headerName: "Musician", width: 100, editable: false },
     { field: "instrumentID", headerName: "Instrument", width: 100, editable: false }
   ]],
   ["MusiciansConcertCycles", [
-    { field: "id", headerName: "Row #", width: 100, editable: false, hidden: true },
+    { field: "id", headerName: "Row #", width: 100, editable: false, hide: true, searchable: false },
     { field: "musicianID", headerName: "Musician", width: 100, editable: false },
     { field: "concertID", headerName: "Concert Cycle", width: 100, editable: false }
   ]],
   ["PiecesConcertCycles", [
-    { field: "id", headerName: "Row #", width: 100, editable: false, hidden: true },
+    { field: "id", headerName: "Row #", width: 100, editable: false, hide: true, searchable: false },
     { field: "pieceID", headerName: "Piece", width: 100, editable: false },
     { field: "concertID", headerName: "Concert Cycle", width: 100, editable: false }
   ]]
