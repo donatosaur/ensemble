@@ -8,7 +8,7 @@ import NavigationBar from './components/NavigationBar';
 
 function App() {
   return (
-    <Router>
+    <Router basename={"/~awanf"}>
       <NavigationBar />
       <Route path="/" exact component={HomePage} />
       <Route path="/:entityName" component={EntityPage}/>
