@@ -10,9 +10,9 @@ export default function EntityCards() {
 
   return (
       <CardGroup id="entityCardGroup">
-        {entityDescriptions.map((entity) => {
+        {entityDescriptions.map((entity, index) => {
           return (
-            <Card>
+            <Card key={index}>
               <Card.Header>
                 <Card.Title> {Object.keys(entity)} </Card.Title>
               </Card.Header>

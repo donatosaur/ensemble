@@ -7,7 +7,7 @@ import entityDescriptions from "../data/entityDescriptions";
 export default function NavigationBar() {
   const history = useHistory()
   return (
-    <Navbar class="navbar" bg="light" sticky="top" fixed="top" expand="lg">
+    <Navbar className="navbar" bg="light" sticky="top" fixed="top" expand="lg">
       <Navbar.Brand onClick={(e)=>{
         e.preventDefault()
         history.push("/")
