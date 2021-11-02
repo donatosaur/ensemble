@@ -2,7 +2,7 @@ import express from 'express'
 import 'dotenv/config'
 import db from './database/db_connector.mjs'
 
-let PORT = process.env.PORT || 3306;    
+let PORT = process.env.PORT || 3332;    
 
 const app = express();    
 
