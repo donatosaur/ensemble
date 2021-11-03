@@ -32,19 +32,22 @@ export default function HelpButton() {
         </p>
         {/* Edit/Update */}
         <p>
-          <strong>To edit a row</strong>, double click on it, or click and press "Enter." When you're done
-          editing, select the rows that you've edited <em>and</em> want to be updated. (<em>Note:</em> row ids
-          are read-only.)
-          <br />Then, press "Commit Edits."
+          <strong>To edit a row</strong>, double click on it, or click and press "Enter." If any values have
+          been changed, the row's color will change and its values will appear italic. (<em>Note:</em> row 
+          ids are read-only.)
+          <br />
+        </p>  
+        <p>
+          <strong>To commit edits</strong>, select the rows you want updated. Then, press "Commit Selected Rows"
         </p>
         {/* Search */}
         <p>
-          <strong>To search</strong>, click "Search" to toggle the search panel.
+          <strong>To search</strong>, click "Search" to toggle the search panel (currently only available
+          for <em>Musicians</em>).
         </p>
         {/* Delete */}
         <p>
-          <strong>To delete a row</strong>, select it.
-          <br />Then, press "Delete Selected."
+          <strong>To delete a row</strong>, select it. Then, press "Delete Selected."
         </p>
         </Container>
       </Popover>

@@ -9,11 +9,11 @@ export default function EditButton({ onClick }) {
         variant="text"
         color="primary"
         size="small"
-        aria-label="Commit Selected Edits"
+        aria-label="Commit Selected"
         onClick={onClick}
       >
         <i className="bi bi-pencil" />
-        {` Commit Edits to Selected`}
+        {` Commit Selected Rows`}
       </Button>
     </>
   );

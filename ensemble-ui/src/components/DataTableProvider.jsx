@@ -39,6 +39,7 @@ export default function DataTableProvider({entityName, entityFormToggle}){
      onUpdate={onUpdate}
      onDelete={onDelete}
      entityFormToggle={entityFormToggle}
+     isSearchImplemented={entityName === 'Musicians'}
    />
   );
 }

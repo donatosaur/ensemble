@@ -18,13 +18,13 @@ export default function MusiciansForm() {
 
         <Form.Group as={Col} controlId="initialInstrumentID">
           <FloatingLabel controlId="initialInstrumentID" label="Initial InstrumentID">
-            <Form.Control type="text" placeholder="Enter an initial instrumentID" />
+            <Form.Control required type="text" placeholder="Enter an initial instrumentID" />
           </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="birthdate">
           <FloatingLabel controlId="birthdate" label="Birthdate">
-            <Form.Control type="date" placeholder="Enter Musician DOB" />
+            <Form.Control required type="date" placeholder="Enter Musician DOB" />
           </FloatingLabel>
         </Form.Group>
       </Row>
@@ -33,13 +33,13 @@ export default function MusiciansForm() {
       <Row className="entityForm">
         <Form.Group as={Col} controlId="firstName">
           <FloatingLabel controlId="firstName" label="First Name">
-            <Form.Control type="text" placeholder="Enter Musician First Name" />
+            <Form.Control required type="text" placeholder="Enter Musician First Name" />
           </FloatingLabel>
         </Form.Group>
         
         <Form.Group as={Col} controlId="lastName">
           <FloatingLabel controlId="lastName" label="Last Name">
-            <Form.Control type="text" placeholder="Enter Musician Last Name" />
+            <Form.Control required type="text" placeholder="Enter Musician Last Name" />
           </FloatingLabel>
         </Form.Group>
       </Row>
@@ -72,7 +72,7 @@ export default function MusiciansForm() {
     <Row className="entityForm">
       <Form.Group as={Col} className="entityForm" controlId="street">
         <FloatingLabel controlId="street" label="Street Address">
-          <Form.Control placeholder="1234 Main St" />
+          <Form.Control required placeholder="1234 Main St" />
         </FloatingLabel>
       </Form.Group>
      </Row>
@@ -80,13 +80,13 @@ export default function MusiciansForm() {
       <Row className="entityForm">
         <Form.Group as={Col} controlId="city">
           <FloatingLabel controlId="city" label="City">
-            <Form.Control />
+          <Form.Control required />
           </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="state">
           <FloatingLabel controlId="state" label="State">
-            <Form.Select defaultValue="Choose...">
+            <Form.Select required defaultValue="Choose...">
               <option>TX</option>
               <option>NY</option>
             </Form.Select>
@@ -95,7 +95,7 @@ export default function MusiciansForm() {
 
         <Form.Group as={Col} controlId="zip">
           <FloatingLabel controlId="zip" label="Zip Code">
-            <Form.Control />
+            <Form.Control required />
           </FloatingLabel>
         </Form.Group>
       </Row>
