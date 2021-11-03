@@ -36,6 +36,16 @@
   color: $mui-default-color
 }
 
+// row color when editing a cell
+.MuiDataGrid-root .MuiDataGrid-row--editing .MuiDataGrid-cell {
+    background-color: bisque !important;
+}
+
+// cell color when editing a cell
+.MuiDataGrid-root .MuiDataGrid-cell.MuiDataGrid-cell--editing:focus-within {
+  background-color: orange !important;
+}
+
 // add padding to custom popover elements
 .toolbarPopoverContainer {
   padding: 1em 1em;
@@ -65,3 +75,9 @@
   background-color: #f7f8fc;
   box-shadow: unset;
 }
+
+.MuiDataGrid-row {
+  .MuiDataGrid-row--editing {
+    .MuiDataGrid-row--editable{
+  background-color: blue;
+}}}
