@@ -2,6 +2,7 @@ import React from "react";
 import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
 
 export default function VenuesForm() {
+
   return ( 
     <Form>
       <Row className="entityForm">

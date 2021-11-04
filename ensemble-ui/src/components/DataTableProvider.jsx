@@ -8,11 +8,11 @@ import entityDemoDataMap from "../data/entityDemoDataMap";
  * Provides a DataTable for a specified Entity
  *
  * @param entityName the entity for which the DataTable should be provided
- * @param entityFormToggle a function that toggles the display state of the entity page's EntityForm
+ * @param createFormToggle a function that toggles the display state of the entity page's create form
  * @returns {JSX.Element|null} JSX.Element if the entity has all the required properties
  * @constructor
  */
-export default function DataTableProvider({entityName, entityFormToggle}){
+export default function DataTableProvider({entityName, createFormToggle}){
 
   // get the column definitions
   let columns = entityColumnMap.has(entityName) ? entityColumnMap.get(entityName) : null;
@@ -33,12 +33,12 @@ export default function DataTableProvider({entityName, entityFormToggle}){
 
   return (
    <DataTable
-     columns={columns}
+     columnData={columns}
      fetchRows={fetchRows}
      onCreate={onCreate}
      onUpdate={onUpdate}
      onDelete={onDelete}
-     entityFormToggle={entityFormToggle}
+     createFormToggle={createFormToggle}
      isSearchImplemented={entityName === 'Musicians'}
    />
   );

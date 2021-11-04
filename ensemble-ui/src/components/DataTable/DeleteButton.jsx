@@ -1,19 +1,17 @@
-import Button from "@material-ui/core/Button";
+import { Button } from "react-bootstrap";
 import React from "react";
 
 export default function DeleteButton({ onClick }) {
   return (
     <>
       <Button
-        className="toolbarButton"
-        variant="text"
+        className="actionButton"
+        variant="outline-dark"
         color="primary"
-        size="small"
-        aria-label="Delete Entity"
+        aria-label="Delete"
         onClick={onClick}
       >
-        <i className="bi bi-trash" />
-        {`Delete Selected`}
+        <i className="bi bi-trash-fill" />
       </Button>
     </>
   );

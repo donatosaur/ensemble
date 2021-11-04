@@ -1,60 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { cloneDeep } from "lodash";
-import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
+/* eslint-disable no-unused-vars */
+import React, {useEffect, useMemo, useState} from "react";
+import  {DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
 import { Container } from "react-bootstrap";
+import { makeStyles } from "@material-ui/core";
+
 // button components for Grid Toolbar override
-import HelpButton from "./HelpButton";
-import DeleteButton from "./DeleteButton";
+import HelpButton from "./ToolbarButtons/HelpButton";
+import SearchButton from "./ToolbarButtons/SearchButton";
+import AddButton from "./ToolbarButtons/AddButton";
+
+// button components for custom actions cell
 import EditButton from "./EditButton";
-import SearchButton from "./SearchButton";
-import AddButton from "./AddButton";
-import SearchForm from "./SearchForm";
-import {makeStyles} from "@material-ui/core";
+import DeleteButton from "./DeleteButton";
+
+// forms
+import SearchForm from "../SearchForms/SearchForm";
+import UpdateForm from "../EditForms/UpdateForm";
+
+import { cloneDeep } from "lodash";
+
 
 /**
  * Creates a MUI Data Grid for an Entity using the passed in props
  *
- * @param columns an array of columns, formatted to MUI spec ()
- * @param getRows a function that calls the api to fetch rows (SELECT -> GET)
+ * @param columnData {array} an array of columns, formatted to MUI spec ()
+ * @param fetchRows  a function that calls the api to fetch rows (SELECT -> GET)
  * @param onCreate a function that calls the api when a row is added (INSERT -> POST)
  * @param onUpdate a function that calls the api to update a row (UPDATE -> PUT)
  * @param onDelete a function that calls the api to delete a row (DELETE -> DELETE)
- * @param entityFormToggle a function that toggles the display state of the EntityForm
+ * @param createFormToggle a function that toggles the display state of the EntityForm
+ * @param isSearchImplemented {boolean} whether search is enabled for this table
  * @returns {JSX.Element}
  * @constructor
  */
 export default function DataTable({
-  columns,
+  columnData,
   fetchRows,
   onCreate,
   onUpdate,
   onDelete,
-  entityFormToggle,
+  createFormToggle,
   isSearchImplemented,
 }) {
   /* ------------------------------ State Hooks ------------------------------ */
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [searchParameters, setSearchParameters] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+  const [editPanelOpen, setEditPanelOpen] = useState(false);
+  const [searchParameters, setSearchParameters] = useState({});
+  const [updateParameters, setUpdateParameters] = useState({});
   const [alertContent, setAlertContent] = useState(null);
 
-  // data model (to display data)
-  const [fetchNewData, setFetchNewData] = useState(true);         // use effect trigger
-  const [rows, setRows] = useState([]);                           // holds rows in whatever present state they're in
+  // data model
+  const [fetchNewData, setFetchNewData] = useState(true);
+  const [rows, setRows] = useState([]);
 
-  // edit model (to commit changes and update rows)
-  const [originalRowStates] = useState(new Map());                // holds copies of rows in their original state
-  const [editsToCommit] = useState(new Map());                    // holds rows whose state is "edited"
-
-  // selection model (to perform operations on selected rows)
-  const [selectedRows, setSelectedRows] = useState([]);           // holds rows whose state is "selected"
-
-  /* ------------------------------ Effect Hooks ------------------------------ */
 
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    // if there's no new data to be fetched, do nothing instead
     if (!fetchNewData) return;
 
     const abortController = new AbortController();
@@ -63,11 +64,9 @@ export default function DataTable({
         // get the rows and set the data model
         const rowData = await fetchRows();
         setRows(rowData);
-        
-        setFetchNewData(false); // we just fetched data
+        setFetchNewData(false);
       } catch (err) {
-        // todo: placeholder; push alert onto stack
-        setAlertContent(err);
+        setAlertContent(err);  // todo: placeholder; push alert onto stack
       }
     }();
     // prevent memory leaks by aborting request if component is no longer mounted or request times out
@@ -75,37 +74,72 @@ export default function DataTable({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchNewData]);
 
+  /* ------------------------------ Column Hooks ------------------------------ */
+  const columns = useMemo(() => [
+      ...columnData.map(
+        column => ({
+          ...column,
+          sortable: false,  // disable client-side sorting
+          flex: 1,          // make all columns flex-grow by default
+        })
+      ),
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        type: 'actions',
+        editable: false,
+        sortable: false,
+        width: 120,
+        disableClickEventBubbling: true,  // we don't want events to propagate
+        renderCell: (params) => {
+          return (
+            <>
+              <EditButton
+                onClick={() => {
+                  // load the row data
+                  const rowIndex = rows.findIndex(row => row.id === parseInt(params.id));
+                  if (rowIndex === -1) {
+                    // this shouldn't happen; if it does, we should know about it
+                    console.error('Edit button pressed, but row not found!')
+                  }
+
+                  setUpdateParameters(cloneDeep(rows[rowIndex]));
+
+                  // only one form should be open at a time
+                  setEditPanelOpen(true);
+                  setSearchPanelOpen(false);
+                  createFormToggle(false);
+                }
+                }/>
+
+              <DeleteButton
+                onClick={() => {
+                  // display a popup, ask the user to confirm the delete
+                  alert(`This is a placeholder. Deleting entity with id ${params.id.toString()}`);
+                  onDelete();
+                }}
+              />
+            </>
+          );
+        }
+      },
+    ],
+    [columnData, createFormToggle, onDelete, rows]
+  );
+
 
   /* -------------------------------- Grid Toolbar -------------------------------- */
   const Toolbar = () => {
     const onAddButtonClick = (event) => {
       event.preventDefault();
-      entityFormToggle();
+      createFormToggle();
       setSearchPanelOpen(false);  // only one form panel open at a time
+      setEditPanelOpen(false);
     }
-
     const onSearchButtonClick = (event) => {
       event.preventDefault();
-      entityFormToggle(false);  // only one form panel open at a time
+      createFormToggle(false);  // only one form panel open at a time
       setSearchPanelOpen(!searchPanelOpen);
-    }
-
-    const onEditButtonClick = (event) => {
-      event.preventDefault();
-      if (selectedRows.length === 0) return;  // do nothing if no rows were selected
-      // TODO: placeholder
-      const selectedIDs = selectedRows.filter(i => editsToCommit.has(i));
-      alert(`This is a placeholder.\nCommitting edits made to selected rows with edits made: ${selectedIDs}`);
-      onUpdate();
-    }
-  
-    const onDeleteButtonClick = (event) => {
-      event.preventDefault();
-      if (selectedRows.length === 0) return;  // do nothing if no rows were selected
-      // TODO: placeholder
-      // otherwise, display a popup, ask the user to confirm the delete
-      alert(`This is a placeholder.\nDeleting rows: ${selectedRows}`);
-      onDelete();
     }
 
     return (
@@ -113,8 +147,7 @@ export default function DataTable({
         <Container fluid className="toolbarContainer">
         <AddButton onClick={onAddButtonClick} />
         {` `}{ isSearchImplemented && <SearchButton onClick={onSearchButtonClick}/> }
-        {` `}<EditButton onClick={onEditButtonClick}/>
-        {` `}<DeleteButton onClick={onDeleteButtonClick} />
+        {` |`}
         {` `}<GridToolbarDensitySelector />
         {` `}<GridToolbarExport />
         {` `}<HelpButton />
@@ -143,10 +176,6 @@ export default function DataTable({
       <DataGrid
         // style
         disableSelectionOnClick // make users actually click the checkbox to select a row
-        getRowClassName={(params) => {
-          // check whether the row was edited to override styles
-          if (editsToCommit.has(params.row.id)) return(`edited`);
-        }}
 
         // pagination options
         autoPageSize
@@ -159,66 +188,19 @@ export default function DataTable({
 
         // data
         rows={rows}
-        columns={columns.map(
-          column => ({
-            ...column,
-            sortable: false,  // disable client-side sorting
-            flex: 1,          // make all columns flex-grow by default
-          })
-        )}
+        columns={columns}
 
-        // row edit options
+        // row edit options: disable inline editing
         editMode="row"
-        onRowEditStart={(params) => {
-          // save the original state of this row
-          if (!originalRowStates.has(params.row.id)) {
-            originalRowStates.set(params.row.id, cloneDeep(params.row));
-          }     
+        onRowEditStart={(_, event) => {
+          event.defaultMuiPrevented = true;
         }}
-        onRowEditStop={(params) => {
-          if (originalRowStates.has(params.row.id)) {
-            let anyValChanged = false;
-            const originalState = originalRowStates.get(params.row.id);
-
-            for (const [key, val] of Object.entries(params.row)) {
-              let originalVal = originalState[key];
-              // treat '', undefined & null the same
-              switch(originalVal) {
-                case '':
-                  if (val === undefined || val === null)  originalVal = val;
-                  break;
-                case undefined:
-                  if (val === '' || val === null) originalVal = val;
-                  break;
-                case null:
-                  if (val === '' || val === undefined) originalVal = val;
-                  break;
-                default:
-                  break;
-              }
-
-              // check whether the value changed
-              let valChanged = val instanceof Date ? val.getTime() !== originalVal.getTime() : originalVal !== val;
-              if (valChanged) {
-                editsToCommit.set(params.row.id, params.row);
-                anyValChanged = true;
-              }
-            }
-
-            // check whether the data was restored to its original state, in which case it can be dropped from
-            // the edit model (this way it is no longer highlighted in the table)
-            if (!anyValChanged) editsToCommit.delete(params.row.id);
-
-
-          } else {
-            // fallback, but we should never get here unless there was a bug, so we should log it
-            editsToCommit.set(params.row.id, params.row);
-            console.warn('row being edited was never saved to originalRowStates');
-          }
+        onRowEditStop={(_, event) => {
+          event.defaultMuiPrevented = true;
         }}
-        checkboxSelection // populate checkboxes
-        selectionModel={selectedRows}
-        onSelectionModelChange={(newSelectedRows) => setSelectedRows(newSelectedRows)}
+        onCellFocusOut={(_, event) => {
+          event.defaultMuiPrevented = true;
+        }}
 
         // prop overrides
         components={{
@@ -228,8 +210,21 @@ export default function DataTable({
 
       { searchPanelOpen &&
         <Container className={"entityFormContainer"}>
-          <SearchForm columns={columns} setSearchParameters={setSearchParameters} />
+          <SearchForm
+            columns={columnData}
+            setSearchParameters={setSearchParameters}
+          />
         </Container>
+      }
+
+      { editPanelOpen &&
+      <Container className={"entityFormContainer"}>
+        <UpdateForm
+          columns={columnData}
+          updateParameters={updateParameters}
+          setUpdateParameter={setUpdateParameters}
+        />
+      </Container>
       }
     </div>
     </>

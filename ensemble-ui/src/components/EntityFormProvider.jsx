@@ -1,13 +1,14 @@
 import React from "react";
-import ConcertCyclesForm from "./forms/ConcertCyclesForm";
-import InstrumentsForm from "./forms/InstrumentsForm";
-import MusiciansForm from "./forms/MusiciansForm";
-import PiecesForm from "./forms/PiecesForm"
-import ServicesForm from "./forms/ServicesForm"
-import VenuesForm from "./forms/VenuesForm";
-import MusiciansInstrumentsForm from "./forms/MusiciansInstrumentsForm";
-import MusiciansConcertCyclesForm from "./forms/MusiciansConcertCyclesForm";
-import PiecesConcertCyclesForm from "./forms/PiecesConcertCyclesForm";
+
+import ConcertCyclesForm from "./AddForms/ConcertCyclesForm";
+import InstrumentsForm from "./AddForms/InstrumentsForm";
+import MusiciansForm from "./AddForms/MusiciansForm";
+import PiecesForm from "./AddForms/PiecesForm"
+import ServicesForm from "./AddForms/ServicesForm"
+import VenuesForm from "./AddForms/VenuesForm";
+import MusiciansInstrumentsForm from "./AddForms/MusiciansInstrumentsForm";
+import MusiciansConcertCyclesForm from "./AddForms/MusiciansConcertCyclesForm";
+import PiecesConcertCyclesForm from "./AddForms/PiecesConcertCyclesForm";
 
 
 export default function EntityForm({entityName}){

@@ -8,21 +8,23 @@ export default function EntityPage({ match }) {
     params: { entityName },
   } = match;
 
-  // state hook to set the display state of the entity form
-  const [entityFormOpen, setEntityFormOpen] = useState(false);
-  const entityFormToggle = (newState) => {
-    setEntityFormOpen(newState === undefined ? !entityFormOpen : newState);
-  }
+  /* -------------------------------- State Hooks -------------------------------- */
+
+  // display state for entity form
+  const [createFormOpen, setCreateFormOpen] = useState(false);
+  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
+
+  //
 
   return (
     <>
       <h1>{entityName}</h1>
      
       <Container>
-        <DataTableProvider entityName={entityName} entityFormToggle={entityFormToggle}/>
+        <DataTableProvider entityName={entityName} createFormToggle={createFormToggle}/>
       </Container>
 
-      { entityFormOpen &&
+      { createFormOpen &&
         <>
           <Container className={"entityFormContainer"}>
             <EntityFormProvider entityName={entityName} />
