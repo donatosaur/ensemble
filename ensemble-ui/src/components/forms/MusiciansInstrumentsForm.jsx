@@ -11,12 +11,12 @@ export default function MusiciansInstrumentsForm() {
       <Row className="entityForm">
         <Form.Group as={Col} controlId="musicianID">
           <FloatingLabel controlId="musicianID" label="Musician ID">
-            <Form.Control type="text" placeholder="Enter Musician ID" />
+            <Form.Control required type="text" placeholder="Enter Musician ID" />
           </FloatingLabel>
         </Form.Group>
         <Form.Group as={Col} controlId="instrumentID">
           <FloatingLabel controlId="instrumentID" label="Instrument ID">
-            <Form.Control type="text" placeholder="Enter Instrument ID" />
+            <Form.Control required type="text" placeholder="Enter Instrument ID" />
           </FloatingLabel>
         </Form.Group>
       </Row>

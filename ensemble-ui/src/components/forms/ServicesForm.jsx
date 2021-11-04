@@ -23,7 +23,7 @@ export default function ServicesForm(){
 
           <Form.Group as={Col} controlId="concertID">
             <FloatingLabel controlId="concertID" label="Concert ID">
-              <Form.Control type="text" placeholder="Enter Concert ID" />
+              <Form.Control required type="text" placeholder="Enter Concert ID" />
             </FloatingLabel>
           </Form.Group>
         </Row>
@@ -38,14 +38,14 @@ export default function ServicesForm(){
           <Form.Group as={Col} controlId="startTime">
             {/*<FloatingLabel controlId="startTime" label="Start Date/Time">*/}
             <Form.Label>Start Date/Time</Form.Label>
-              <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+              <Datetime inputProps={{required:true}} dateFormat="YYYY-MM-DD" timeFormat={true} />
             {/*</FloatingLabel>*/}
           </Form.Group>
 
           <Form.Group as={Col} controlId="endTime">
             {/*<FloatingLabel controlId="endTime" label="End Date/Time">*/}
             <Form.Label>End Date/Time</Form.Label>
-              <Datetime dateFormat="YYYY-MM-DD" timeFormat={true} />
+              <Datetime inputProps={{required:true}} dateFormat="YYYY-MM-DD" timeFormat={true} />
             {/*</FloatingLabel>*/}
         </Form.Group>
 
