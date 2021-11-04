@@ -18,19 +18,19 @@ export default function ConcertCyclesForm() {
 
         <Form.Group as={Col} controlId="concertTitle">
           <FloatingLabel controlId="concertTitle" label="Concert Title">
-            <Form.Control type="text" placeholder="Enter Concert Title" />
+            <Form.Control required type="text" placeholder="Enter Concert Title" />
           </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="startDate">
           <FloatingLabel controlId="startDate" label="Start Date">
-            <Form.Control type="date" />
+            <Form.Control required type="date" />
           </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="endDate">
           <FloatingLabel controlId="endDate" label="End Date">
-            <Form.Control type="date" />
+            <Form.Control required type="date" />
           </FloatingLabel>
         </Form.Group>
       </Row>
@@ -38,13 +38,13 @@ export default function ConcertCyclesForm() {
       <Row className="entityForm">
         <Form.Group as={Col} controlId="conductorFirstName">
           <FloatingLabel controlId="conductorFirstName" label="Conductor First Name">
-            <Form.Control type="text" placeholder="Enter Conductor's First Name" />
+            <Form.Control required type="text" placeholder="Enter Conductor's First Name" />
           </FloatingLabel>
         </Form.Group>
 
         <Form.Group as={Col} controlId="conductorLastName">
           <FloatingLabel controlId="conductorFirstName" label="Conductor Last Name">
-            <Form.Control type="text" placeholder="Enter Conductor's Last Name" />
+            <Form.Control required type="text" placeholder="Enter Conductor's Last Name" />
           </FloatingLabel>
         </Form.Group>
       </Row>

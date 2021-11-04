@@ -17,7 +17,7 @@ export default function InstrumentsForm() {
 
         <Form.Group as={Col} controlId="instrumentName">
         <FloatingLabel controlId="instrumentName" label="Name">
-            <Form.Control type="text" placeholder="Enter Instrument Name" />
+            <Form.Control required type="text" placeholder="Enter Instrument Name" />
           </FloatingLabel>
         </Form.Group>
       </Row>

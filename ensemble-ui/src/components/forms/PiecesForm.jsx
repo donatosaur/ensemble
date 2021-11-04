@@ -19,7 +19,7 @@ export default function PiecesForm(){
   
           <Form.Group as={Col} controlId="pieceTitle">
             <FloatingLabel controlId="pieceTitle" label="Piece Title">
-              <Form.Control type="text" placeholder="Enter Piece Title" />
+              <Form.Control required type="text" placeholder="Enter Piece Title" />
             </FloatingLabel>
           </Form.Group>
         </Row>
@@ -28,13 +28,13 @@ export default function PiecesForm(){
       <Row className="entityForm">
         <Form.Group as={Col} controlId="composerFirstName">
           <FloatingLabel controlId="composerFirstName" label="Composer First Name">
-            <Form.Control type="text" placeholder="Enter Composer's First Name" />
+            <Form.Control required type="text" placeholder="Enter Composer's First Name" />
           </FloatingLabel>
           </Form.Group>
   
           <Form.Group as={Col} controlId="composerLastName">
             <FloatingLabel controlId="composerLastName" label="Composer Last Name">
-              <Form.Control type="text" placeholder="Enter Composer's Last Name" />
+              <Form.Control required type="text" placeholder="Enter Composer's Last Name" />
             </FloatingLabel>
           </Form.Group>
       </Row>
@@ -57,7 +57,7 @@ export default function PiecesForm(){
       <Row className= "entityForm">
         <Form.Group as={Col} controlId="instrumentation">
           <FloatingLabel controlId="instrumentation" label="Instrumentation">
-            <Form.Control as="textarea" type="text" placeholder="Instrumentation" />
+            <Form.Control required as="textarea" type="text" placeholder="Instrumentation" />
           </FloatingLabel>
         </Form.Group>
       </Row>
