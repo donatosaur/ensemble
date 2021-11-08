@@ -28,26 +28,23 @@ export default function HelpButton() {
         <Container className="toolbarPopoverContainer">
         {/* Add */}
         <p>
-          <strong>To add a row</strong>, click "Add New" to toggle the form.
+          <strong>To add a row</strong>, press the <em><i className="bi bi-plus-lg" /> Add New</em> toolbar button
+          to toggle a form.
         </p>
         {/* Edit/Update */}
         <p>
-          <strong>To edit a row</strong>, double click on it, or click and press "Enter." If any values have
-          been changed, the row's color will change and its values will appear italic. (<em>Note:</em> row 
-          ids are read-only.)
-          <br />
-        </p>  
-        <p>
-          <strong>To commit edits</strong>, select the rows you want updated. Then, press "Commit Selected Rows"
-        </p>
-        {/* Search */}
-        <p>
-          <strong>To search</strong>, click "Search" to toggle the search panel (currently only available
-          for <em>Musicians</em>).
+          <strong>To edit a row</strong>, press the <em><i className="bi bi-pencil-fill" /> Edit</em> button in the actions column of
+          the row you wish to edit. If you don't see it, scroll right. This will toggle a form.
         </p>
         {/* Delete */}
         <p>
-          <strong>To delete a row</strong>, select it. Then, press "Delete Selected."
+          <strong>To delete a row</strong>, press the <em><i className="bi bi-trash-fill" /> Delete</em> button in the actions column
+          of the row you wish to delete. If you don't see it, scroll right.
+        </p>
+        {/* Search */}
+        <p>
+          <strong>To search</strong>, press the <em><i className="bi bi-search" /> Search</em> toolbar button to
+          toggle the search form. This is currently only available for <em>Musicians</em>.
         </p>
         </Container>
       </Popover>

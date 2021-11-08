@@ -138,54 +138,44 @@ const entityDemoDataMap = new Map([
    ["ConcertCycles", [
     {
        id: 1,
-       concertTitle: "Concert 1",
-       startDate: "YYYY-MM-DD",
-       endDate: "YYYY-MM-DD",
-       conductorFirstName: "Name",
-       conductorLastName: "Name",
-       soloistFirstName: "Name",
-       soloistLastName: "Name"
+       concertTitle: "New Year's Concert",
+       startDate: new Date(2021, 11, 30),
+       endDate: new Date(2022, 0, 2),
+       conductorFirstName: "Emma",
+       conductorLastName: "Millstein",
+       soloistFirstName: "Vita",
+       soloistLastName: "Clotilde"
      },
      {
        id: 2,
-       concertTitle: "Concert 2",
-       startDate: "YYYY-MM-DD",
-       endDate: "YYYY-MM-DD",
-       conductorFirstName: "Name",
-       conductorLastName: "Name",
-       soloistFirstName: "Name",
-       soloistLastName: "Name"
+       concertTitle: "Soaring with the Wind",
+       startDate: new Date(2022, 0, 18),
+       endDate: new Date(2022, 0, 25),
+       conductorFirstName: "Estelle",
+       conductorLastName: "Bright",
+       soloistFirstName: "Tita",
+       soloistLastName: "Russell"
      },
      {
        id: 4,
-       concertTitle: "Concert 4",
-       startDate: "YYYY-MM-DD",
-       endDate: "YYYY-MM-DD",
-       conductorFirstName: "Name",
-       conductorLastName: "Name",
-       soloistFirstName: "Name",
-       soloistLastName: "Name"
+       concertTitle: "Journey to Arteria",
+       startDate: new Date(2022, 4, 18),
+       endDate: new Date(2022, 5, 25),
+       conductorFirstName: "Kevin",
+       conductorLastName: "Graham",
+       soloistFirstName: null,
+       soloistLastName: null
      },
      {
-       id: 5,
-       concertTitle: "Concert 5",
-       startDate: "YYYY-MM-DD",
-       endDate: "YYYY-MM-DD",
-       conductorFirstName: "Name",
-       conductorLastName: "Name",
-       soloistFirstName: "Name",
-       soloistLastName: "Name"
-     },
-     {
-      id: 30,
-      concertTitle: "Concert 3",
-      startDate: "YYYY-MM-DD",
-      endDate: "YYYY-MM-DD",
-      conductorFirstName: "Name",
-      conductorLastName: "Name",
-      soloistFirstName: "Name",
-      soloistLastName: "Name"
-    }
+       id: 18,
+       concertTitle: "Bardic Masterpieces",
+       startDate: new Date(2022, 3, 18),
+       endDate: new Date(2022, 6, 25),
+       conductorFirstName: "Olivier",
+       conductorLastName: "Lenheim",
+       soloistFirstName: null,
+       soloistLastName: null
+     }
    ]],
    ["Services", [
     //  { field: "id", headerName: "ID", flex: 0, width: 90, editable: false },
