@@ -1,7 +1,7 @@
 {
   "Musicians": {
     "description": "records the details and contact records of all musicians contracted for service by the orchestra",
-    "fields:": [
+    "fields": [
       { "field": "id", "headerName": "ID", "width": 90, "editable": false },
       { "field": "firstName", "headerName": "First Name", "minWidth": 180, "editable": true },
       { "field": "lastName", "headerName": "Last Name", "minWidth": 180, "editable": true },

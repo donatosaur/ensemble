@@ -13,7 +13,6 @@ export default function HelpButton() {
         variant="text"
         color="primary"
         size="small"
-        aria-label="Help"
         onClick={(event) => setAnchorEl(event.currentTarget)}
       >
         <i className="bi bi-question-circle-fill" />

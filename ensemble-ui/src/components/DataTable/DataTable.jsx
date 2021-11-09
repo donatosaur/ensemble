@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-import React, {useEffect, useMemo, useState} from "react";
-import  {DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
+import React, {useContext, useEffect, useMemo, useState } from "react";
+import {DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
 import { Container } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core";
 
@@ -13,9 +12,7 @@ import AddButton from "./ToolbarButtons/AddButton";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 
-// forms
-import SearchForm from "../SearchForms/SearchForm";
-import UpdateForm from "../EditForms/UpdateForm";
+import { EntityDispatchContext } from "../EntityContextProvider";
 
 import { cloneDeep } from "lodash";
 
@@ -25,10 +22,8 @@ import { cloneDeep } from "lodash";
  *
  * @param columnData {array} an array of columns, formatted to MUI spec ()
  * @param fetchRows  a function that calls the api to fetch rows (SELECT -> GET)
- * @param onCreate a function that calls the api when a row is added (INSERT -> POST)
- * @param onUpdate a function that calls the api to update a row (UPDATE -> PUT)
- * @param onDelete a function that calls the api to delete a row (DELETE -> DELETE)
  * @param createFormToggle a function that toggles the display state of the EntityForm
+ * @param editFormToggle a function that toggles the display state of the EntityForm
  * @param isSearchImplemented {boolean} whether search is enabled for this table
  * @returns {JSX.Element}
  * @constructor
@@ -36,27 +31,25 @@ import { cloneDeep } from "lodash";
 export default function DataTable({
   columnData,
   fetchRows,
-  onCreate,
-  onUpdate,
-  onDelete,
   createFormToggle,
+  editFormToggle,
   isSearchImplemented,
 }) {
   /* ------------------------------ State Hooks ------------------------------ */
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
-  const [editPanelOpen, setEditPanelOpen] = useState(false);
+  /* eslint-disable no-unused-vars */
   const [searchParameters, setSearchParameters] = useState({});
-  const [updateParameters, setUpdateParameters] = useState({});
   const [alertContent, setAlertContent] = useState(null);
 
   // data model
   const [fetchNewData, setFetchNewData] = useState(true);
   const [rows, setRows] = useState([]);
 
+  const dispatch = useContext(EntityDispatchContext);
 
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    if (!fetchNewData) return;
+    if (!fetchNewData) return; // prevent infinite data fetching
 
     const abortController = new AbortController();
     void async function getData() {
@@ -74,7 +67,7 @@ export default function DataTable({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchNewData]);
 
-  /* ------------------------------ Column Hooks ------------------------------ */
+  /* -------------------------------- Columns -------------------------------- */
   const columns = useMemo(() => [
       ...columnData.map(
         column => ({
@@ -103,20 +96,22 @@ export default function DataTable({
                     console.error('Edit button pressed, but row not found!')
                   }
 
-                  setUpdateParameters(cloneDeep(rows[rowIndex]));
+                  // get a deep copy so we don't inadvertently modify the original row data and
+                  // send it up to the context provider
+                  dispatch(cloneDeep(rows[rowIndex]));
+                  console.log('Dispatching...', rows[rowIndex])
 
                   // only one form should be open at a time
-                  setEditPanelOpen(true);
+                  editFormToggle(true);
                   setSearchPanelOpen(false);
                   createFormToggle(false);
-                }
-                }/>
+                }}
+              />
 
               <DeleteButton
                 onClick={() => {
                   // display a popup, ask the user to confirm the delete
                   alert(`This is a placeholder. Deleting entity with id ${params.id.toString()}`);
-                  onDelete();
                 }}
               />
             </>
@@ -124,7 +119,7 @@ export default function DataTable({
         }
       },
     ],
-    [columnData, createFormToggle, onDelete, rows]
+    [columnData, createFormToggle, editFormToggle, dispatch, rows]
   );
 
 
@@ -133,13 +128,14 @@ export default function DataTable({
     const onAddButtonClick = (event) => {
       event.preventDefault();
       createFormToggle();
+      editFormToggle(false);
       setSearchPanelOpen(false);  // only one form panel open at a time
-      setEditPanelOpen(false);
     }
     const onSearchButtonClick = (event) => {
       event.preventDefault();
-      createFormToggle(false);  // only one form panel open at a time
       setSearchPanelOpen(!searchPanelOpen);
+      createFormToggle(false);
+      editFormToggle(false);  // only one form panel open at a time
     }
 
     return (
@@ -172,10 +168,10 @@ export default function DataTable({
   /* ---------------------------- Data Table JSX Element ---------------------------- */
   return (
     <>
-    <div style={{ height: 500, width: '100%' }} className={classes.root}>
+    <div style={{ height: 500}} className={classes.root}>
       <DataGrid
         // style
-        disableSelectionOnClick // make users actually click the checkbox to select a row
+        disableSelectionOnClick // don't allow users to select rows
 
         // pagination options
         autoPageSize
@@ -190,7 +186,7 @@ export default function DataTable({
         rows={rows}
         columns={columns}
 
-        // row edit options: disable inline editing
+        // row edit options: disable inline editing; we need to implement this ourselves
         editMode="row"
         onRowEditStart={(_, event) => {
           event.defaultMuiPrevented = true;
@@ -210,22 +206,14 @@ export default function DataTable({
 
       { searchPanelOpen &&
         <Container className={"entityFormContainer"}>
-          <SearchForm
-            columns={columnData}
-            setSearchParameters={setSearchParameters}
-          />
+          <p>Search form placeholder</p>
+          {/*<SearchForm*/}
+          {/*  columns={columnData}*/}
+          {/*  setSearchParameters={setSearchParameters}*/}
+          {/*/>*/}
         </Container>
       }
 
-      { editPanelOpen &&
-      <Container className={"entityFormContainer"}>
-        <UpdateForm
-          columns={columnData}
-          updateParameters={updateParameters}
-          setUpdateParameter={setUpdateParameters}
-        />
-      </Container>
-      }
     </div>
     </>
   );

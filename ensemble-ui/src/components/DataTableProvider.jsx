@@ -1,33 +1,31 @@
 import React from "react";
 import DataTable from "./DataTable/DataTable";
-import entityColumnMap from "../data/entityColumnMap";
+import entityConfig from "../data/entityConfig.json"
 import entityDemoDataMap from "../data/entityDemoDataMap";
 
 
 /**
- * Provides a DataTable for a specified Entity
+ * Provides a DataTable for the specified Entity
  *
  * @param entityName the entity for which the DataTable should be provided
  * @param createFormToggle a function that toggles the display state of the entity page's create form
+ * @param editFormToggle a function that toggles the display state of the entity page's edit form
+ * @param dispatchEntity reducer used to update entity form data
  * @returns {JSX.Element|null} JSX.Element if the entity has all the required properties
  * @constructor
  */
-export default function DataTableProvider({entityName, createFormToggle}){
-
+export default function DataTableProvider({entityName, createFormToggle, editFormToggle, dispatchEntity}){
   // get the column definitions
-  let columns = entityColumnMap.has(entityName) ? entityColumnMap.get(entityName) : null;
+  const columns = entityConfig[entityName] !== undefined ? entityConfig[entityName]['fields'] : null;
 
-  // todo: placeholder: get the appropriate function; for now, these do nothing
-  let fetchRows = async () => {
-    return entityDemoDataMap.has(entityName) ? entityDemoDataMap.get(entityName) : []
+  // placeholder: todo get the appropriate functions for the entity
+  const fetchRows = async () => {
+    return entityDemoDataMap.has(entityName) ? entityDemoDataMap.get(entityName) : [];
   };
-  let onCreate = () => {};
-  let onUpdate = () => {};
-  let onDelete  = () => {};
 
-  // if the entity is undefined or something is missing, log an error instead of returning the component
-  if (columns === null || fetchRows === null || onCreate === null || onUpdate === null || onDelete === null) {
-    console.log("Error: missing entity data")
+  // placeholder: todo prevent table generation if the entity is undefined or missing
+  if (columns === null || fetchRows === null) {
+    console.error("Error: missing entity data");
     return null;
   }
 
@@ -35,10 +33,8 @@ export default function DataTableProvider({entityName, createFormToggle}){
    <DataTable
      columnData={columns}
      fetchRows={fetchRows}
-     onCreate={onCreate}
-     onUpdate={onUpdate}
-     onDelete={onDelete}
      createFormToggle={createFormToggle}
+     editFormToggle={editFormToggle}
      isSearchImplemented={entityName === 'Musicians'}
    />
   );

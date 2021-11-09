@@ -22,7 +22,7 @@ CREATE TABLE musicians (
     lastName VARCHAR(50) NOT NULL,
     birthdate DATE NOT NULL,
     email VARCHAR(100),
-    phoneNumber INT(9) ZEROFILL NOT NULL,
+    phoneNumber INT(9) UNSIGNED,
     street VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state CHAR(2) NOT NULL,
