@@ -1,7 +1,7 @@
 import './scss/app.scss'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
-// import pages
+// pages
 import HomePage from './pages/HomePage';
 import NavigationBar from './components/NavigationBar';
 import MusiciansPage from "./pages/MusiciansPage";
@@ -32,7 +32,6 @@ function App() {
       <Route path="/MusiciansInstruments" component={MusiciansInstrumentsPage}/>
       <Route path="/MusiciansConcertCycles" component={MusiciansConcertCyclesPage}/>
       <Route path="/PiecesConcertCycles" component={PiecesConcertCyclesPage}/>
-
     </Router>
   );
 }

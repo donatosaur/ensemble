@@ -1,9 +1,6 @@
 import React, { useContext } from "react";
 import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
-import Datetime from 'react-datetime';
-
-import "react-datetime/css/react-datetime.css";
 
 
 /**
@@ -74,29 +71,40 @@ export default function ServicesForm({ showID, onSubmit, formLabel, buttonLabel 
 
         <Row className="entityForm">
           <Form.Group as={Col} controlId="startTime">
-            {/*<FloatingLabel controlId="startTime" label="Start Date/Time">*/}
-            <Form.Label>Start Date/Time</Form.Label>
-              <Datetime
-                inputProps={{required:true}}
-                dateFormat="YYYY-MM-DD"
-                timeFormat={true}
-                value={service['startTime']}
-                onChange={handleOnChange}
-              />
-            {/*</FloatingLabel>*/}
+            <FloatingLabel controlId="startTime" label="Start Date/Time">
+            <Form.Control
+              type="text"
+              placeholder="Enter Start Time"
+              value={service['startTime']}
+              onChange={handleOnChange}
+            />
+            {/*<Form.Label>Start Date/Time</Form.Label>*/}
+            {/*  <Datetime*/}
+            {/*    inputProps={{required:true}}*/}
+            {/*    dateFormat="YYYY-MM-DD"*/}
+            {/*    timeFormat={true}*/}
+            {/*    value={service['startTime']}*/}
+            {/*    onChange={handleOnChange}*/}
+            {/*  />*/}
+            </FloatingLabel>
           </Form.Group>
 
           <Form.Group as={Col} controlId="endTime">
-            {/*<FloatingLabel controlId="endTime" label="End Date/Time">*/}
-            <Form.Label>End Date/Time</Form.Label>
-              <Datetime
-                inputProps={{required:true}}
-                dateFormat="YYYY-MM-DD"
-                timeFormat={true}
+            <FloatingLabel controlId="endTime" label="End Date/Time">
+              <Form.Control
+                type="text"
+                placeholder="Enter End Time"
                 value={service['endTime']}
-
+                onChange={handleOnChange}
               />
-            {/*</FloatingLabel>*/}
+              {/*<Form.Label>End Date/Time</Form.Label>*/}
+            {/*<Datetime*/}
+              {/*  inputProps={{required:true}}*/}
+              {/*  dateFormat="YYYY-MM-DD"*/}
+              {/*  timeFormat={true}*/}
+              {/*  value={service['endTime']}*/}
+              {/*/>*/}
+            </FloatingLabel>
         </Form.Group>
 
         <Col>

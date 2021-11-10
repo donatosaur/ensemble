@@ -12,11 +12,12 @@ const states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA'
 export default function StateOptions() {
   return(
     <>
-      <option>Select a state...</option>
+      {/* length will be one more than the maximum index, so it won't be a key for any other options */}
+      <option key={states.length}>Select a state...</option>
     {
-    states.map(
-      stateAbbreviation => <option value={stateAbbreviation} children={stateAbbreviation}/>
-    )}
+    states.map( (stateAbbreviation, index) => (
+        <option key={index} value={stateAbbreviation} children={stateAbbreviation}/>
+    ))}
     </>
   );
 }

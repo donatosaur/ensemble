@@ -4,14 +4,13 @@ import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 /**
  *
- * @param showID {boolean} true to show a (disabled) ID field; false to hide it
  * @param onSubmit {function(): void} handler for button click
  * @param formLabel a short text description for the form
  * @param buttonLabel text to display on the form button
  * @returns {JSX.Element}
  * @constructor
  */
-export default function PiecesConcertCyclesForm({ showID, onSubmit, formLabel, buttonLabel }){
+export default function PiecesConcertCyclesForm({ onSubmit, formLabel, buttonLabel }){
   // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const piecesConcertCycles = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
