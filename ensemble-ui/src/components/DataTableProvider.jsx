@@ -10,11 +10,10 @@ import entityDemoDataMap from "../data/entityDemoDataMap";
  * @param entityName the entity for which the DataTable should be provided
  * @param createFormToggle a function that toggles the display state of the entity page's create form
  * @param editFormToggle a function that toggles the display state of the entity page's edit form
- * @param dispatchEntity reducer used to update entity form data
  * @returns {JSX.Element|null} JSX.Element if the entity has all the required properties
  * @constructor
  */
-export default function DataTableProvider({entityName, createFormToggle, editFormToggle, dispatchEntity}){
+export default function DataTableProvider({entityName, createFormToggle, editFormToggle}){
   // get the column definitions
   const columns = entityConfig[entityName] !== undefined ? entityConfig[entityName]['fields'] : null;
 
@@ -35,7 +34,14 @@ export default function DataTableProvider({entityName, createFormToggle, editFor
      fetchRows={fetchRows}
      createFormToggle={createFormToggle}
      editFormToggle={editFormToggle}
-     isSearchImplemented={entityName === 'Musicians'}
+     allowSearch={
+       entityName === 'Musicians'
+     }
+     allowEdit={
+       entityName !== 'MusiciansConcertCycles'
+       && entityName !== 'MusiciansInstruments'
+       && entityName !== 'PiecesConcertCycles'
+     }
    />
   );
 }

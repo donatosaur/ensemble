@@ -6,8 +6,7 @@ export default function EditButton({ onClick }) {
     <>
       <Button
         className="actionButton"
-        variant="outline-dark"
-        color="primary"
+        variant="outline-secondary"
         aria-label="Edit"
         onClick={onClick}
       >

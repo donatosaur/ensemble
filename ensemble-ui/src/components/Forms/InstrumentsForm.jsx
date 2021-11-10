@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
+import { Form, Row, Col, Button, FloatingLabel, InputGroup } from "react-bootstrap";
 import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
 
 
@@ -18,7 +18,7 @@ export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLab
   const dispatch = useContext(EntityDispatchContext);
 
   const handleOnChange = (event) => {
-    // slot the new value into the piece state
+    // slot the new value into the state
     dispatch({[event.target.id]: event.target.value});
   }
 
@@ -34,7 +34,9 @@ export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLab
         <Form.Label children={formLabel} />
       </Row>
 
-      <Row className="entityForm">
+
+      <InputGroup as={Row} hasValidation>
+
 
       { showID &&
         <Form.Group as={Col} controlId="instrumentID">
@@ -48,18 +50,26 @@ export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLab
         </Form.Group>
       }
 
+        
         <Form.Group as={Col} controlId="name">
         <FloatingLabel controlId="name" label="Instrument Name">
             <Form.Control
               required
               type="text"
               placeholder="Enter Instrument Name"
+              isInvalid={instrument['name'] === ''}
               value={instrument['name']}
               onChange={handleOnChange}
+              
             />
+            <Form.Control.Feedback type="invalid">
+              Please choose a name.
+          </Form.Control.Feedback>
           </FloatingLabel>
         </Form.Group>
-      </Row>
+       
+       </InputGroup>
+
 
       <Button className="formButton" variant="primary" type="submit" onClick={handleOnSubmit}>
         {buttonLabel || 'Submit'}

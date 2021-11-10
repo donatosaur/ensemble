@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
-import StateOptions from "../StateOptions";
+
 import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
+import StateOptions from "./FormComponents/StateOptions";
 
 
 /**
@@ -23,12 +24,17 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
     dispatch({[event.target.id]: event.target.value});
   }
 
+  const handleOnCheckboxChange = (event) => {
+    dispatch({[event.target.id]: event.target.checked});
+  }
+
   const handleOnSubmit = (event) => {
     event.preventDefault();
     alert(JSON.stringify(musician));
   }
 
   return (
+    
     <Form>
       <Row className="entityForm">
         <Form.Label children={formLabel} />
@@ -127,20 +133,20 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         </Form.Group>
 
         <Col>
-        <Form.Group  className="entityFormCheckbox" controlId="inEnsemble">
+        <Form.Group className="entityFormCheckbox" controlId="inEnsemble">
           <Form.Check
             type="checkbox"
             label="Ensemble?"
-            value={musician['inEnsemble']}
-            onChange={handleOnChange}
+            checked={musician['inEnsemble']}
+            onChange={(handleOnCheckboxChange)}
           />
         </Form.Group>
         <Form.Group className="entityFormCheckbox" controlId="active">
           <Form.Check
             type="checkbox"
             label="Active?"
-            value={musician['active']}
-            onChange={handleOnChange}
+            checked={musician['active']}
+            onChange={handleOnCheckboxChange}
           />
         </Form.Group>
         </Col>

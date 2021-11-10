@@ -6,12 +6,11 @@ export default function DeleteButton({ onClick }) {
     <>
       <Button
         className="actionButton"
-        variant="outline-dark"
-        color="primary"
+        variant="outline-secondary"
         aria-label="Delete"
         onClick={onClick}
       >
-        <i className="bi bi-trash-fill" />
+        <i className="bi bi-trash" />
       </Button>
     </>
   );
