@@ -78,14 +78,6 @@ export default function ServicesForm({ showID, onSubmit, formLabel, buttonLabel 
               value={service['startTime']}
               onChange={handleOnChange}
             />
-            {/*<Form.Label>Start Date/Time</Form.Label>*/}
-            {/*  <Datetime*/}
-            {/*    inputProps={{required:true}}*/}
-            {/*    dateFormat="YYYY-MM-DD"*/}
-            {/*    timeFormat={true}*/}
-            {/*    value={service['startTime']}*/}
-            {/*    onChange={handleOnChange}*/}
-            {/*  />*/}
             </FloatingLabel>
           </Form.Group>
 
