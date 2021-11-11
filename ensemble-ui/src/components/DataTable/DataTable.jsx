@@ -20,6 +20,10 @@ import { EntityDispatchContext } from "../EntityContextProvider";
 // custom data type formatters
 import customDataTypes from "./CustomFormats";
 
+// search form for enabled entities
+import MusicianSearchForm from "./SearchForm";
+
+
 
 /**
  * Creates a MUI Data Grid for an Entity using the passed in props
@@ -48,16 +52,17 @@ export default function DataTable({
   // state hook for delete confirmation; *null* this to turn off the dialog box
   const [deleteRowID, setDeleteRowID] = useState(null);
 
-
-  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
   /* eslint-disable no-unused-vars */
+  // state and reducer hooks for search panels
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
   const [searchParameters, setSearchParameters] = useState({});
-  const [alertContent, setAlertContent] = useState(null);
-
 
   // data model
   const [fetchNewData, setFetchNewData] = useState(true);
   const [rows, setRows] = useState([]);
+
+  // error model
+  const [alertContent, setAlertContent] = useState(null);
 
 
 
@@ -253,14 +258,16 @@ export default function DataTable({
 
       <DeleteConfirmation />
 
-      { searchPanelOpen &&
-        <Container className={"entityFormContainer"}>
-          <p>Search form placeholder</p>
-          {/*<SearchForm*/}
-          {/*  columns={columnData}*/}
-          {/*  setSearchParameters={setSearchParameters}*/}
-          {/*/>*/}
-        </Container>
+      { allowSearch
+        ? searchPanelOpen &&
+          <Container className="entityFormContainer">
+            <MusicianSearchForm
+              setSearchParameter={columnData}
+              dispatch={setSearchParameters}
+            />
+          </Container>
+        // this shouldn't ever display, but it's here for safety
+        : <p>Search is disabled for this entity.</p>
       }
 
     </div>
