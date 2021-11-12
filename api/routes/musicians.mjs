@@ -19,21 +19,21 @@ musicians.post("/", async function (req, res) {
     // const createQuery = `INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, state, zip, inEnsemble, active) VALUES (${queryObj.firstName}, ${queryObj.lastName}, ${queryObj.birthdate}, ${queryObj.email}, ${queryObj.phoneNumber}, ${queryObj.street}, ${queryObj.city}, ${queryObj.state}, ${queryObj.zip}, ${queryObj.inEnsemble}, ${queryObj.active});`
     const createQuery =
       "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, state, zip, inEnsemble, active) VALUES (?, ?, ? ,? ,?, ?, ?, ?, ?, ?, ?);";
-    // const fields = [
-    //   queryObj.firstName,
-    //   queryObj.lastName,
-    //   queryObj.birthdate,
-    //   queryObj.email,
-    //   queryObj.phoneNumber,
-    //   queryObj.street,
-    //   queryObj.city,
-    //   queryObj.state,
-    //   queryObj.zip,
-    //   queryObj.inEnsemble,
-    //   queryObj.active,
-    // ];
-    // refactored
-    const fields=Object.values(req.body)
+    const fields = [
+      queryObj.firstName,
+      queryObj.lastName,
+      queryObj.birthdate,
+      queryObj.email,
+      queryObj.phoneNumber,
+      queryObj.street,
+      queryObj.city,
+      queryObj.state,
+      queryObj.zip,
+      queryObj.inEnsemble,
+      queryObj.active,
+    ];
+    // could refactor, depends what order sent from front end
+    // const fields=Object.values(req.body)
     // create the musician
     await db.execute(createQuery, fields);
     // get all the musicians (not sure how we should handle this/if we want just the row affected)

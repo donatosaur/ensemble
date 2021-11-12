@@ -1,26 +1,26 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
 
-let venues = express.Router();
+let instruments = express.Router();
 
-// POST /api/Venues/ (create)
-// GET /api/Venues/ (get all)
-// PUT /api/Venues/:id (update)
-// DELETE /api/Venues/:id (delete)
+// POST /api/Instruments/ (create)
+// GET /api/Instruments/ (get all)
+// PUT /api/Instruments/:id (update)
+// DELETE /api/Instruments/:id (delete)
 
 // CREATE
-venues.post("/", async function (req, res) {
+instruments.post("/", async function (req, res) {
   // request parameter
   const queryObj = req.body;
+
   // Execute query async
   try {
-    const createQuery =
-      "INSERT INTO Venues (capacity, name, street, city, state, zip) VALUES (?, ?, ?, ?, ?, ?);";
-    const fields=Object.values(queryObj)
-
-    await db.execute(createQuery, fields);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
-    res.send(results);
+    const createQuery ="INSERT INTO Instruments (name) VALUES (?);"
+    // create the musician
+    await db.execute(createQuery, [queryObj.name]);
+    // get all the musicians (not sure how we should handle this/if we want just the row affected)
+    let [results, rows] = await db.query("SELECT * FROM Instruments")
+    res.send(results)
 
     // Log error if table doesn't exist, connection problem, etc
   } catch (error) {
@@ -34,26 +34,20 @@ venues.post("/", async function (req, res) {
 // READ is universal for all entities (located in app.mjs)
 
 // UPDATE
-venues.put("/:id", async function (req, res) {
+instruments.put("/:id", async function (req, res) {
   // request parameter
   const queryObj = req.body;
   // Execute query async
   try {
-    const updateQuery ="UPDATE Venues SET capacity = ?, name = ?, street = ?, city = ?, state = ?, zip = ? WHERE venueID = ?;"
-
+    const updateQuery = "UPDATE Instruments SET name = ? WHERE instrumentID = ?;"
+      
     const fields = [
-      queryObj.capacity,
       queryObj.name,
-      queryObj.street,
-      queryObj.city,
-      queryObj.state,
-      queryObj.zip,
-      req.params.id,
+      req.params.id
     ];
-
     await db.execute(updateQuery, fields);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
-    res.send(results);
+    let [results, rows] = await db.query("SELECT * FROM Instruments")
+    res.send(results)
     // Log error if table doesn't exist, connection problem, etc
   } catch (error) {
     console.log(error);
@@ -63,14 +57,14 @@ venues.put("/:id", async function (req, res) {
   }
 });
 
-venues.delete("/:id", async function (req, res) {
+instruments.delete("/:id", async function (req, res) {
   // request parameter
   // Execute query async
   try {
     // Define query
-    const createQuery = "DELETE FROM Venues WHERE venueID = ?;";
+    const createQuery = "DELETE FROM Instruments WHERE instrumentID = ?;";
     await db.execute(createQuery, [req.params.id]);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
+    let [results, rows] = await db.query("SELECT * FROM Instruments")
     res.send(results);
     // Log error if table doesn't exist, connection problem, etc
   } catch (error) {
@@ -81,4 +75,4 @@ venues.delete("/:id", async function (req, res) {
   }
 });
 
-export default venues;
+export default instruments;
