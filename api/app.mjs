@@ -1,35 +1,57 @@
 import express from 'express'
 import 'dotenv/config'
 import db from './database/db_connector.mjs'
+import musicians from './routes/musicians.mjs';
+// import router2 from './routes/test.mjs'
 
 let PORT = process.env.PORT || 3332;    
 
-const app = express();    
+const app = express();  
 
+// donato MVP
+const options = {
+    reviver: (key, value) => value === '' ? null : value
+  }
+
+app.use(express.json(options))
 /*
     ROUTES
 */
    
-app.get('/', async function(req, res)
-    {
-        // Define our queries
-        const query1 = 'DROP TABLE IF EXISTS diagnostic;';
-        const query2 = 'CREATE TABLE diagnostic(id INT PRIMARY KEY AUTO_INCREMENT, text VARCHAR(255) NOT NULL);';
-        const query3 = 'INSERT INTO diagnostic (text) VALUES ("is MySQL working?")';
-        const query4 = 'SELECT * FROM diagnostic;';
 
-        // Execute every query in an asynchronous manner, we want each query to finish before the next one starts
-       
-        try{
-            await db.query(query1)
-            await db.query(query2)
-            await db.query(query3)
-            let [results, rows]=await db.query(query4)
-            res.send(JSON.stringify(results));
-        } catch (error){
-            console.log(error)
-        }
-    });                                    
+// READ endpoint for all tables
+app.get('/api/:entity', async function(req, res)
+{
+    // request parameter
+    
+    const entity= req.params.entity
+    // Define query
+    const selectQuery=`SELECT * FROM ${entity}`
+
+    // Execute query async
+    try{
+        let [results, rows]=await db.query(selectQuery)
+        res.status(400).json(results)
+    // Log error if table doesn't exist, connection problem, etc
+    } catch (error){
+        console.log(error)
+        res.status(500).json({ Error: 'Request failed' })
+    }
+}); 
+
+
+// table endpoints
+app.use('/api/Musicians', musicians)
+// app.use('/api/Instruments', instruments)
+// app.use('/api/Venues', venues)
+// app.use('/api/ConcertCycles', concertcycles)
+// app.use('/api/Services', services)
+// app.use('/api/Pieces', pieces)
+// app.use('/api/MusiciansInstruments', musiciansinstruments)
+// app.use('/api/MusiciansConcertCycles', musiciansconcertcycles)
+// app.use('/api/PiecesConcertCycles', piecesconcertcycles)
+
+
 
 /*
     LISTENER
