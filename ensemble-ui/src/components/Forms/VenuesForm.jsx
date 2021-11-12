@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
 import {EntityContext, EntityDispatchContext} from "../EntityContextProvider";
-import StateOptions from "../StateOptions";
+import StateOptions from "./FormComponents/StateOptions";
 
 /**
  *

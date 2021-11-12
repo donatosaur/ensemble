@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useMemo, useState } from "react";
-import {DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
 import { Container } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core";
+import { cloneDeep } from "lodash";
 
 // button components for Grid Toolbar override
 import HelpButton from "./ToolbarButtons/HelpButton";
@@ -12,9 +13,16 @@ import AddButton from "./ToolbarButtons/AddButton";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 
+// other components and hooks
+import ConfirmationDialog from "../ConfirmationDialog";
 import { EntityDispatchContext } from "../EntityContextProvider";
 
-import { cloneDeep } from "lodash";
+// custom data type formatters
+import customDataTypes from "./CustomFormats";
+
+// search form for enabled entities
+import MusicianSearchForm from "./SearchForm";
+
 
 
 /**
@@ -24,7 +32,8 @@ import { cloneDeep } from "lodash";
  * @param fetchRows  a function that calls the api to fetch rows (SELECT -> GET)
  * @param createFormToggle a function that toggles the display state of the EntityForm
  * @param editFormToggle a function that toggles the display state of the EntityForm
- * @param isSearchImplemented {boolean} whether search is enabled for this table
+ * @param allowSearch {boolean} whether search is enabled for this table
+ * @param allowEdit {boolean} whether editing is enabled for this table
  * @returns {JSX.Element}
  * @constructor
  */
@@ -33,20 +42,31 @@ export default function DataTable({
   fetchRows,
   createFormToggle,
   editFormToggle,
-  isSearchImplemented,
+  allowSearch,
+  allowEdit
 }) {
   /* ------------------------------ State Hooks ------------------------------ */
-  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
+  // context hook for edits; dispatch a copy of the row object being edited
+  const dispatch = useContext(EntityDispatchContext);
+
+  // state hook for delete confirmation; *null* this to turn off the dialog box
+  const [deleteRowID, setDeleteRowID] = useState(null);
+
   /* eslint-disable no-unused-vars */
+  // state and reducer hooks for search panels
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
   const [searchParameters, setSearchParameters] = useState({});
-  const [alertContent, setAlertContent] = useState(null);
 
   // data model
   const [fetchNewData, setFetchNewData] = useState(true);
   const [rows, setRows] = useState([]);
 
-  const dispatch = useContext(EntityDispatchContext);
+  // error model
+  const [alertContent, setAlertContent] = useState(null);
 
+
+
+  /* ------------------------------ Effect Hooks ------------------------------ */
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
     if (!fetchNewData) return; // prevent infinite data fetching
@@ -67,39 +87,56 @@ export default function DataTable({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchNewData]);
 
+
   /* -------------------------------- Columns -------------------------------- */
+  // we're using useMemo here because the column cells will re-render every time there's a change, which includes
+  // instances in which the same action button is pressed more than once; the memory footprint savings here are
+  // pretty significant as well; storing all th
+
   const columns = useMemo(() => [
-      ...columnData.map(
-        column => ({
-          ...column,
-          sortable: false,  // disable client-side sorting
-          flex: 1,          // make all columns flex-grow by default
-        })
-      ),
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        type: 'actions',
-        editable: false,
-        sortable: false,
-        width: 120,
-        disableClickEventBubbling: true,  // we don't want events to propagate
-        renderCell: (params) => {
-          return (
-            <>
+    ...columnData.map(
+      column => ({
+        ...column,
+        filterable: false,  // disable client-side filtering (we need to implement this ourselves)
+        editable: false,    // disable inline editing
+        sortable: false,    // disable client-side sorting
+        flex: column.flex === undefined ? 1 : column.flex,  // flexGrow by default
+        valueFormatter: null,
+        ...customDataTypes.has(column.type) ? customDataTypes.get(column.type) : {},
+      })
+    ),
+    // create an action column: see https://mui.com/components/data-grid/columns/#render-cell for formatting here
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      type: 'actions',
+      editable: false,
+      sortable: false,
+      flex: 0,
+      disableClickEventBubbling: true,  // we don't want events to propagate (we're just toggling state hooks)
+      renderCell: (rowParams) => {
+        // console.log('rendering...');
+        return (
+          <>
+            {allowEdit &&
               <EditButton
                 onClick={() => {
                   // load the row data
-                  const rowIndex = rows.findIndex(row => row.id === parseInt(params.id));
+                  const rowIndex = rows.findIndex(row => row.id === parseInt(rowParams.id));
                   if (rowIndex === -1) {
                     // this shouldn't happen; if it does, we should know about it
                     console.error('Edit button pressed, but row not found!')
                   }
 
-                  // get a deep copy so we don't inadvertently modify the original row data and
+                  // get a deep copy so we don't inadvertently modify the original row data, and
                   // send it up to the context provider
-                  dispatch(cloneDeep(rows[rowIndex]));
-                  console.log('Dispatching...', rows[rowIndex])
+                  if (dispatch === null || dispatch === undefined) {
+                    console.error('Dispatch function is null!');
+                    return;
+                  } else {
+                    dispatch(cloneDeep(rows[rowIndex]));
+                    // console.log('Dispatching...', rows[rowIndex])
+                  }
 
                   // only one form should be open at a time
                   editFormToggle(true);
@@ -107,20 +144,34 @@ export default function DataTable({
                   createFormToggle(false);
                 }}
               />
+            }
 
-              <DeleteButton
-                onClick={() => {
-                  // display a popup, ask the user to confirm the delete
-                  alert(`This is a placeholder. Deleting entity with id ${params.id.toString()}`);
-                }}
-              />
-            </>
-          );
-        }
-      },
-    ],
-    [columnData, createFormToggle, editFormToggle, dispatch, rows]
+            <DeleteButton onClick={() => setDeleteRowID(parseInt(rowParams.id))} />
+          </>
+        );
+      }
+    },
+  ],
+    [columnData, createFormToggle, editFormToggle, allowEdit, dispatch, rows]
   );
+
+
+  /* ----------------------- Delete Confirmation Dialogue ------------------------- */
+  const DeleteConfirmation = () => {
+
+    return (
+      <ConfirmationDialog
+        show = {deleteRowID !== null}
+        title = {"Confirm Delete"}
+        description = {`Are you sure you want to delete the entity with ID ${deleteRowID}?`}
+        cancelButtonText = {"Cancel"}
+        confirmButtonText = {"Confirm"}
+        handleCancel = {() => setDeleteRowID(null)}
+        handleConfirm = {() => setDeleteRowID(null)} // todo: placeholder
+      />
+    );
+  }
+
 
 
   /* -------------------------------- Grid Toolbar -------------------------------- */
@@ -142,7 +193,7 @@ export default function DataTable({
       <GridToolbarContainer>
         <Container fluid className="toolbarContainer">
         <AddButton onClick={onAddButtonClick} />
-        {` `}{ isSearchImplemented && <SearchButton onClick={onSearchButtonClick}/> }
+        {` `}{ allowSearch && <SearchButton onClick={onSearchButtonClick}/> }
         {` |`}
         {` `}<GridToolbarDensitySelector />
         {` `}<GridToolbarExport />
@@ -154,6 +205,7 @@ export default function DataTable({
 
   
   /* ---------------------------- Data Table Styles Context ---------------------------- */
+  // not currently in use, but useful 
   const useStyles = makeStyles({
     root: {
       '& .edited': {
@@ -186,7 +238,7 @@ export default function DataTable({
         rows={rows}
         columns={columns}
 
-        // row edit options: disable inline editing; we need to implement this ourselves
+        // row edit options: disable inline editing; we're using forms
         editMode="row"
         onRowEditStart={(_, event) => {
           event.defaultMuiPrevented = true;
@@ -204,14 +256,18 @@ export default function DataTable({
         }}
       />
 
-      { searchPanelOpen &&
-        <Container className={"entityFormContainer"}>
-          <p>Search form placeholder</p>
-          {/*<SearchForm*/}
-          {/*  columns={columnData}*/}
-          {/*  setSearchParameters={setSearchParameters}*/}
-          {/*/>*/}
-        </Container>
+      <DeleteConfirmation />
+
+      { allowSearch
+        ? searchPanelOpen &&
+          <Container className="entityFormContainer">
+            <MusicianSearchForm
+              setSearchParameter={columnData}
+              dispatch={setSearchParameters}
+            />
+          </Container>
+        // this shouldn't ever display, but it's here for safety
+        : <p>Search is disabled for this entity.</p>
       }
 
     </div>

@@ -46,7 +46,15 @@
   background-color: hsl(240, 100%, 90%) !important;
 }
 
+// action buttons
+.actionButton {
+  margin: 0.2em;
+  padding: 0.2em 0.4em;
+}
 
+.withoutBorder {
+  border: none;
+}
 
 // add padding to custom popover elements
 .toolbarPopoverContainer {
