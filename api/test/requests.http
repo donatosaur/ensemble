@@ -1,3 +1,4 @@
+############################ Musicians #################################
 ### Create an Musician
 POST http://localhost:4444/api/Musicians HTTP/1.1
 content-type: application/json
@@ -39,8 +40,10 @@ content-type: application/json
     "active": 1,
     "musicianID": 1
 }
-### need to implement ON DELETE in MusiciansConcertCycles table for this to work
+### Delete from Musicians
 DELETE http://localhost:4444/api/Musicians/6 HTTP/1.1
+
+############################ Instruments #################################
 
 
 ### Create an instrument
@@ -63,5 +66,47 @@ content-type: application/json
 {
     "name":"Harpsichord"
 }
-### need to implement ON DELETE in MusiciansConcertCycles table for this to work
+### delete from Instruments
 DELETE http://localhost:4444/api/Instruments/5 HTTP/1.1
+
+
+
+
+############################ Venues #################################
+
+### Create a venue
+POST http://localhost:4444/api/Venues HTTP/1.1
+content-type: application/json
+
+{
+    "capacity": 21323,
+    "name": "Tomato Theatre",
+    "street": "22 St",
+    "city": "Nowhere",
+    "state": "MA",
+    "zip": 2124
+  }
+
+### see if adding an venue worked
+GET http://localhost:4444/api/Venues HTTP/1.1
+
+
+
+### edit an instrument
+PUT  http://localhost:4444/api/Venues/4 HTTP/1.1
+content-type: application/json
+
+{
+    "capacity": 800,
+    "name": "Space Theatre",
+    "street": "arg",
+    "city": "Houston",
+    "state": "MN",
+    "zip": 21243
+  }
+### delete from Instruments
+DELETE http://localhost:4444/api/Venues/4 HTTP/1.1
+############################ ConcertCycles #################################
+############################ Venues #################################
+############################ Venues #################################
+############################ Venues #################################
