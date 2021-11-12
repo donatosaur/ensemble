@@ -21,7 +21,7 @@ GET http://localhost:4444/api/Musicians HTTP/1.1
 
 
 
-### Create another exercise
+### edit a musician
 PUT  http://localhost:4444/api/Musicians/1 HTTP/1.1
 content-type: application/json
 
@@ -40,6 +40,28 @@ content-type: application/json
     "musicianID": 1
 }
 ### need to implement ON DELETE in MusiciansConcertCycles table for this to work
-DELETE http://localhost:4444/api/Musicians/1 HTTP/1.1
+DELETE http://localhost:4444/api/Musicians/6 HTTP/1.1
 
 
+### Create an instrument
+POST http://localhost:4444/api/Instruments HTTP/1.1
+content-type: application/json
+
+{
+    "name":"Tambourin"
+}
+
+### see if adding an instrument worked
+GET http://localhost:4444/api/Instruments HTTP/1.1
+
+
+
+### edit an instrument
+PUT  http://localhost:4444/api/Instruments/5 HTTP/1.1
+content-type: application/json
+
+{
+    "name":"Harpsichord"
+}
+### need to implement ON DELETE in MusiciansConcertCycles table for this to work
+DELETE http://localhost:4444/api/Instruments/5 HTTP/1.1
