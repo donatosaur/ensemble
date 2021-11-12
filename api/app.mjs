@@ -4,6 +4,7 @@ import db from './database/db_connector.mjs'
 import musicians from './routes/musicians.mjs';
 import instruments from './routes/instruments.mjs'
 import venues from './routes/venues.mjs'
+import concertcycles from './routes/concertcycles.mjs'
 
 let PORT = process.env.PORT || 3332;    
 
@@ -45,7 +46,7 @@ app.get('/api/:entity', async function(req, res)
 app.use('/api/Musicians', musicians)
 app.use('/api/Instruments', instruments)
 app.use('/api/Venues', venues)
-// app.use('/api/ConcertCycles', concertcycles)
+app.use('/api/ConcertCycles', concertcycles)
 // app.use('/api/Services', services)
 // app.use('/api/Pieces', pieces)
 // app.use('/api/MusiciansInstruments', musiciansinstruments)

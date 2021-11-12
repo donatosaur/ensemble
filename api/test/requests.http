@@ -40,8 +40,8 @@ content-type: application/json
     "active": 1,
     "musicianID": 1
 }
-### Delete from Musicians
-DELETE http://localhost:4444/api/Musicians/6 HTTP/1.1
+### Delete from Musicians (might need to change :id)
+DELETE http://localhost:4444/api/Musicians/4 HTTP/1.1
 
 ############################ Instruments #################################
 
@@ -60,14 +60,14 @@ GET http://localhost:4444/api/Instruments HTTP/1.1
 
 
 ### edit an instrument
-PUT  http://localhost:4444/api/Instruments/5 HTTP/1.1
+PUT  http://localhost:4444/api/Instruments/4 HTTP/1.1
 content-type: application/json
 
 {
     "name":"Harpsichord"
 }
 ### delete from Instruments
-DELETE http://localhost:4444/api/Instruments/5 HTTP/1.1
+DELETE http://localhost:4444/api/Instruments/4 HTTP/1.1
 
 
 
@@ -106,7 +106,42 @@ content-type: application/json
   }
 ### delete from Instruments
 DELETE http://localhost:4444/api/Venues/4 HTTP/1.1
+
 ############################ ConcertCycles #################################
+
+### Create a concertcycle
+POST http://localhost:4444/api/ConcertCycles HTTP/1.1
+content-type: application/json
+
+{
+    "concertTitle": "Wherefore art thou",
+    "startDate": "2021-03-05",
+    "endDate": "2021-03-09",
+    "conductorFirstName": "Leo",
+    "conductorLastName": "Messi",
+    "soloistFirstName": "",
+    "soloistLastName": ""
+}
+### see if adding an venue worked
+GET http://localhost:4444/api/ConcertCycles HTTP/1.1
+
+
+
+### edit a concertcycle
+PUT  http://localhost:4444/api/ConcertCycles/4 HTTP/1.1
+content-type: application/json
+
+{
+    "concertTitle": "the firebird",
+    "startDate": "2021-03-04",
+    "endDate": "2022-03-09",
+    "conductorFirstName": "Mickey",
+    "conductorLastName": "Mouse",
+    "soloistFirstName": "Kermit",
+    "soloistLastName": "The Frog"
+}
+### delete from Instruments
+DELETE http://localhost:4444/api/ConcertCycles/5 HTTP/1.1
 ############################ Venues #################################
 ############################ Venues #################################
 ############################ Venues #################################
