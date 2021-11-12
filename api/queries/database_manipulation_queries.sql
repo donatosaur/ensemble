@@ -1,6 +1,6 @@
 -- ------------------------------------ Musicians -----------------------------------
 -- CREATE
-INSERT INTO musicians (
+INSERT INTO Musicians (
     firstName,
     lastName,
     birthdate,
@@ -28,25 +28,25 @@ VALUES (
 );
 
 -- SELECT (all)
-SELECT * FROM musicians;
+SELECT * FROM Musicians;
 
 
 -- SELECT (filtered)
-SELECT * FROM musicians WHERE firstName LIKE :firstName;
-SELECT * FROM musicians WHERE firstName LIKE :lastName;
-SELECT * FROM musicians WHERE birthdate = :birthdate;
-SELECT * FROM musicians WHERE firstName LIKE :email;
-SELECT * FROM musicians WHERE phoneNumber = :phoneNumber;
-SELECT * FROM musicians WHERE street LIKE :street;
-SELECT * FROM musicians WHERE city LIKE :city;
-SELECT * FROM musicians WHERE state LIKE :state;
-SELECT * FROM musicians WHERE zip = :zip;
-SELECT * FROM musicians WHERE inEnsemble = :inEnsemble;
-SELECT * FROM musicians WHERE active = :active;
+SELECT * FROM Musicians WHERE firstName LIKE :firstName;
+SELECT * FROM Musicians WHERE firstName LIKE :lastName;
+SELECT * FROM Musicians WHERE birthdate = :birthdate;
+SELECT * FROM Musicians WHERE firstName LIKE :email;
+SELECT * FROM Musicians WHERE phoneNumber = :phoneNumber;
+SELECT * FROM Musicians WHERE street LIKE :street;
+SELECT * FROM Musicians WHERE city LIKE :city;
+SELECT * FROM Musicians WHERE state LIKE :state;
+SELECT * FROM Musicians WHERE zip = :zip;
+SELECT * FROM Musicians WHERE inEnsemble = :inEnsemble;
+SELECT * FROM Musicians WHERE active = :active;
 
 
 -- UPDATE
-UPDATE musicians
+UPDATE Musicians
 SET firstName = :firstName,
     lastName = :lastName,
     birthdate = :birthdate,
@@ -62,39 +62,39 @@ WHERE musicianID = :musicianID;
 
 
 -- DELETE
-DELETE FROM musicians WHERE musicianID = :musicianID;
+DELETE FROM Musicians WHERE musicianID = :musicianID;
 
 
 -- ----------------------------------- Instruments -----------------------------------
 -- CREATE
-INSERT INTO instruments (name)
+INSERT INTO Instruments (name)
 VALUE (:name);
 
 
 -- SELECT
-SELECT * FROM instruments;
+SELECT * FROM Instruments;
 
 -- UPDATE
-UPDATE instruments
+UPDATE Instruments
 SET name = :name
 WHERE instrumentID = :instrumentID;
 
 -- DELETE
-DELETE FROM instruments WHERE instrumentID = :instrumentID;
+DELETE FROM Instruments WHERE instrumentID = :instrumentID;
 
 
 -- ------------------------------------- Venues --------------------------------------
 -- CREATE
-INSERT INTO venues (capacity, name, street, city, state, zip)
+INSERT INTO Venues (capacity, name, street, city, state, zip)
 VALUES (:capacity, :name, :street, :city, :state, :zip);
 
 
 -- SELECT
-SELECT * from venues;
+SELECT * from Venues;
 
 
 -- UPDATE
-UPDATE venues
+UPDATE Venues
 SET capacity = :capacity,
     name = :name,
     street = :street,
@@ -105,12 +105,12 @@ WHERE venueID = :venueID;
 
 
 -- DELETE
-DELETE FROM venues WHERE venueID = :venueID;
+DELETE FROM Venues WHERE venueID = :venueID;
 
 
 -- ---------------------------------- ConcertCycles ----------------------------------
 -- CREATE
-INSERT INTO concert_cycles (
+INSERT INTO ConcertCycles (
     concertTitle,
     startDate,
     endDate,
@@ -131,11 +131,11 @@ VALUES (
 
 
 -- SELECT
-SELECT * FROM concert_cycles;
+SELECT * FROM ConcertCycles;
 
 
 -- UPDATE
-UPDATE concert_cycles
+UPDATE ConcertCycles
 SET concertTitle = :concertTitle,
     startDate = :startDate,
     endDate = :endDate,
@@ -146,22 +146,22 @@ SET concertTitle = :concertTitle,
 WHERE concertID = :concertID;
 
 -- DELETE
-DELETE FROM concert_cycles WHERE concertID = :concertID;
+DELETE FROM ConcertCycles WHERE concertID = :concertID;
 
 
 
 -- ------------------------------------- Services ------------------------------------
 -- CREATE
-INSERT INTO services (startTime, endTime, isRehearsal, venueID, concertID)
+INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID)
 VALUES (:startTime, :endTime, :isRehearsal, :venueID, :concertID);
 
 
 -- SELECT
-SELECT * FROM services;
+SELECT * FROM Services;
 
 
 -- UPDATE
-UPDATE services
+UPDATE Services
 SET startTime = :startTime,
     endTime = :endTime,
     isRehearsal = :isRehearsal,
@@ -171,11 +171,11 @@ WHERE serviceID = :serviceID;
 
 
 -- DELETE
-DELETE FROM services WHERE serviceID = :serviceID;
+DELETE FROM Services WHERE serviceID = :serviceID;
 
 -- -------------------------------------- Pieces -------------------------------------
 -- CREATE
-INSERT INTO pieces (
+INSERT INTO Pieces (
     pieceTitle,
     composerFirstName,
     composerLastName,
@@ -194,11 +194,11 @@ VALUES (
 
 
 -- SELECT
-SELECT * FROM pieces;
+SELECT * FROM Pieces;
 
 
 -- UPDATE
-UPDATE pieces
+UPDATE Pieces
 SET pieceTitle = :pieceTitle,
     composerFirstName = :composerFirstName,
     composerLastName = :composerLastName,
@@ -209,55 +209,54 @@ WHERE pieceID = :pieceID;
 
 
 -- DELETE
-DELETE FROM pieces WHERE pieceID = :pieceID;
+DELETE FROM Pieces WHERE pieceID = :pieceID;
 
 
 -- ------------------------------ MusiciansInstruments -------------------------------
 -- CREATE
-INSERT INTO musicians_instruments (musicianID, instrumentID)
+INSERT INTO MusiciansInstruments (musicianID, instrumentID)
 VALUES (:musicianID, :instrumentID);
 
 
 -- SELECT
-SELECT * FROM musicians_instruments;
+SELECT * FROM MusiciansInstruments;
 
 
 -- UPDATE is disallowed on this entity: delete then create instead
 
 
 -- DELETE
-DELETE FROM musicians_instruments WHERE musicianID = :musicianID AND instrumentID = :instrumentID;
+DELETE FROM MusiciansInstruments WHERE musicianID = :musicianID AND instrumentID = :instrumentID;
 
 
 -- ------------------------------ MusiciansConcertCycles ------------------------------
 -- CREATE
-INSERT INTO musicians_concert_cycles (musicianID, concertID)
+INSERT INTO MusiciansConcertCycles (musicianID, concertID)
 VALUES (:musicianID, :concertID);
 
 -- SELECT
-SELECT * FROM musicians_concert_cycles;
+SELECT * FROM MusiciansConcertCycles;
 
 
 -- UPDATE is disallowed on this entity: delete then create instead
 
 
 -- DELETE
-DELETE FROM musicians_concert_cycles WHERE musicianID = :musicianID AND concertID = :concertID;
+DELETE FROM MusiciansConcertCycles WHERE musicianID = :musicianID AND concertID = :concertID;
 
 
 -- ------------------------------- PiecesConcertCycles --------------------------------
 -- CREATE
-INSERT INTO pieces_concert_cycles (pieceID, concertID)
+INSERT INTO PiecesConcertCycles (pieceID, concertID)
 VALUES (:pieceID, :concertID);
 
 
 -- SELECT
-SELECT * FROM pieces_concert_cycles;
+SELECT * FROM PiecesConcertCycles;
 
 
 -- UPDATE is disallowed on this entity: delete then create instead
 
 
 -- DELETE
-DELETE FROM pieces_concert_cycles WHERE pieceID = :pieceID AND concertID = :concertID;
-
+DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concertID;

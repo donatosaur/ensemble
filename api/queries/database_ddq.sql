@@ -4,37 +4,38 @@
 
 -- Drop all tables simultaneously and in reverse order to avoid FK conflicts
 DROP TABLE IF EXISTS
-    pieces_concert_cycles,
-    musicians_concert_cycles,
-    musicians_instruments,
-    pieces,
-    services,
-    concert_cycles,
-    venues,
-    instruments,
-    musicians;
+    PiecesConcertCycles,
+    MusiciansConcertCycles,
+    MusiciansInstruments,
+    Pieces,
+    Services,
+    ConcertCycles,
+    Venues,
+    Instruments,
+    Musicians;
 
 
 -- Create new tables for each entity
-CREATE TABLE musicians (
+CREATE TABLE Musicians (
     musicianID INT AUTO_INCREMENT UNIQUE NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     birthdate DATE NOT NULL,
     email VARCHAR(100),
-    phoneNumber INT(9) UNSIGNED,
+    phoneNumber INT(10) UNSIGNED,
     street VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state CHAR(2) NOT NULL,
     zip INT(5) ZEROFILL NOT NULL,
     inEnsemble BIT(1) NOT NULL,
     active BIT(1) NOT NULL,
-    PRIMARY KEY (musicianID)
+    PRIMARY KEY (musicianID),
+    CONSTRAINT validPhoneNumber CHECK (phoneNumber > 999999999)
 )
 COMMENT 'records the details and contact records of all musicians contracted for service by the orchestra';
 
 
-CREATE TABLE instruments (
+CREATE TABLE Instruments (
     instrumentID INT AUTO_INCREMENT UNIQUE NOT NULL,
     name VARCHAR(50) UNIQUE NOT NULL,
     PRIMARY KEY (instrumentID)
@@ -42,7 +43,7 @@ CREATE TABLE instruments (
 COMMENT 'records the instruments that may be played by musicians in the orchestra';
 
 
-CREATE TABLE venues (
+CREATE TABLE Venues (
     venueID INT AUTO_INCREMENT UNIQUE NOT NULL,
     capacity SMALLINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
@@ -55,7 +56,7 @@ CREATE TABLE venues (
 COMMENT 'records the details of venues where the orchestra may perform';
 
 
-CREATE TABLE concert_cycles (
+CREATE TABLE ConcertCycles (
     concertID INT AUTO_INCREMENT UNIQUE NOT NULL,
     concertTitle VARCHAR(100) NOT NULL,
     startDate DATE NOT NULL,
@@ -69,21 +70,21 @@ CREATE TABLE concert_cycles (
 COMMENT 'records the details of a group (cycle) of concerts';
 
 
-CREATE TABLE services (
+CREATE TABLE Services (
     serviceID INT AUTO_INCREMENT UNIQUE NOT NULL,
     startTime DATETIME NOT NULL,
     endTime DATETIME NOT NULL,
     isRehearsal BIT(1) NOT NULL,
     venueID INT,
     concertID INT NOT NULL,
-    FOREIGN KEY (venueID) REFERENCES venues(venueID),
-    FOREIGN KEY (concertID) REFERENCES concert_cycles(concertID),
+    FOREIGN KEY (venueID) REFERENCES Venues(venueID),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
     PRIMARY KEY (serviceID)
 )
 COMMENT 'records the details of specific services (i.e., performances) made by the orchestra';
 
 
-CREATE TABLE pieces (
+CREATE TABLE Pieces (
     pieceID INT AUTO_INCREMENT UNIQUE NOT NULL,
     pieceTitle VARCHAR(100) NOT NULL,
     composerFirstName VARCHAR(50) NOT NULL,
@@ -95,38 +96,38 @@ CREATE TABLE pieces (
 COMMENT 'records details about the musical pieces that are performed by the orchestra during concert cycles';
 
 
-CREATE TABLE musicians_instruments (
+CREATE TABLE MusiciansInstruments (
     musicianID INT NOT NULL,
     instrumentID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES musicians(musicianID),
-    FOREIGN KEY (instrumentID) REFERENCES instruments(instrumentID),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(musicianID),
+    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID),
     PRIMARY KEY (musicianID, instrumentID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Musicians and Instruments';
 
 
-CREATE TABLE musicians_concert_cycles (
+CREATE TABLE MusiciansConcertCycles (
     musicianID INT NOT NULL,
     concertID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES musicians(musicianID),
-    FOREIGN KEY (concertID) REFERENCES concert_cycles(concertID),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(musicianID),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
     PRIMARY KEY (musicianID, concertID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Musicians and ConcertCycles';
 
 
-CREATE TABLE pieces_concert_cycles (
+CREATE TABLE PiecesConcertCycles (
     pieceID INT NOT NULL,
     concertID INT NOT NULL,
-    FOREIGN KEY (pieceID) REFERENCES pieces(pieceID),
-    FOREIGN KEY (concertID) REFERENCES concert_cycles(concertID),
+    FOREIGN KEY (pieceID) REFERENCES Pieces (pieceID),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
     PRIMARY KEY (pieceID, concertID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Pieces and ConcertCycles';
 
 
 -- Write initial data to each table
-INSERT INTO musicians (firstName,
+INSERT INTO Musicians (firstName,
                        lastName,
                        birthdate,
                        email,
@@ -153,11 +154,11 @@ VALUES ('Annabelle',
         'Vasu',
         '1982-08-14',
         NULL,
-        18293856,
+        1829385670,
         '300 S Delaware St',
         'Butler',
         'MO',
-        647730,
+        205647730,
         0,
         1
        ),
@@ -174,20 +175,20 @@ VALUES ('Annabelle',
         0);
 
 
-INSERT INTO instruments (name)
+INSERT INTO Instruments (name)
 VALUES ('Viola'),
        ('Sousaphone'),
        ('Glockenspiel'),
        ('Ocarina');
 
 
-INSERT INTO venues (capacity, name, street, city, state, zip)
+INSERT INTO Venues (capacity, name, street, city, state, zip)
 VALUES (1742, 'Orpheus Theatre', '765 S Grandview Dr', 'Paoli', 'IN', 47454),
        (22634, 'Capital Theatre', '4548 Akialoa Rd', 'Kekaha', 'HI', 96752),
        (05443, 'Red Rocks Theatre', '22 Harvard St', 'Boston', 'MA', 02124);
 
 
-INSERT INTO concert_cycles (concertTitle,
+INSERT INTO ConcertCycles (concertTitle,
                             startDate,
                             endDate,
                             conductorFirstName,
@@ -219,13 +220,13 @@ VALUES ('Celebrating the Season',
         NULL);
 
 
-INSERT INTO services (startTime, endTime, isRehearsal, venueID, concertID)
+INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID)
 VALUES ('2021-12-20 13:00:21', '2021-12-20 15:00:00', 1, 1, 1),
        ('2021-12-24 13:00:00', '2021-12-24 15:00:00', 0, 1, 1),
        ('2022-05-02 08:00:00', '2022-05-02 11:00:00', 0, NULL, 2);
 
 
-INSERT INTO pieces (pieceTitle,
+INSERT INTO Pieces (pieceTitle,
                     composerFirstName,
                     composerLastName,
                     arrangerFirstName,
@@ -254,40 +255,40 @@ VALUES ('The Star Spangled Banner',
        );
 
 
-INSERT INTO musicians_instruments (musicianID, instrumentID)
+INSERT INTO MusiciansInstruments (musicianID, instrumentID)
 VALUES (1, 2),
        (2, 1),
        (3, 2);
 
-INSERT INTO musicians_concert_cycles (musicianID, concertID)
+INSERT INTO MusiciansConcertCycles (musicianID, concertID)
 VALUES (2, 1),
        (1, 1),
        (1, 2);
 
-INSERT INTO pieces_concert_cycles (pieceID, concertID)
+INSERT INTO PiecesConcertCycles (pieceID, concertID)
 VALUES (1, 1),
        (2, 1),
        (3, 1);
 
 
 -- Test code: describe each table...
-DESCRIBE pieces_concert_cycles;
-DESCRIBE musicians_concert_cycles;
-DESCRIBE musicians_instruments;
-DESCRIBE pieces;
-DESCRIBE services;
-DESCRIBE concert_cycles;
-DESCRIBE venues;
-DESCRIBE instruments;
-DESCRIBE musicians;
+-- DESCRIBE PiecesConcertCycles;
+-- DESCRIBE MusiciansConcertCycles;
+-- DESCRIBE MusiciansInstruments;
+-- DESCRIBE Pieces;
+-- DESCRIBE Services;
+-- DESCRIBE ConcertCycles;
+-- DESCRIBE Venues;
+-- DESCRIBE Instruments;
+-- DESCRIBE Musicians;
 
 -- Test code: ...and query to ensure all values were inserted
-SELECT * FROM pieces_concert_cycles;
-SELECT * FROM musicians_concert_cycles;
-SELECT * FROM musicians_instruments;
-SELECT * FROM pieces;
-SELECT * FROM services;
-SELECT * FROM concert_cycles;
-SELECT * FROM venues;
-SELECT * FROM instruments;
-SELECT * FROM musicians;
+-- SELECT * FROM PiecesConcertCycles;
+-- SELECT * FROM MusiciansConcertCycles;
+-- SELECT * FROM MusiciansInstruments;
+-- SELECT * FROM Pieces;
+-- SELECT * FROM Services;
+-- SELECT * FROM ConcertCycles;
+-- SELECT * FROM Venues;
+-- SELECT * FROM Instruments;
+-- SELECT * FROM Musicians;

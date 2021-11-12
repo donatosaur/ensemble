@@ -1,0 +1,49 @@
+### Create an Musician
+POST http://localhost:4444/api/Musicians HTTP/1.1
+content-type: application/json
+
+{
+    "firstName": "helloooooo",
+    "lastName": "asdfdsf",
+    "birthdate": "2020-01-01",
+    "email": "abc@dabcd.com",
+    "phoneNumber": 2022472839,
+    "street": "22 go",
+    "city": "Chicago",
+    "state": "HI",
+    "zip": 19283,
+    "inEnsemble": 0,
+    "active": 1
+}
+
+### see if adding a musician worked
+GET http://localhost:4444/api/Musicians HTTP/1.1
+
+
+
+### Create another exercise
+PUT  http://localhost:4444/api/Musicians/1 HTTP/1.1
+content-type: application/json
+
+{
+    "firstName": "adfdf",
+    "lastName": "asdf",
+    "birthdate": "2020-01-01",
+    "email": "abc@dabcd.com",
+    "phoneNumber": 2022472839,
+    "street": "22 Chicago",
+    "city": "Chicago",
+    "state": "HI",
+    "zip": 19283,
+    "inEnsemble": 0,
+    "active": 1,
+    "musicianID": 1
+}
+### need to implement ON DELETE in MusiciansConcertCycles table for this to work
+DELETE http://localhost:4444/api/Musicians HTTP/1.1
+Content-Type: application/json
+
+{
+    "musicianID": 1
+}
+
