@@ -5,30 +5,33 @@ const musiciansConcertCycles = express.Router();
 
 
 /**
- * CREATE  POST    /api/MusiciansInstruments
- * READ    GET     /api/MusiciansInstruments
- * DELETE  DELETE  /api/MusiciansInstruments?musicianID=...&concertID=...
+ * CREATE  POST    /api/MusiciansConcertCycles
+ * READ    GET     /api/MusiciansConcertCycles
+ * DELETE  DELETE  /api/MusiciansConcertCycles?musicianID=...&concertID=...
  */
 
 
 // CREATE
-musiciansConcertCycles.post('/', (req, res) => {
-  // destructure body params (use let here because we will need to parse)
-  let { musicianID = null, concertID = null } = req.body;
+musiciansConcertCycles.post("/", (req, res) => {
+  // destructure body params
+  let { musicianID, concertID } = req.body;
 
-  // attempt to parse int values (fall back to null)
-  musicianID = isNaN(parseInt(musicianID)) ? null : parseInt(musicianID);
-  concertID = isNaN(parseInt(concertID)) ? null : parseInt(concertID);
+  // parse (fall back to null)
+  musicianID = parseInt(musicianID);
+  musicianID = isNaN(musicianID) ? null : musicianID;
 
-  const insertQuery = `INSERT INTO MusiciansInstruments (musicianID, concertID) VALUES (${musicianID}, ${concertID})`;
+  concertID = parseInt(concertID);
+  concertID = isNaN(concertID) ? null : concertID;
 
-  db.query(insertQuery, (error) => {
+  const insertQuery = "INSERT INTO MusiciansConcertCycles (musicianID, concertID) VALUES (?, ?);";
+
+  db.query(insertQuery, [musicianID, concertID], (error) => {
     if (error) {
       // send back a description of the error as well as the error status
       console.log(error);
       res.status(400).json({error: error});
     } else {
-      res.status(201).json( {status: "created"});
+      res.status(201).json( {status: "Created"});
     }
   });
 });
@@ -36,13 +39,13 @@ musiciansConcertCycles.post('/', (req, res) => {
 
 // READ
 musiciansConcertCycles.get("/", (req, res) => {
-  db.query(`SELECT * FROM MusiciansInstruments;`, (error, rows) => {
+  db.query("SELECT * FROM MusiciansConcertCycles;", (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(503).json({ error: error });
+      res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json({ status: "OK", data: rows });
     }
   });
 });
@@ -54,22 +57,26 @@ musiciansConcertCycles.put("/", (req, res) => {
 });
 
 
+// DELETE
 musiciansConcertCycles.delete("/",  (req, res) => {
-  // destructure as we did for the patch request
+  // get query params
   let [musicianID, concertID] = [req.query.musicianID, req.query.concertID];
 
-  // parse as we did for the patch request
-  musicianID = isNaN(parseInt(musicianID)) ? null : parseInt(musicianID);
-  concertID = isNaN(parseInt(concertID)) ? null : parseInt(concertID);
+  // parse
+  musicianID = parseInt(musicianID);
+  musicianID = isNaN(musicianID) ? null : musicianID;
 
-  const deleteQuery = `DELETE FROM MusiciansInstruments WHERE musicianID = ${musicianID} AND concertID = ${concertID};`
+  concertID = parseInt(concertID);
+  concertID = isNaN(concertID) ? null : concertID;
 
-  db.query(deleteQuery, (error) => {
+  const deleteQuery = "DELETE FROM MusiciansConcertCycles WHERE musicianID = ? AND concertID = ?;";
+
+  db.query(deleteQuery, [musicianID, concertID],(error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ status: "OK" });
     }
   });
 });

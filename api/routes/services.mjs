@@ -13,21 +13,22 @@ const services = express.Router();
 
 
 // CREATE
-services.post('/', (req, res) => {
-  // destructure body params (use let here because we will need to parse)
-  let { startTime = null, endTime = null, isRehearsal = null, venueID = null, concertID = null } = req.body;
+services.post("/", (req, res) => {
+  // get body params
+  let { startTime, endTime, isRehearsal, venueID, concertID } = req.body;
 
-  // attempt to parse int values (fall back to null)
-  venueID = isNaN(parseInt(venueID)) ? null : parseInt(venueID);
-  concertID = isNaN(parseInt(concertID)) ? null : parseInt(concertID);
+  // parse
+  venueID = parseInt(venueID);
+  venueID = isNaN(venueID) ? null : venueID;
 
-  // explicitly cast to boolean to prevent injection attacks (but preserve null values)
-  isRehearsal = isRehearsal === null ? null : !!isRehearsal;
+  concertID = parseInt(concertID);
+  concertID = isNaN(concertID) ? null : concertID;
 
-  const insertQuery = `INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID) ` +
-                      `VALUES ('${startTime}', '${endTime}', ${isRehearsal}, ${venueID}, ${concertID});`;
+  // query
+  const insertQuery = "INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID) " +
+                      "VALUES (?, ?, ?, ?, ?);";
 
-  db.query(insertQuery, (error) => {
+  db.query(insertQuery, [startTime, endTime, isRehearsal, venueID, concertID],(error) => {
     if (error) {
       // send back a description of the error as well as the error status
       console.log(error);
@@ -41,11 +42,11 @@ services.post('/', (req, res) => {
 
 // READ
 services.get("/", (req, res) => {
-  db.query(`SELECT * FROM Services;`, (error, rows) => {
+  db.query("SELECT * FROM Services;", (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(503).json({ error: error });
+      res.status(500).json({ error: error });
     } else {
       res.status(200).json({ status: "ok", data: rows });
     }
@@ -55,21 +56,25 @@ services.get("/", (req, res) => {
 
 // UPDATE
 services.put("/", (req, res) => {
-  // destructure as we did for the patch request
+  // get body and query params
   let serviceID = req.query.serviceID;
-  let { startTime = null, endTime = null, isRehearsal = null, venueID = null, concertID = null } = req.body;
+  let { startTime, endTime, isRehearsal, venueID, concertID } = req.body;
 
-  // parse as we did for the patch request
-  serviceID = isNaN(parseInt(serviceID)) ? null : parseInt(serviceID);
-  venueID = isNaN(parseInt(venueID)) ? null : parseInt(venueID);
-  concertID = isNaN(parseInt(concertID)) ? null : parseInt(concertID);
-  isRehearsal = isRehearsal === null ? null : !!isRehearsal;
+  // parse
+  serviceID = parseInt(serviceID);
+  serviceID = isNaN(serviceID) ? null : serviceID;
 
-  const updateQuery = `UPDATE Services SET startTime = '${startTime}', endTime = '${endTime}', ` +
-                      `isRehearsal = ${isRehearsal}, venueID = ${venueID}, concertID = ${concertID} ` +
-                      `WHERE serviceID = ${serviceID};`;
+  venueID = parseInt(venueID);
+  venueID = isNaN(venueID) ? null : venueID;
 
-  db.query(updateQuery, (error) => {
+  concertID = parseInt(concertID);
+  concertID = isNaN(concertID) ? null : concertID;
+
+  // query
+  const updateQuery = "UPDATE Services SET startTime = ?, endTime = ?, isRehearsal = ?, venueID = ? " +
+                      "concertID = ? WHERE serviceID = ?;";
+
+  db.query(updateQuery, [startTime, endTime, isRehearsal, venueID, concertID, serviceID], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });
@@ -80,15 +85,17 @@ services.put("/", (req, res) => {
 });
 
 services.delete("/",  (req, res) => {
-  // destructure as we did for the patch request
+  // get query params
   let serviceID = req.query.serviceID;
 
-  // parse as we did for the patch request
-  serviceID = isNaN(parseInt(serviceID)) ? null : parseInt(serviceID);
+  // parse
+  serviceID = parseInt(serviceID);
+  serviceID = isNaN(serviceID) ? null : serviceID;
 
-  const deleteQuery = `DELETE FROM Services WHERE serviceID = ${serviceID};`
+  // query
+  const deleteQuery = "DELETE FROM Services WHERE serviceID = ?;";
 
-  db.query(deleteQuery, (error) => {
+  db.query(deleteQuery, [serviceID], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });

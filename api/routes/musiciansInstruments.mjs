@@ -13,22 +13,25 @@ const musiciansInstruments = express.Router();
 
 // CREATE
 musiciansInstruments.post('/', (req, res) => {
-  // destructure body params (use let here because we will need to parse)
-  let { musicianID = null, instrumentID = null } = req.body;
+  // destructure body params
+  let { musicianID, instrumentID } = req.body;
 
-  // attempt to parse int values (fall back to null)
-  musicianID = isNaN(parseInt(musicianID)) ? null : parseInt(musicianID);
-  instrumentID = isNaN(parseInt(instrumentID)) ? null : parseInt(instrumentID);
+  // parse (fall back to null)
+  musicianID = parseInt(musicianID);
+  musicianID = isNaN(musicianID) ? null : musicianID;
 
-  const insertQuery = `INSERT INTO MusiciansInstruments (musicianID, instrumentID) VALUES (${musicianID}, ${instrumentID})`;
+  instrumentID = parseInt(instrumentID);
+  instrumentID = isNaN(instrumentID) ? null : instrumentID;
 
-  db.query(insertQuery, (error) => {
+  const insertQuery = "INSERT INTO MusiciansInstruments (musicianID, instrumentID) VALUES (?, ?);";
+
+  db.query(insertQuery, [musicianID, instrumentID], (error) => {
     if (error) {
       // send back a description of the error as well as the error status
       console.log(error);
       res.status(400).json({error: error});
     } else {
-      res.status(201).json( {status: "created"});
+      res.status(201).json( {status: "Created"});
     }
   });
 });
@@ -36,13 +39,13 @@ musiciansInstruments.post('/', (req, res) => {
 
 // READ
 musiciansInstruments.get("/", (req, res) => {
-  db.query(`SELECT * FROM MusiciansInstruments;`, (error, rows) => {
+  db.query("SELECT * FROM MusiciansInstruments;", (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(503).json({ error: error });
+      res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json({ status: "OK", data: rows });
     }
   });
 });
@@ -54,22 +57,26 @@ musiciansInstruments.put("/", (req, res) => {
 });
 
 
+// DELETE
 musiciansInstruments.delete("/",  (req, res) => {
-  // destructure as we did for the patch request
+  // get query params
   let [musicianID, instrumentID] = [req.query.musicianID, req.query.instrumentID];
 
-  // parse as we did for the patch request
-  musicianID = isNaN(parseInt(musicianID)) ? null : parseInt(musicianID);
-  instrumentID = isNaN(parseInt(instrumentID)) ? null : parseInt(instrumentID);
+  // parse
+  musicianID = parseInt(musicianID);
+  musicianID = isNaN(musicianID) ? null : musicianID;
 
-  const deleteQuery = `DELETE FROM MusiciansInstruments WHERE musicianID = ${musicianID} AND instrumentID = ${instrumentID};`
+  instrumentID = parseInt(instrumentID);
+  instrumentID = isNaN(instrumentID) ? null : instrumentID;
 
-  db.query(deleteQuery, (error) => {
+  const deleteQuery = "DELETE FROM MusiciansInstruments WHERE musicianID = ? AND instrumentID = ?;";
+
+  db.query(deleteQuery, [musicianID, instrumentID],(error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ status: "OK" });
     }
   });
 });
