@@ -25,14 +25,14 @@ const app = express();
  * empty strings to explicit null values whenever we parse a JSON body for consistency.
  */
 app.use(express.json({
-    reviver: (key, value) => value === '' ? null : value,
+    reviver: (key, value) => value === "" ? null : value,
 }));
 
 
 // Attach table endpoint routes
-app.use('/api/Musicians', musicians);
+// app.use('/api/Musicians', musicians);
 app.use('/api/Instruments', instruments);
-app.use('/api/Venues', venues);
+// app.use('/api/Venues', venues);
 app.use('/api/ConcertCycles', concertCycles);
 app.use('/api/Services', services);
 app.use('/api/Pieces', pieces);

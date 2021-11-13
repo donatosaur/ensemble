@@ -13,29 +13,39 @@ const pieces = express.Router();
 
 
 // CREATE
-pieces.post('/', (req, res) => {
-  // destructure body params
+pieces.post("/", (req, res) => {
+  // get body params
   let {
-    pieceTitle = null,
-    composerFirstName = null,
-    composerLastName = null,
-    arrangerFirstName = null,
-    arrangerLastName = null,
-    instrumentation = null
+    pieceTitle,
+    composerFirstName,
+    composerLastName,
+    arrangerFirstName,
+    arrangerLastName,
+    instrumentation,
   } = req.body;
 
-  const insertQuery = `INSERT INTO Pieces (pieceTitle, composerFirstName, composerLastName, arrangerFirstName, 
-                       arrangerLastName, instrumentation) VALUES ('${pieceTitle}', '${composerFirstName}', 
-                       '${composerLastName}', '${arrangerFirstName}', '${arrangerLastName}', '${instrumentation}');`;
+  // query
+  const insertQuery = "INSERT INTO Pieces (pieceTitle, composerFirstName, composerLastName, arrangerFirstName, " +
+                      "arrangerLastName, instrumentation) VALUES (?, ?, ?, ?, ?, ?);";
 
-  db.query(insertQuery, (error) => {
-    if (error) {
-      // send back a description of the error as well as the error status
-      console.log(error);
-      res.status(400).json({error: error});
-    } else {
-      res.status(201).json( {status: "created"});
-    }
+  db.query(
+    insertQuery,
+    [
+      pieceTitle,
+      composerFirstName,
+      composerLastName,
+      arrangerFirstName,
+      arrangerLastName,
+      instrumentation,
+    ],
+    (error) => {
+      if (error) {
+        // send back a description of the error as well as the error status
+        console.log(error);
+        res.status(400).json({error: error});
+      } else {
+        res.status(201).json( {status: "Created"});
+      }
   });
 });
 
@@ -46,9 +56,9 @@ pieces.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(503).json({ error: error });
+      res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json({ status: "OK", data: rows });
     }
   });
 });
@@ -56,50 +66,66 @@ pieces.get("/", (req, res) => {
 
 // UPDATE
 pieces.put("/", (req, res) => {
-  // destructure as we did for the patch request
+  // get body and query params
   let pieceID = req.query.pieceID;
   let {
-    pieceTitle = null,
-    composerFirstName = null,
-    composerLastName = null,
-    arrangerFirstName = null,
-    arrangerLastName = null,
-    instrumentation = null
+    pieceTitle,
+    composerFirstName,
+    composerLastName,
+    arrangerFirstName,
+    arrangerLastName,
+    instrumentation,
   } = req.body;
 
-  // parse as we did for the patch request
-  pieceID = isNaN(parseInt(pieceID)) ? null : parseInt(pieceID);
+  // parse
+  pieceID = parseInt(pieceID);
+  pieceID = isNaN(pieceID) ? null : pieceID;
 
-  const updateQuery = `UPDATE Pieces SET pieceTitle = '${pieceTitle}', composerFirstName = '${composerFirstName}', ` +
-                      `composerLastName = '${composerLastName}', arrangerFirstName = '${arrangerFirstName}', ` +
-                      `arrangerLastName = '${arrangerLastName}', instrumentation = '${instrumentation}'` +
-                      `WHERE pieceID = ${pieceID};`;
+  // query
+  const updateQuery = "UPDATE Pieces SET pieceTitle = ?, composerFirstName = ?, composerLastName = ?, " +
+                      "arrangerFirstName = ?, arrangerLastName = ?, instrumentation = ? WHERE pieceID = ?;";
 
-  db.query(updateQuery, (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({ error: error });
-    } else {
-      res.status(200).json({ status: "ok" });
-    }
-  });
+  db.query(
+    updateQuery,
+    [
+      pieceTitle,
+      composerFirstName,
+      composerLastName,
+      arrangerFirstName,
+      arrangerLastName,
+      instrumentation,
+      pieceID
+    ],
+    (error) => {
+      if (error) {
+        // send back a description of the error as well as the error status
+        console.log(error);
+        res.status(400).json({error: error});
+      } else {
+        res.status(200).json( {status: "OK"});
+      }
+    });
 });
 
+
+// DELETE
 pieces.delete("/",  (req, res) => {
-  // destructure as we did for the patch request
+  // get query params
   let pieceID = req.query.pieceID;
 
-  // parse as we did for the patch request
-  pieceID = isNaN(parseInt(pieceID)) ? null : parseInt(pieceID);
+  // parse
+  pieceID = parseInt(pieceID);
+  pieceID = isNaN(pieceID) ? null : pieceID;
 
-  const deleteQuery = `DELETE FROM Pieces WHERE pieceID = ${pieceID};`
+  // query
+  const deleteQuery = "DELETE FROM Pieces WHERE pieceID = ?;";
 
-  db.query(deleteQuery, (error) => {
+  db.query(deleteQuery, [pieceID], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ status: "OK" });
     }
   });
 });
