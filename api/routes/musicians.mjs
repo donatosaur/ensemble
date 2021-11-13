@@ -1,12 +1,15 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import instruments from "./instruments.mjs";
 
 let musicians = express.Router();
 
-// POST /api/Musicians/ (create)
-// GET /api/Musicians/ (get all)
-// PUT /api/Musicians/:id (update)
-// DELETE /api/Musicians/:id (delete)
+/**
+ * CREATE  POST    /api/Musicians
+ * READ    GET     /api/Musicians
+ * UPDATE  PUT     /api/Musicians?musicianID=...
+ * DELETE  DELETE  /api/Musicians?musicianID=...
+ */
 
 // CREATE
 musicians.post("/", async function (req, res) {
@@ -50,7 +53,18 @@ musicians.post("/", async function (req, res) {
   }
 });
 
-// READ is universal for all entities (located in app.mjs)
+// READ
+instruments.get("/", (req, res) => {
+  db.query("SELECT * FROM Musicians;", (error, rows) => {
+    if (error) {
+      // we should only get an error here if something's wrong with the database connection
+      console.log(error);
+      res.status(500).json({ error: error });
+    } else {
+      res.status(200).json({ status: "ok", data: rows });
+    }
+  });
+});
 
 // UPDATE
 musicians.put("/:id", async function (req, res) {

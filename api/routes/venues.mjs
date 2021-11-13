@@ -3,10 +3,12 @@ import db from "../database/db_connector.mjs";
 
 let venues = express.Router();
 
-// POST /api/Venues/ (create)
-// GET /api/Venues/ (get all)
-// PUT /api/Venues/:id (update)
-// DELETE /api/Venues/:id (delete)
+/**
+ * CREATE  POST    /api/Venues
+ * READ    GET     /api/Venues
+ * UPDATE  PUT     /api/Venues?venueID=...
+ * DELETE  DELETE  /api/Venues?venueID=...
+ */
 
 // CREATE
 venues.post("/", async function (req, res) {
@@ -31,7 +33,18 @@ venues.post("/", async function (req, res) {
   }
 });
 
-// READ is universal for all entities (located in app.mjs)
+// READ
+venues.get("/", (req, res) => {
+  db.query(`SELECT * FROM Venues;`, (error, rows) => {
+    if (error) {
+      // we should only get an error here if something's wrong with the database connection
+      console.log(error);
+      res.status(500).json({ error: error });
+    } else {
+      res.status(200).json({ status: "ok", data: rows });
+    }
+  });
+});
 
 // UPDATE
 venues.put("/:id", async function (req, res) {
