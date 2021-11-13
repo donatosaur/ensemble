@@ -1,6 +1,5 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
-import instruments from "./instruments.mjs";
 
 let musicians = express.Router();
 
@@ -54,7 +53,7 @@ musicians.post("/", async function (req, res) {
 });
 
 // READ
-instruments.get("/", (req, res) => {
+musicians.get("/", (req, res) => {
   db.query("SELECT * FROM Musicians;", (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
