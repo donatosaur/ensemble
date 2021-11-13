@@ -27,8 +27,8 @@ CREATE TABLE Musicians (
     city VARCHAR(100) NOT NULL,
     state CHAR(2) NOT NULL,
     zip INT(5) ZEROFILL NOT NULL,
-    inEnsemble BIT(1) NOT NULL,
-    active BIT(1) NOT NULL,
+    inEnsemble BOOLEAN NOT NULL,
+    active BOOLEAN NOT NULL,
     PRIMARY KEY (musicianID),
     CONSTRAINT validPhoneNumber CHECK (phoneNumber > 999999999)
 )
@@ -74,7 +74,7 @@ CREATE TABLE Services (
     serviceID INT AUTO_INCREMENT UNIQUE NOT NULL,
     startTime DATETIME NOT NULL,
     endTime DATETIME NOT NULL,
-    isRehearsal BIT(1) NOT NULL,
+    isRehearsal BOOLEAN NOT NULL,
     venueID INT,
     concertID INT NOT NULL,
     FOREIGN KEY (venueID) REFERENCES Venues(venueID),
