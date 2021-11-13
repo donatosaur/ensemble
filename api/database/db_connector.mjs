@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise'
+import mysql from 'mysql';
 import 'dotenv/config'
 
 // import * as dotenv from 'dotenv';
@@ -18,4 +18,4 @@ const pool = mysql.createPool({
     database        : process.env.DB_NAME
 })
 
-export default pool
+export default pool;
