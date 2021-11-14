@@ -93,7 +93,7 @@ GET http://localhost:4444/api/Venues HTTP/1.1
 
 
 ### edit an instrument
-PUT  http://localhost:4444/api/Venues/4 HTTP/1.1
+PUT  http://localhost:4444/api/Venues?venueID=5 HTTP/1.1
 content-type: application/json
 
 {
@@ -105,7 +105,7 @@ content-type: application/json
     "zip": 21243
   }
 ### delete from Instruments
-DELETE http://localhost:4444/api/Venues/4 HTTP/1.1
+DELETE http://localhost:4444/api/Venues?venueID=5 HTTP/1.1
 
 ############################ ConcertCycles #################################
 
