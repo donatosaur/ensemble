@@ -30,7 +30,7 @@ app.use(express.json({
 
 
 // Attach table endpoint routes
-// app.use('/api/Musicians', musicians);
+app.use('/api/Musicians', musicians);
 app.use('/api/Instruments', instruments);
 app.use('/api/Venues', venues);
 app.use('/api/ConcertCycles', concertCycles);
