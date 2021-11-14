@@ -4,7 +4,7 @@ POST http://localhost:4444/api/Musicians HTTP/1.1
 content-type: application/json
 
 {
-    "firstName": "helloooooo",
+    "firstName": "arggag",
     "lastName": "asdfdsf",
     "birthdate": "2020-01-01",
     "email": "abc@dabcd.com",
@@ -23,7 +23,7 @@ GET http://localhost:4444/api/Musicians HTTP/1.1
 
 
 ### edit a musician
-PUT  http://localhost:4444/api/Musicians/1 HTTP/1.1
+PUT  http://localhost:4444/api/Musicians?musicianID=16 HTTP/1.1
 content-type: application/json
 
 {
@@ -41,7 +41,7 @@ content-type: application/json
     "musicianID": 1
 }
 ### Delete from Musicians (might need to change :id)
-DELETE http://localhost:4444/api/Musicians/4 HTTP/1.1
+DELETE http://localhost:4444/api/Musicians?musicianID=16 HTTP/1.1
 
 ############################ Instruments #################################
 
@@ -93,7 +93,7 @@ GET http://localhost:4444/api/Venues HTTP/1.1
 
 
 ### edit an instrument
-PUT  http://localhost:4444/api/Venues/4 HTTP/1.1
+PUT  http://localhost:4444/api/Venues?venueID=5 HTTP/1.1
 content-type: application/json
 
 {
@@ -105,7 +105,7 @@ content-type: application/json
     "zip": 21243
   }
 ### delete from Instruments
-DELETE http://localhost:4444/api/Venues/4 HTTP/1.1
+DELETE http://localhost:4444/api/Venues?venueID=5 HTTP/1.1
 
 ############################ ConcertCycles #################################
 

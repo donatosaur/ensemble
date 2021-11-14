@@ -11,26 +11,25 @@ let venues = express.Router();
  */
 
 // CREATE
-venues.post("/", async function (req, res) {
-  // request parameter
-  const queryObj = req.body;
-  // Execute query async
-  try {
-    const createQuery =
-      "INSERT INTO Venues (capacity, name, street, city, state, zip) VALUES (?, ?, ?, ?, ?, ?);";
-    const fields=Object.values(queryObj)
+venues.post("/", function (req, res) {
+  // destructure body params
+  const createQuery =
+    "INSERT INTO Venues (capacity, name, street, city, state, zip) VALUES (?, ?, ?, ?, ?, ?);";
+  let { capacity, name, street, city, state, zip } = req.body;
 
-    await db.execute(createQuery, fields);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
-    res.send(results);
-
-    // Log error if table doesn't exist, connection problem, etc
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      Error: "Request failed",
-    });
-  }
+  db.query(createQuery, [capacity, name, street, city, state, zip], (error) => {
+    if (error) {
+      // send back a description of the error as well as the error status
+      console.log(error);
+      res.status(400).json({
+        error: error,
+      });
+    } else {
+      res.status(201).json({
+        status: "Created",
+      });
+    }
+  });
 });
 
 // READ
@@ -39,59 +38,61 @@ venues.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(500).json({ error: error });
+      res.status(500).json({
+        error: error,
+      });
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json({
+        status: "ok",
+        data: rows,
+      });
     }
   });
 });
 
 // UPDATE
-venues.put("/:id", async function (req, res) {
-  // request parameter
-  const queryObj = req.body;
-  // Execute query async
-  try {
-    const updateQuery ="UPDATE Venues SET capacity = ?, name = ?, street = ?, city = ?, state = ?, zip = ? WHERE venueID = ?;"
+venues.put("/", function (req, res) {
+  let venueID = req.query.venueID;
 
-    const fields = [
-      queryObj.capacity,
-      queryObj.name,
-      queryObj.street,
-      queryObj.city,
-      queryObj.state,
-      queryObj.zip,
-      req.params.id,
-    ];
+  let { capacity, name, street, city, state, zip } = req.body;
 
-    await db.execute(updateQuery, fields);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
-    res.send(results);
-    // Log error if table doesn't exist, connection problem, etc
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      Error: "Request failed",
-    });
-  }
+  // parse
+  venueID = parseInt(venueID);
+  venueID = isNaN(venueID) ? null : venueID;
+  const updateQuery =
+    "UPDATE Venues SET capacity = ?, name = ?, street = ?, city = ?, state = ?, zip = ? WHERE venueID = ?;";
+
+  db.query(
+    updateQuery,
+    [capacity, name, street, city, state, zip, venueID],
+    (error) => {
+      if (error) {
+        console.log(error);
+        res.status(400).json({ error: error });
+      } else {
+        res.status(200).json({ status: "OK" });
+      }
+    }
+  );
 });
 
-venues.delete("/:id", async function (req, res) {
-  // request parameter
-  // Execute query async
-  try {
-    // Define query
-    const createQuery = "DELETE FROM Venues WHERE venueID = ?;";
-    await db.execute(createQuery, [req.params.id]);
-    let [results, rows] = await db.query("SELECT * FROM Venues");
-    res.send(results);
-    // Log error if table doesn't exist, connection problem, etc
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      Error: "Request failed",
-    });
-  }
+// Delete
+venues.delete("/", function (req, res) {
+  let venueID = req.query.venueID;
+  // parse
+  venueID = parseInt(venueID);
+  venueID = isNaN(venueID) ? null : venueID;
+
+  // Define query
+  const deleteQuery = "DELETE FROM Venues WHERE venueID = ?;";
+  db.query(deleteQuery, [venueID], (error) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ error: error });
+    } else {
+      res.status(200).json({ status: "OK" });
+    }
+  });
 });
 
 export default venues;
