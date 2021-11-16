@@ -262,3 +262,24 @@ SELECT * FROM PiecesConcertCycles;
 DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concertID;
 
 
+
+-- ------------------------------- INTERSECTION TABLE QUERIES --------------------------------
+-- can rearrange later put this here for ease of finding
+
+-- MusiciansInstruments
+SELECT Musicians.musicianID, CONCAT(firstName," ", lastName) AS fullName, Instruments.name FROM Musicians
+INNER JOIN MusiciansInstruments ON Musicians.musicianID = MusiciansInstruments.musicianID
+INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.instrumentID;
+
+-- MusiciansConcertCycles
+SELECT Musicians.musicianID, ConcertCycles.concertID, CONCAT(firstName," ", lastName) AS fullName, instruments.name AS instrument, ConcertCycles.concertTitle FROM Musicians
+INNER JOIN MusiciansConcertCycles ON Musicians.musicianID = MusiciansConcertCycles.musicianID
+INNER JOIN Instruments ON Musicians.musicianID = Instruments.instrumentID
+INNER JOIN ConcertCycles ON ConcertCycles.concertID = MusiciansConcertCycles.concertID;
+
+-- PiecesConcertCycles
+SELECT Pieces.pieceID, ConcertCycles.concertID, Pieces.pieceTitle, ConcertCycles.concertTitle FROM pieces
+INNER JOIN PiecesConcertCycles ON Pieces.pieceID = PiecesConcertCycles.pieceID
+INNER JOIN ConcertCycles ON ConcertCycles.concertID = PiecesConcertCycles.concertID;
+
+
