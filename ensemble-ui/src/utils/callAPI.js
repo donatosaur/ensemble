@@ -396,7 +396,7 @@ async function sendGetRequest(path) {
  * @returns {Promise} a promise resolving to server response
  */
 async function sendPostRequest(path, body) {
-  const response = await fetch("${API_BASE}/${path}", {
+  const response = await fetch(`${API_BASE}/${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -421,7 +421,7 @@ async function sendPostRequest(path, body) {
  * @returns {Promise} a promise resolving to server response
  */
 async function sendPutRequest(path, body, queryString, replacer = null) {
-  const response = await fetch("${API_BASE}/${path}?{queryString}", {
+  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -444,7 +444,7 @@ async function sendPutRequest(path, body, queryString, replacer = null) {
  * @returns {Promise} a promise resolving to server response
  */
 async function sendDeleteRequest(path, queryString) {
-  const response = await fetch("${API_BASE}/${path}?{queryString}", {
+  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
     method: "DELETE"
   });
 
