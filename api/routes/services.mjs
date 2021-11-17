@@ -32,7 +32,7 @@ services.post("/", (req, res) => {
     if (error) {
       // send back a description of the error as well as the error status
       console.log(error);
-      res.status(400).json({error: error});
+      res.status(400).json(error);
     } else {
       res.status(201).json( {status: "created"});
     }
@@ -46,7 +46,7 @@ services.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(500).json({ error: error });
+      res.status(500).json(error);
     } else {
       res.status(200).json(rows);
     }
@@ -77,7 +77,7 @@ services.put("/", (req, res) => {
   db.query(updateQuery, [startTime, endTime, isRehearsal, venueID, concertID, id], (error) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ error: error });
+      res.status(400).json(error);
     } else {
       res.status(200).json({ status: "ok" });
     }
@@ -98,7 +98,7 @@ services.delete("/",  (req, res) => {
   db.query(deleteQuery, [id], (error) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ error: error });
+      res.status(400).json(error);
     } else {
       res.status(200).json({ status: "ok" });
     }

@@ -12,8 +12,7 @@ let musicians = express.Router();
 
 // CREATE
 musicians.post("/", function (req, res) {
-  const createQuery =
-    "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, state, zip, inEnsemble, active) VALUES (?, ?, ? ,? ,?, ?, ?, ?, ?, ?, ?);";
+  // get body params
   let {
     firstName,
     lastName,
@@ -27,6 +26,11 @@ musicians.post("/", function (req, res) {
     inEnsemble,
     active,
   } = req.body;
+
+  // query
+  const createQuery = "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
+                      "state, zip, inEnsemble, active) VALUES (?, ?, ? ,? ,?, ?, ?, ?, ?, ?, ?);";
+
   db.query(
     createQuery,
     [
@@ -46,7 +50,7 @@ musicians.post("/", function (req, res) {
       if (error) {
         // send back a description of the error as well as the error status
         console.log(error);
-        res.status(400).json({ error: error });
+        res.status(400).json(error);
       } else {
         res.status(201).json({ status: "Created" });
       }
@@ -60,7 +64,7 @@ musicians.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(500).json({ error: error });
+      res.status(500).json(error);
     } else {
       res.status(200).json(rows);
     }
@@ -69,13 +73,8 @@ musicians.get("/", (req, res) => {
 
 // UPDATE
 musicians.put("/", function (req, res) {
+  // get params
   let id = req.query.id;
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  const updateQuery =
-    "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
   let {
     firstName,
     lastName,
@@ -89,6 +88,15 @@ musicians.put("/", function (req, res) {
     inEnsemble,
     active,
   } = req.body;
+
+  // parse
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
+
+  // query
+  const updateQuery = "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
+                      "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
+
   db.query(
     updateQuery,
     [
@@ -108,7 +116,7 @@ musicians.put("/", function (req, res) {
     (error) => {
       if (error) {
         console.log(error);
-        res.status(400).json({ error: error });
+        res.status(400).json(error);
       } else {
         res.status(200).json({ status: "OK" });
       }
@@ -117,15 +125,20 @@ musicians.put("/", function (req, res) {
 });
 
 musicians.delete("/", function (req, res) {
+  // get query param
   let id = req.query.id;
+
+  // parse
   id = parseInt(id);
   id = isNaN(id) ? null : id;
 
+  // query
   const deleteQuery = "DELETE FROM Musicians WHERE id = ?;";
+
   db.query(deleteQuery, [id], (error) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ error: error });
+      res.status(400).json(error);
     } else {
       res.status(200).json({ status: "OK" });
     }

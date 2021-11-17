@@ -12,16 +12,17 @@ let venues = express.Router();
 
 // CREATE
 venues.post("/", function (req, res) {
-  // destructure body params
-  const createQuery =
-    "INSERT INTO Venues (capacity, name, street, city, state, zip) VALUES (?, ?, ?, ?, ?, ?);";
+  // get body params
   let { capacity, name, street, city, state, zip } = req.body;
+
+  // query
+  const createQuery = "INSERT INTO Venues (capacity, name, street, city, state, zip) VALUES (?, ?, ?, ?, ?, ?);";
 
   db.query(createQuery, [capacity, name, street, city, state, zip], (error) => {
     if (error) {
       // send back a description of the error as well as the error status
       console.log(error);
-      res.status(400).json({ error: error });
+      res.status(400).json(error);
     } else {
       res.status(201).json({status: "Created"});
     }
@@ -34,7 +35,7 @@ venues.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(500).json({error: error});
+      res.status(500).json(error);
     } else {
       res.status(200).json(rows);
     }
@@ -43,15 +44,16 @@ venues.get("/", (req, res) => {
 
 // UPDATE
 venues.put("/", function (req, res) {
+  // get params
   let id = req.query.id;
-
   let { capacity, name, street, city, state, zip } = req.body;
 
   // parse
   id = parseInt(id);
   id = isNaN(id) ? null : id;
-  const updateQuery =
-    "UPDATE Venues SET capacity = ?, name = ?, street = ?, city = ?, state = ?, zip = ? WHERE id = ?;";
+
+  // query
+  const updateQuery = "UPDATE Venues SET capacity = ?, name = ?, street = ?, city = ?, state = ?, zip = ? WHERE id = ?;";
 
   db.query(
     updateQuery,
@@ -59,7 +61,7 @@ venues.put("/", function (req, res) {
     (error) => {
       if (error) {
         console.log(error);
-        res.status(400).json({ error: error });
+        res.status(400).json(error);
       } else {
         res.status(200).json({ status: "OK" });
       }
@@ -67,19 +69,22 @@ venues.put("/", function (req, res) {
   );
 });
 
-// Delete
+// DELETE
 venues.delete("/", function (req, res) {
+  // get params
   let id = req.query.id;
+
   // parse
   id = parseInt(id);
   id = isNaN(id) ? null : id;
 
   // Define query
   const deleteQuery = "DELETE FROM Venues WHERE id = ?;";
+
   db.query(deleteQuery, [id], (error) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ error: error });
+      res.status(400).json(error);
     } else {
       res.status(200).json({ status: "OK" });
     }
