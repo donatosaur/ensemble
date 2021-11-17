@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, {useContext, useState} from "react";
 import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
-import {EntityContext, EntityDispatchContext} from "../EntityContextProvider";
-import StateOptions from "./FormComponents/StateOptions";
+import {EntityContext, EntityDispatchContext} from "../../hooks/EntityContextProvider";
+import AddressInput from "./FormComponents/AddressInput";
 
 /**
  *
@@ -16,6 +16,8 @@ export default function VenuesForm({ showID, onSubmit, formLabel, buttonLabel })
   // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const venue = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
+
+  const [showHelpText, setShowHelpText] = useState(false);
 
   const handleOnChange = (event) => {
     // slot the new value into the piece state
@@ -71,57 +73,16 @@ export default function VenuesForm({ showID, onSubmit, formLabel, buttonLabel })
       </Form.Group>
     </Row>
 
-    <Row className="entityForm">
-      <Form.Group as={Col} className="entityForm" controlId="street">
-        <FloatingLabel controlId="street" label="Street Address">
-          <Form.Control
-            required
-            placeholder="1234 Main St"
-            value={venue['street']}
-            onChange={handleOnChange}
-          />
-        </FloatingLabel>
-      </Form.Group>
-    </Row>
+      <AddressInput
+        streetValue={venue['street']}
+        cityValue={venue['city']}
+        stateValue={venue['state']}
+        zipValue={venue['zip']}
+        handleOnChange={handleOnChange}
+        showHelpText={showHelpText}
+      />
 
-    <Row className="entityForm">
-      <Form.Group as={Col} controlId="city">
-        <FloatingLabel controlId="city" label="City">
-          <Form.Control
-            required
-            placeholder="Chicago"
-            value={venue['city']}
-            onChange={handleOnChange}
-          />
-        </FloatingLabel>
-      </Form.Group>
-
-      <Form.Group as={Col} controlId="state">
-        <FloatingLabel controlId="state" label="State">
-          <Form.Select
-            required
-            defaultValue="Select a state..."
-            value={venue['state']}
-            onChange={handleOnChange}
-          >
-            <StateOptions />
-          </Form.Select>
-        </FloatingLabel>
-      </Form.Group>
-
-      <Form.Group as={Col} controlId="zip">
-        <FloatingLabel controlId="zip" label="Zip Code">
-          <Form.Control
-            required
-            placeholder="98765"
-            value={venue['zip']}
-            onChange={handleOnChange}
-          />
-        </FloatingLabel>
-      </Form.Group>
-    </Row>
-
-    <Button className="formButton" variant="primary" type="submit" onClick={handleOnSubmit}>
+    <Button className="mt-1" variant="primary" type="submit" onClick={handleOnSubmit}>
       {buttonLabel || 'Submit'}
     </Button>
   </Form>

@@ -1,3 +1,8 @@
+-- CS-340 Project Step 4
+-- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
+-- Last Modified: 2021-11-11
+-- NOTE: A colon (:) denotes a variable that represents data from the backend
+
 -- ------------------------------------ Musicians -----------------------------------
 -- CREATE
 INSERT INTO Musicians (
@@ -267,19 +272,44 @@ DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concer
 -- can rearrange later put this here for ease of finding
 
 -- MusiciansInstruments
-SELECT Musicians.musicianID, CONCAT(firstName," ", lastName) AS fullName, Instruments.name FROM Musicians
+SELECT Musicians.musicianID,
+       Musicians.firstName,
+       Musicians.lastName,
+       Instruments.instrumentID,
+       Instruments.name
+FROM Musicians
 INNER JOIN MusiciansInstruments ON Musicians.musicianID = MusiciansInstruments.musicianID
 INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.instrumentID;
 
+
 -- MusiciansConcertCycles
-SELECT Musicians.musicianID, ConcertCycles.concertID, CONCAT(firstName," ", lastName) AS fullName, instruments.name AS instrument, ConcertCycles.concertTitle FROM Musicians
+SELECT Musicians.musicianID,
+       Musicians.firstName,
+       Musicians.lastName,
+       ConcertCycles.concertID,
+       ConcertCycles.concertTitle
+FROM Musicians
 INNER JOIN MusiciansConcertCycles ON Musicians.musicianID = MusiciansConcertCycles.musicianID
-INNER JOIN Instruments ON Musicians.musicianID = Instruments.instrumentID
 INNER JOIN ConcertCycles ON ConcertCycles.concertID = MusiciansConcertCycles.concertID;
 
+
 -- PiecesConcertCycles
-SELECT Pieces.pieceID, ConcertCycles.concertID, Pieces.pieceTitle, ConcertCycles.concertTitle FROM pieces
+SELECT Pieces.pieceID,
+       Pieces.pieceTitle,
+       ConcertCycles.concertID,
+       ConcertCycles.concertTitle
+FROM Pieces
 INNER JOIN PiecesConcertCycles ON Pieces.pieceID = PiecesConcertCycles.pieceID
 INNER JOIN ConcertCycles ON ConcertCycles.concertID = PiecesConcertCycles.concertID;
 
 
+-- MusiciansConcertCycles (To show instruments: for future implementation)
+SELECT Musicians.musicianID,
+       Musicians.firstName,
+       Musicians.lastName,
+       Instruments.name,
+       ConcertCycles.concertTitle
+FROM Musicians
+INNER JOIN MusiciansConcertCycles ON Musicians.musicianID = MusiciansConcertCycles.musicianID
+INNER JOIN Instruments ON Musicians.musicianID = Instruments.instrumentID
+INNER JOIN ConcertCycles ON ConcertCycles.concertID = MusiciansConcertCycles.concertID;

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Form, Row, Col, Button, FloatingLabel, InputGroup } from "react-bootstrap";
-import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
+import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
 
 
 /**
@@ -71,7 +71,7 @@ export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLab
        </InputGroup>
 
 
-      <Button className="formButton" variant="primary" type="submit" onClick={handleOnSubmit}>
+      <Button className="mt-3" variant="primary" type="submit" onClick={handleOnSubmit}>
         {buttonLabel || 'Submit'}
       </Button>
     </Form>

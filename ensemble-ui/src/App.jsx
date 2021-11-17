@@ -1,9 +1,11 @@
 import './scss/app.scss'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
+// site header and footer
+import NavigationBar from './components/NavigationBar';
+
 // pages
 import HomePage from './pages/HomePage';
-import NavigationBar from './components/NavigationBar';
 import MusiciansPage from "./pages/MusiciansPage";
 import InstrumentsPage from "./pages/InstrumentsPage";
 import VenuesPage from "./pages/VenuesPage";

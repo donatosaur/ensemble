@@ -35,7 +35,7 @@ export default function ConfirmationDialog({
       <Modal.Title children={title}  />
       </Modal.Header>
       <Modal.Body children={description} />
-      <Modal.Footer className="withoutBorder">
+      <Modal.Footer className="border-0">
         <Button variant="secondary" onClick={handleCancel}>{cancelButtonText}</Button>
         <Button variant="primary" onClick={handleConfirm}>{confirmButtonText}</Button>
       </Modal.Footer>

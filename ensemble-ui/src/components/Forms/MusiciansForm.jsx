@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
+import React, {useContext, useState } from "react";
+import { Container, Form, Row, Col, Button, FloatingLabel, InputGroup } from "react-bootstrap";
 
-import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
-import StateOptions from "./FormComponents/StateOptions";
+import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
+import AddressInput from "./FormComponents/AddressInput";
 
 
 /**
@@ -19,13 +19,17 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
   const musician = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
 
+  const [showHelpText, setShowHelpText] = useState(false);
+
+
+
   const handleOnChange = (event) => {
     // slot the new value into the state
-    dispatch({[event.target.id]: event.target.value});
+    dispatch({[event.target.name]: event.target.value});
   }
 
   const handleOnCheckboxChange = (event) => {
-    dispatch({[event.target.id]: event.target.checked});
+    dispatch({[event.target.name]: event.target.checked});
   }
 
   const handleOnSubmit = (event) => {
@@ -34,38 +38,36 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
   }
 
   return (
-    
-    <Form>
-      <Row className="entityForm">
+    <Form noValidate>
+      <Row className="text-left m-3" >
         <Form.Label children={formLabel} />
       </Row>
 
 
-      <Row className="entityForm">
-        { showID &&
-        <Form.Group as={Col} controlId="musicianID">
-          <FloatingLabel controlId="musicianID" label="Musician ID">
-            <Form.Control
-              disabled
-              type="number"
-              value={musician['id']}
-            />
-          </FloatingLabel>
-        </Form.Group>
-        }
-
-        { !showID && // todo: this is temporary; we should refactor and create a new param for this
-          <Form.Group as={Col} controlId="initialInstrumentID">
-            <FloatingLabel controlId="initialInstrumentID" label="Initial InstrumentID">
-              <Form.Control
-                required
-                type="number"
-                placeholder="Enter an initial instrumentID"
-                value={musician['initialInstrumentID']}
-                onChange={handleOnChange}
-              />
-            </FloatingLabel>
-          </Form.Group>
+      <Row className="mb-3">
+        { showID
+            // displayed when editing an entity
+            ? <Form.Group as={Col} controlId="musicianID">
+                <FloatingLabel controlId="musicianID" label="Musician ID">
+                  <Form.Control
+                    disabled
+                    name="musicianID"
+                    value={musician['id']}
+                  />
+                </FloatingLabel>
+              </Form.Group>
+            // displayed when creating a new entity
+            : <Form.Group as={Col} controlId="initialInstrumentID">
+                <FloatingLabel controlId="initialInstrumentID" label="Initial Instrument">
+                  <Form.Control
+                    required
+                    name="initialInstrumentID"
+                    placeholder="Enter an initial instrumentID"
+                    value={musician['initialInstrumentID']}
+                    onChange={handleOnChange}
+                  />
+                </FloatingLabel>
+              </Form.Group>
         }
 
         <Form.Group as={Col} controlId="birthdate">
@@ -73,6 +75,7 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
             <Form.Control
               required
               type="date"
+              name="birthdate"
               placeholder="Enter Musician DOB"
               value={musician['birthdate']}
               onChange={handleOnChange}
@@ -82,24 +85,24 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
       </Row>
 
 
-      <Row className="entityForm">
+      <Row className="mb-3">
         <Form.Group as={Col} controlId="firstName">
           <FloatingLabel controlId="firstName" label="First Name">
             <Form.Control
               required
-              type="text"
+              name="firstName"
               placeholder="Enter Musician First Name"
               value={musician['firstName']}
               onChange={handleOnChange}
             />
           </FloatingLabel>
         </Form.Group>
-        
+
         <Form.Group as={Col} controlId="lastName">
           <FloatingLabel controlId="lastName" label="Last Name">
             <Form.Control
               required
-              type="text"
+              name="lastName"
               placeholder="Enter Musician Last Name"
               value={musician['lastName']}
               onChange={handleOnChange}
@@ -108,12 +111,11 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         </Form.Group>
       </Row>
 
-      <Row className="entityForm">
-
+      <Row className="mb-3">
         <Form.Group as={Col} controlId="email">
           <FloatingLabel controlId="email" label="Email">
             <Form.Control
-              type="email"
+              name="email"
               placeholder="Enter Musician Email Address"
               value={musician['email']}
               onChange={handleOnChange}
@@ -124,7 +126,7 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         <Form.Group as={Col} controlId="phoneNumber">
           <FloatingLabel controlId="phoneNumber" label="Phone">
             <Form.Control
-              type="text"
+              name="phoneNumber"
               placeholder="Enter Musician Phone Number"
               value={musician['phoneNumber']}
               onChange={handleOnChange}
@@ -135,6 +137,8 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         <Col>
         <Form.Group className="entityFormCheckbox" controlId="inEnsemble">
           <Form.Check
+            inline
+            name="inEnsemble"
             type="checkbox"
             label="Ensemble?"
             checked={musician['inEnsemble']}
@@ -143,6 +147,8 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         </Form.Group>
         <Form.Group className="entityFormCheckbox" controlId="active">
           <Form.Check
+            inline
+            name="active"
             type="checkbox"
             label="Active?"
             checked={musician['active']}
@@ -152,56 +158,16 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
         </Col>
       </Row>
 
+      <AddressInput
+        streetValue={musician['street']}
+        cityValue={musician['city']}
+        stateValue={musician['state']}
+        zipValue={musician['zip']}
+        handleOnChange={handleOnChange}
+        showHelpText={showHelpText}
+      />
 
-    <Row className="entityForm">
-      <Form.Group as={Col} className="entityForm" controlId="street">
-        <FloatingLabel controlId="street" label="Street Address">
-          <Form.Control
-            required
-            placeholder="1234 Main St"
-            value={musician['street']}
-            onChange={handleOnChange}
-          />
-        </FloatingLabel>
-      </Form.Group>
-     </Row>
-
-      <Row className="entityForm">
-        <Form.Group as={Col} controlId="city">
-          <FloatingLabel controlId="city" label="City">
-          <Form.Control
-            required
-            value={musician['city']}
-            onChange={handleOnChange}
-          />
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="state">
-          <FloatingLabel controlId="state" label="State">
-            <Form.Select
-              required
-              placeholder="Select a state..."
-              value={musician['state']}
-              onChange={handleOnChange}
-            >
-              <StateOptions />
-            </Form.Select>
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="zip">
-          <FloatingLabel controlId="zip" label="Zip Code">
-            <Form.Control
-              required
-              value={musician['zip']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-      </Row>
-
-      <Button className="formButton" variant="primary" type="submit" onClick={handleOnSubmit}>
+      <Button className="mt-1" variant="primary" type="submit" onClick={handleOnSubmit}>
         {buttonLabel || 'Submit'}
       </Button>
     </Form>

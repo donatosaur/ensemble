@@ -22,15 +22,14 @@ CREATE TABLE Musicians (
     lastName VARCHAR(50) NOT NULL,
     birthdate DATE NOT NULL,
     email VARCHAR(100),
-    phoneNumber INT(10) UNSIGNED,
+    phoneNumber CHAR(10),
     street VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state CHAR(2) NOT NULL,
-    zip INT(5) ZEROFILL NOT NULL,
+    zip CHAR(5) NOT NULL,
     inEnsemble BOOLEAN NOT NULL,
     active BOOLEAN NOT NULL,
-    PRIMARY KEY (musicianID),
-    CONSTRAINT validPhoneNumber CHECK (phoneNumber > 999999999)
+    PRIMARY KEY (musicianID)
 )
 COMMENT 'records the details and contact records of all musicians contracted for service by the orchestra';
 
@@ -45,12 +44,12 @@ COMMENT 'records the instruments that may be played by musicians in the orchestr
 
 CREATE TABLE Venues (
     venueID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    capacity SMALLINT UNSIGNED NOT NULL,
+    capacity INT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
     street VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
-    zip INT(5) ZEROFILL NOT NULL,
+    zip CHAR(5) NOT NULL,
     PRIMARY KEY (venueID)
 )
 COMMENT 'records the details of venues where the orchestra may perform';
@@ -142,11 +141,11 @@ VALUES ('Annabelle',
         'Enitan',
         '1966-01-22',
         'hoyt1@gmail.com',
-        2022472839,
+        '2022472839',
         '3225 Argyle Ave',
         'Philadelphia',
         'PA',
-        86392,
+        '86392',
         1,
         0
        ),
@@ -154,11 +153,11 @@ VALUES ('Annabelle',
         'Vasu',
         '1982-08-14',
         NULL,
-        1829385670,
+        '1829385670',
         '300 S Delaware St',
         'Butler',
         'MO',
-        205647730,
+        '12564',
         0,
         1
        ),
@@ -170,7 +169,7 @@ VALUES ('Annabelle',
         '1412 Sunset Ave',
         'Chico',
         'CA',
-        95926,
+        '95926',
         0,
         0);
 
@@ -183,9 +182,9 @@ VALUES ('Viola'),
 
 
 INSERT INTO Venues (capacity, name, street, city, state, zip)
-VALUES (1742, 'Orpheus Theatre', '765 S Grandview Dr', 'Paoli', 'IN', 47454),
-       (22634, 'Capital Theatre', '4548 Akialoa Rd', 'Kekaha', 'HI', 96752),
-       (05443, 'Red Rocks Theatre', '22 Harvard St', 'Boston', 'MA', 02124);
+VALUES (1742, 'Orpheus Theatre', '765 S Grandview Dr', 'Paoli', 'IN', '47454'),
+       (22634, 'Capital Theatre', '4548 Akialoa Rd', 'Kekaha', 'HI', '96752'),
+       (05443, 'Red Rocks Theatre', '22 Harvard St', 'Boston', 'MA', '02124');
 
 
 INSERT INTO ConcertCycles (concertTitle,

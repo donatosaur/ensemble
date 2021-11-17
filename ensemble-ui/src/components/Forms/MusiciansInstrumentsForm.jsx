@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { EntityContext, EntityDispatchContext } from "../EntityContextProvider";
+import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
 import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 /**
@@ -56,7 +56,7 @@ export default function PiecesConcertCyclesForm({ onSubmit, formLabel, buttonLab
         </Form.Group>
       </Row>
 
-      <Button className="formButton" variant="primary" type="submit" onClick={handleOnSubmit}>
+      <Button className="mt-3" variant="primary" type="submit" onClick={handleOnSubmit}>
         {buttonLabel || 'Submit'}
       </Button>
     </Form>

@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useContext } from "react";
 
 // create a context hook for the entity object and its dispatch function
 export const EntityContext = createContext(null);
@@ -23,4 +23,24 @@ export default function EntityContextProvider({ children }) {
         </EntityDispatchContext.Provider>
     </EntityContext.Provider>
   )
+}
+
+/**
+ *
+ * @returns {{dispatch: null, entity: null}}
+ */
+export function useEntity() {
+  const entity = useContext(EntityContext);
+  const dispatch = useContext(EntityDispatchContext);
+
+  if (EntityContext === undefined || EntityDispatchContext === undefined) {
+    throw new Error("Missing EntityContextProvider.")
+  } else if (EntityContext === null || EntityDispatchContext === null) {
+    throw new Error(
+      "Context hooks were not properly initialized by EntityContextProvider. " +
+      "Check "
+    )
+  }
+  return { entity, dispatch }
+
 }

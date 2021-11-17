@@ -2,6 +2,7 @@ import React, { useReducer, useState } from "react";
 import { Form, Row, Dropdown, DropdownButton, Button, InputGroup, Col } from "react-bootstrap";
 
 /**
+ * Creates a search form for the Musicians table
  *
  * @returns {JSX.Element}
  * @constructor
@@ -128,8 +129,6 @@ export default function MusicianSearchForm({ }){
           </Button>
         </InputGroup>
       </Row>
-
-
 
     </Form>
   )

@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 import DataTableProvider from "../components/DataTableProvider";
 import PiecesConcertCyclesForm from "../components/Forms/PiecesConcertCyclesForm";
-import EntityContextProvider from "../components/EntityContextProvider";
+import EntityContextProvider from "../hooks/EntityContextProvider";
 
 export default function PiecesConcertCyclesPage() {
   const entityName = 'PiecesConcertCycles';

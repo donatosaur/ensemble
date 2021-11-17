@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import { Container } from "react-bootstrap";
 import DataTableProvider from "../components/DataTableProvider";
 import MusiciansForm from "../components/Forms/MusiciansForm";
-import EntityContextProvider from "../components/EntityContextProvider";
+import EntityContextProvider from "../hooks/EntityContextProvider";
 
 
 export default function MusiciansPage() {
@@ -23,7 +23,7 @@ export default function MusiciansPage() {
       <h1>{entityName}</h1>
 
       <EntityContextProvider key={1}>
-        <Container>
+        <Container fluid>
           <DataTableProvider
             entityName={entityName}
             createFormToggle={createFormToggle}

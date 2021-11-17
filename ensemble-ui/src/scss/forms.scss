@@ -2,18 +2,11 @@
 .entityFormContainer {
     border: 1px solid lightgray;
     border-radius: $border-radius-lg;
-    padding: $container-padding-y $container-padding-x * 1.2;
+    padding: $container-padding-y $container-padding-x;
     margin-top: 5vh;
     margin-bottom: 5vh;
 }
 
-.entityForm {
-    padding: 0.4em;
-}
-
-.formButton {
-    margin-top: 1em;
-}
 
 .entityFormCheckbox {
     text-align: left;

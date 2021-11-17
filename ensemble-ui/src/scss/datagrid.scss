@@ -52,10 +52,6 @@
   padding: 0.2em 0.4em;
 }
 
-.withoutBorder {
-  border: none;
-}
-
 // add padding to custom popover elements
 .toolbarPopoverContainer {
   padding: 1em 1em;
@@ -65,7 +61,6 @@
 
 // override default bootstrap css for toolbar button to match mui data grid
 .toolbarButton {
-  color: $mui-default-color;
   text-transform: lowercase;
   font-variant: small-caps;
   outline: unset;
@@ -74,15 +69,4 @@
 // add padding to bootstrap icons to match MUI
 .toolbarButton i{
   padding-right: 0.5em;
-}
-
-.toolbarButton:hover {
-  color: $mui-default-color;
-  background-color: #f7f8fc;
-}
-
-.toolbarButton:active {
-  color: $mui-default-color;
-  background-color: #f7f8fc;
-  box-shadow: unset;
 }

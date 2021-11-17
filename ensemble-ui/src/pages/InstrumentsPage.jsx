@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-import EntityContextProvider from "../components/EntityContextProvider";
-
+import EntityContextProvider from "../hooks/EntityContextProvider";
 
 import DataTableProvider from "../components/DataTableProvider";
 import InstrumentsForm from "../components/Forms/InstrumentsForm";

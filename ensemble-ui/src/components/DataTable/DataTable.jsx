@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useMemo, useState } from "react";
 import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
 import { Container } from "react-bootstrap";
-import { makeStyles } from "@material-ui/core";
 import { cloneDeep } from "lodash";
 
 // button components for Grid Toolbar override
@@ -10,12 +9,12 @@ import SearchButton from "./ToolbarButtons/SearchButton";
 import AddButton from "./ToolbarButtons/AddButton";
 
 // button components for custom actions cell
-import EditButton from "./EditButton";
-import DeleteButton from "./DeleteButton";
+import EditButton from "./ActionButtons/EditButton";
+import DeleteButton from "./ActionButtons/DeleteButton";
 
 // other components and hooks
 import ConfirmationDialog from "../ConfirmationDialog";
-import { EntityDispatchContext } from "../EntityContextProvider";
+import { EntityDispatchContext } from "../../hooks/EntityContextProvider";
 
 // custom data type formatters
 import customDataTypes from "./CustomFormats";
@@ -45,7 +44,7 @@ export default function DataTable({
   allowSearch,
   allowEdit
 }) {
-  /* ------------------------------ State Hooks ------------------------------ */
+  /* ------------------------------------------ State Hooks ------------------------------------------ */
   // context hook for edits; dispatch a copy of the row object being edited
   const dispatch = useContext(EntityDispatchContext);
 
@@ -65,13 +64,11 @@ export default function DataTable({
   const [alertContent, setAlertContent] = useState(null);
 
 
-
-  /* ------------------------------ Effect Hooks ------------------------------ */
+  /* ------------------------------------------ Effect Hooks ------------------------------------------ */
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    if (!fetchNewData) return; // prevent infinite data fetching
-
-    const abortController = new AbortController();
+    if (!fetchNewData) return;                     // safety: fetching and rendering rows is expensive
+    const abortController = new AbortController(); // to abort async requests
     void async function getData() {
       try {
         // get the rows and set the data model
@@ -82,17 +79,21 @@ export default function DataTable({
         setAlertContent(err);  // todo: placeholder; push alert onto stack
       }
     }();
-    // prevent memory leaks by aborting request if component is no longer mounted or request times out
+    // prevent memory leaks by aborting request if component is no longer mounted; for an explanation of
+    // what cleanup functions do, see https://reactjs.org/docs/hooks-effect.html#example-using-hooks-1
     return () => abortController.abort();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchNewData]);
 
 
-  /* -------------------------------- Columns -------------------------------- */
-  // we're using useMemo here because the column cells will re-render every time there's a change, which includes
-  // instances in which the same action button is pressed more than once; the memory footprint savings here are
-  // pretty significant as well; storing all th
+  /* -------------------------------------------- Columns -------------------------------------------- */
 
+  /**
+   * We're using useMemo here to prevent the columns from re-rendering whenever *any* change is detected,
+   * which includes instances where the same action button is pressed more than once (e.g. to toggle
+   * between editing different rows). In addition, this gives us a pretty decent savings in memory
+   * footprint: about 25% with memoization.
+   */
   const columns = useMemo(() => [
     ...columnData.map(
       column => ({
@@ -105,7 +106,7 @@ export default function DataTable({
         ...customDataTypes.has(column.type) ? customDataTypes.get(column.type) : {},
       })
     ),
-    // create an action column: see https://mui.com/components/data-grid/columns/#render-cell for formatting here
+    // Create a custom actions button column. See https://mui.com/components/data-grid/columns/#render-cell
     {
       field: 'actions',
       headerName: 'Actions',
@@ -113,7 +114,7 @@ export default function DataTable({
       editable: false,
       sortable: false,
       flex: 0,
-      disableClickEventBubbling: true,  // we don't want events to propagate (we're just toggling state hooks)
+      disableClickEventBubbling: true,  // we don't need events to propagate; we are simply toggling state hooks
       renderCell: (rowParams) => {
         // console.log('rendering...');
         return (
@@ -124,21 +125,21 @@ export default function DataTable({
                   // load the row data
                   const rowIndex = rows.findIndex(row => row.id === parseInt(rowParams.id));
                   if (rowIndex === -1) {
-                    // this shouldn't happen; if it does, we should know about it
+                    // this should never happen; if it does, we absolutely need to know about it
                     console.error('Edit button pressed, but row not found!')
+                    return;
                   }
 
-                  // get a deep copy so we don't inadvertently modify the original row data, and
-                  // send it up to the context provider
+                  // get a deep copy to avoid modifying the original row's underlying data, and send it up
+                  // to the context provider so that it can be accessed from the edit form
                   if (dispatch === null || dispatch === undefined) {
                     console.error('Dispatch function is null!');
                     return;
                   } else {
                     dispatch(cloneDeep(rows[rowIndex]));
-                    // console.log('Dispatching...', rows[rowIndex])
                   }
 
-                  // only one form should be open at a time
+                  // we should only have one form open at any one time
                   editFormToggle(true);
                   setSearchPanelOpen(false);
                   createFormToggle(false);
@@ -156,7 +157,7 @@ export default function DataTable({
   );
 
 
-  /* ----------------------- Delete Confirmation Dialogue ------------------------- */
+  /* ----------------------------------- Delete Confirmation Dialogue ------------------------------------- */
   const DeleteConfirmation = () => {
 
     return (
@@ -174,7 +175,7 @@ export default function DataTable({
 
 
 
-  /* -------------------------------- Grid Toolbar -------------------------------- */
+  /* -------------------------------------------- Grid Toolbar -------------------------------------------- */
   const Toolbar = () => {
     const onAddButtonClick = (event) => {
       event.preventDefault();
@@ -195,7 +196,7 @@ export default function DataTable({
         <AddButton onClick={onAddButtonClick} />
         {` `}{ allowSearch && <SearchButton onClick={onSearchButtonClick}/> }
         {` |`}
-        {` `}<GridToolbarDensitySelector />
+        {` `}<GridToolbarDensitySelector/>
         {` `}<GridToolbarExport />
         {` `}<HelpButton />
         </Container>
@@ -203,24 +204,11 @@ export default function DataTable({
     );
   }
 
-  
-  /* ---------------------------- Data Table Styles Context ---------------------------- */
-  // not currently in use, but useful 
-  const useStyles = makeStyles({
-    root: {
-      '& .edited': {
-        backgroundColor: 'hsl(45, 100%, 94%) !important',
-        fontStyle: 'italic !important',
-      }
-    }
-  });
-  const classes = useStyles();
 
-
-  /* ---------------------------- Data Table JSX Element ---------------------------- */
+  /* ---------------------------------------- Data Table JSX Element ---------------------------------------- */
   return (
     <>
-    <div style={{ height: 500}} className={classes.root}>
+    <div style={{ height: 510}}>
       <DataGrid
         // style
         disableSelectionOnClick // don't allow users to select rows
@@ -240,15 +228,9 @@ export default function DataTable({
 
         // row edit options: disable inline editing; we're using forms
         editMode="row"
-        onRowEditStart={(_, event) => {
-          event.defaultMuiPrevented = true;
-        }}
-        onRowEditStop={(_, event) => {
-          event.defaultMuiPrevented = true;
-        }}
-        onCellFocusOut={(_, event) => {
-          event.defaultMuiPrevented = true;
-        }}
+        onRowEditStart={(_, event) => event.defaultMuiPrevented = true}
+        onRowEditStop={(_, event) => event.defaultMuiPrevented = true}
+        onCellFocusOut={(_, event) => event.defaultMuiPrevented = true}
 
         // prop overrides
         components={{
@@ -256,11 +238,12 @@ export default function DataTable({
         }}
       />
 
+      {/* Render Delete Confirmation Dialogue */}
       <DeleteConfirmation />
 
-      { allowSearch
-        ? searchPanelOpen &&
-          <Container className="entityFormContainer">
+      {/* Render Search Panel */}
+      { searchPanelOpen && ( allowSearch
+         ? <Container className="entityFormContainer">
             <MusicianSearchForm
               setSearchParameter={columnData}
               dispatch={setSearchParameters}
@@ -268,7 +251,7 @@ export default function DataTable({
           </Container>
         // this shouldn't ever display, but it's here for safety
         : <p>Search is disabled for this entity.</p>
-      }
+      )}
 
     </div>
     </>

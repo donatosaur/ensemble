@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import DataTableProvider from "../components/DataTableProvider";
 import MusiciansInstrumentsForm from "../components/Forms/MusiciansInstrumentsForm";
-import EntityContextProvider from "../components/EntityContextProvider";
+import EntityContextProvider from "../hooks/EntityContextProvider";
 
 
 export default function MusiciansInstrumentsPage() {

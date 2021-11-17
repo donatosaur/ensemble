@@ -152,11 +152,11 @@
   },
 
   "MusiciansConcertCycles": {
-  "description": "an intersection table that implements M:M relationships between Musicians and ConcertCycles",
+    "description": "an intersection table that implements M:M relationships between Musicians and ConcertCycles",
     "fields": [
       { "field": "id", "headerName": "Row #", "editable": false, "hide": true, "searchable": false },
       { "field": "musicianID", "headerName": "Musician", "width": 100, "editable": false },
-      { "field": "concertID", "headerName": "Concert Cycle", "width": 100, "editable": false }
+      { "field": "concertID", "headerName": "ConcertCycle", "width": 100, "editable": false }
     ]
   },
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import DataTableProvider from "../components/DataTableProvider";
 import PiecesForm from "../components/Forms/PiecesForm";
-import EntityContextProvider from "../components/EntityContextProvider";
+import EntityContextProvider from "../hooks/EntityContextProvider";
 
 
 export default function PiecesPage() {

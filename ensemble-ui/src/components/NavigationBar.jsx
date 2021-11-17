@@ -8,7 +8,7 @@ export default function NavigationBar() {
   const history = useHistory()
 
   return (
-    <Navbar className="navbar" bg="light" sticky="top" fixed="top" expand="lg">
+    <Navbar className="navbar mb-2" bg="light" sticky="top" fixed="top" expand="xl">
       <Navbar.Brand>Ensemble</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
@@ -16,7 +16,7 @@ export default function NavigationBar() {
           <Nav.Link onClick={(e)=>{
               e.preventDefault()
               history.push("/")
-          }}>
+          }} >
             Home
           </Nav.Link>
 
