@@ -45,7 +45,7 @@ musiciansConcertCycles.get("/", (req, res) => {
       console.log(error);
       res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "OK", data: rows });
+      res.status(200).json(rows);
     }
   });
 });

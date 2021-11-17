@@ -28,7 +28,7 @@ import MusicianSearchForm from "./SearchForm";
  * Creates a MUI Data Grid for an Entity using the passed in props
  *
  * @param columnData {array} an array of columns, formatted to MUI spec ()
- * @param fetchRows  a function that calls the api to fetch rows (SELECT -> GET)
+ * @param getRows an async function that calls the api to fetch rows (SELECT -> GET)
  * @param createFormToggle a function that toggles the display state of the EntityForm
  * @param editFormToggle a function that toggles the display state of the EntityForm
  * @param allowSearch {boolean} whether search is enabled for this table
@@ -38,7 +38,7 @@ import MusicianSearchForm from "./SearchForm";
  */
 export default function DataTable({
   columnData,
-  fetchRows,
+  getRows,
   createFormToggle,
   editFormToggle,
   allowSearch,
@@ -67,23 +67,24 @@ export default function DataTable({
   /* ------------------------------------------ Effect Hooks ------------------------------------------ */
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    if (!fetchNewData) return;                     // safety: fetching and rendering rows is expensive
+    // if (!fetchNewData) return;                     // safety: fetching and rendering rows is expensive
     const abortController = new AbortController(); // to abort async requests
+    console.log('Fetching new data...');
     void async function getData() {
       try {
         // get the rows and set the data model
-        const rowData = await fetchRows();
+        let rowData = await getRows();
         setRows(rowData);
-        setFetchNewData(false);
+        // setFetchNewData(false);
       } catch (err) {
+        console.warn(err);
         setAlertContent(err);  // todo: placeholder; push alert onto stack
       }
     }();
     // prevent memory leaks by aborting request if component is no longer mounted; for an explanation of
     // what cleanup functions do, see https://reactjs.org/docs/hooks-effect.html#example-using-hooks-1
     return () => abortController.abort();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchNewData]);
+  }, [getRows, searchParameters]);
 
 
   /* -------------------------------------------- Columns -------------------------------------------- */
@@ -227,7 +228,7 @@ export default function DataTable({
         columns={columns}
 
         // row edit options: disable inline editing; we're using forms
-        editMode="row"
+        editMode="row"  // use rowParams instead of cellParams
         onRowEditStart={(_, event) => event.defaultMuiPrevented = true}
         onRowEditStop={(_, event) => event.defaultMuiPrevented = true}
         onCellFocusOut={(_, event) => event.defaultMuiPrevented = true}
@@ -244,10 +245,7 @@ export default function DataTable({
       {/* Render Search Panel */}
       { searchPanelOpen && ( allowSearch
          ? <Container className="entityFormContainer">
-            <MusicianSearchForm
-              setSearchParameter={columnData}
-              dispatch={setSearchParameters}
-            />
+            <MusicianSearchForm setSearchParameters={setSearchParameters} />
           </Container>
         // this shouldn't ever display, but it's here for safety
         : <p>Search is disabled for this entity.</p>

@@ -1,6 +1,6 @@
 -- CS-340 Project Step 4
 -- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
--- Last Modified: 2021-11-08
+-- Last Modified: 2021-11-16
 
 -- Drop all tables simultaneously and in reverse order to avoid FK conflicts
 DROP TABLE IF EXISTS
@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS
 
 -- Create new tables for each entity
 CREATE TABLE Musicians (
-    musicianID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     birthdate DATE NOT NULL,
@@ -29,34 +29,34 @@ CREATE TABLE Musicians (
     zip CHAR(5) NOT NULL,
     inEnsemble BOOLEAN NOT NULL,
     active BOOLEAN NOT NULL,
-    PRIMARY KEY (musicianID)
+    PRIMARY KEY (id)
 )
 COMMENT 'records the details and contact records of all musicians contracted for service by the orchestra';
 
 
 CREATE TABLE Instruments (
-    instrumentID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     name VARCHAR(50) UNIQUE NOT NULL,
-    PRIMARY KEY (instrumentID)
+    PRIMARY KEY (id)
 )
 COMMENT 'records the instruments that may be played by musicians in the orchestra';
 
 
 CREATE TABLE Venues (
-    venueID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     capacity INT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
     street VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
     zip CHAR(5) NOT NULL,
-    PRIMARY KEY (venueID)
+    PRIMARY KEY (id)
 )
 COMMENT 'records the details of venues where the orchestra may perform';
 
 
 CREATE TABLE ConcertCycles (
-    concertID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     concertTitle VARCHAR(100) NOT NULL,
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
@@ -64,33 +64,34 @@ CREATE TABLE ConcertCycles (
     conductorLastName VARCHAR(50) NOT NULL,
     soloistFirstName VARCHAR(50),
     soloistLastName VARCHAR(50),
-    PRIMARY KEY (concertID)
+    PRIMARY KEY (id)
 )
 COMMENT 'records the details of a group (cycle) of concerts';
 
 
 CREATE TABLE Services (
-    serviceID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     startTime DATETIME NOT NULL,
     endTime DATETIME NOT NULL,
     isRehearsal BOOLEAN NOT NULL,
     venueID INT,
     concertID INT NOT NULL,
-    FOREIGN KEY (venueID) REFERENCES Venues(venueID),
-    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
-    PRIMARY KEY (serviceID)
+    FOREIGN KEY (venueID) REFERENCES Venues(id),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
+    PRIMARY KEY (id)
 )
 COMMENT 'records the details of specific services (i.e., performances) made by the orchestra';
 
 
 CREATE TABLE Pieces (
-    pieceID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    id INT AUTO_INCREMENT UNIQUE NOT NULL,
     pieceTitle VARCHAR(100) NOT NULL,
     composerFirstName VARCHAR(50) NOT NULL,
     composerLastName VARCHAR(50) NOT NULL,
     arrangerFirstName VARCHAR(50),
     arrangerLastName VARCHAR(50),
-    instrumentation TEXT NOT NULL
+    instrumentation TEXT NOT NULL,
+    PRIMARY KEY (id)
 )
 COMMENT 'records details about the musical pieces that are performed by the orchestra during concert cycles';
 
@@ -98,8 +99,8 @@ COMMENT 'records details about the musical pieces that are performed by the orch
 CREATE TABLE MusiciansInstruments (
     musicianID INT NOT NULL,
     instrumentID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES Musicians(musicianID),
-    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(id),
+    FOREIGN KEY (instrumentID) REFERENCES Instruments(id),
     PRIMARY KEY (musicianID, instrumentID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Musicians and Instruments';
@@ -108,8 +109,8 @@ COMMENT 'an intersection table that implements M:M relationships between Musicia
 CREATE TABLE MusiciansConcertCycles (
     musicianID INT NOT NULL,
     concertID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES Musicians(musicianID),
-    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(id),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (musicianID, concertID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Musicians and ConcertCycles';
@@ -118,8 +119,8 @@ COMMENT 'an intersection table that implements M:M relationships between Musicia
 CREATE TABLE PiecesConcertCycles (
     pieceID INT NOT NULL,
     concertID INT NOT NULL,
-    FOREIGN KEY (pieceID) REFERENCES Pieces (pieceID),
-    FOREIGN KEY (concertID) REFERENCES ConcertCycles(concertID),
+    FOREIGN KEY (pieceID) REFERENCES Pieces (id),
+    FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (pieceID, concertID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Pieces and ConcertCycles';

@@ -63,11 +63,11 @@ SET firstName = :firstName,
     zip = :zip,
     inEnsemble = :inEnsemble,
     active =:active
-WHERE musicianID = :musicianID;
+WHERE id = :id;
 
 
 -- DELETE
-DELETE FROM Musicians WHERE musicianID = :musicianID;
+DELETE FROM Musicians WHERE id = :id;
 
 
 -- ----------------------------------- Instruments -----------------------------------
@@ -82,10 +82,10 @@ SELECT * FROM Instruments;
 -- UPDATE
 UPDATE Instruments
 SET name = :name
-WHERE instrumentID = :instrumentID;
+WHERE id = :id;
 
 -- DELETE
-DELETE FROM Instruments WHERE instrumentID = :instrumentID;
+DELETE FROM Instruments WHERE id = :id;
 
 
 -- ------------------------------------- Venues --------------------------------------
@@ -106,11 +106,11 @@ SET capacity = :capacity,
     city = :city,
     state = :state,
     zip = :zip
-WHERE venueID = :venueID;
+WHERE id = :id;
 
 
 -- DELETE
-DELETE FROM Venues WHERE venueID = :venueID;
+DELETE FROM Venues WHERE id = :id;
 
 
 -- ---------------------------------- ConcertCycles ----------------------------------
@@ -148,10 +148,10 @@ SET concertTitle = :concertTitle,
     conductorLastName = :conductorLastName,
     soloistFirstName = :soloistFirstName,
     soloistLastName = :soloistLastName
-WHERE concertID = :concertID;
+WHERE id = :id;
 
 -- DELETE
-DELETE FROM ConcertCycles WHERE concertID = :concertID;
+DELETE FROM ConcertCycles WHERE id = :id;
 
 
 
@@ -172,11 +172,11 @@ SET startTime = :startTime,
     isRehearsal = :isRehearsal,
     venueID = :venueID,
     concertID = :concertID
-WHERE serviceID = :serviceID;
+WHERE id = :id;
 
 
 -- DELETE
-DELETE FROM Services WHERE serviceID = :serviceID;
+DELETE FROM Services WHERE id = :id;
 
 -- -------------------------------------- Pieces -------------------------------------
 -- CREATE
@@ -210,11 +210,11 @@ SET pieceTitle = :pieceTitle,
     arrangerFirstName = :arrangerFirstName,
     arrangerLastName = :arrangerLastName,
     instrumentation = :instrumentation
-WHERE pieceID = :pieceID;
+WHERE id = :id;
 
 
 -- DELETE
-DELETE FROM Pieces WHERE pieceID = :pieceID;
+DELETE FROM Pieces WHERE id = :id;
 
 
 -- ------------------------------ MusiciansInstruments -------------------------------
@@ -272,44 +272,44 @@ DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concer
 -- can rearrange later put this here for ease of finding
 
 -- MusiciansInstruments
-SELECT Musicians.musicianID,
+SELECT Musicians.id,
        Musicians.firstName,
        Musicians.lastName,
-       Instruments.instrumentID,
+       Instruments.id,
        Instruments.name
 FROM Musicians
-INNER JOIN MusiciansInstruments ON Musicians.musicianID = MusiciansInstruments.musicianID
-INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.instrumentID;
+INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID
+INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;
 
 
 -- MusiciansConcertCycles
-SELECT Musicians.musicianID,
+SELECT Musicians.id,
        Musicians.firstName,
        Musicians.lastName,
-       ConcertCycles.concertID,
+       ConcertCycles.id,
        ConcertCycles.concertTitle
 FROM Musicians
-INNER JOIN MusiciansConcertCycles ON Musicians.musicianID = MusiciansConcertCycles.musicianID
-INNER JOIN ConcertCycles ON ConcertCycles.concertID = MusiciansConcertCycles.concertID;
+INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
+INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;
 
 
 -- PiecesConcertCycles
-SELECT Pieces.pieceID,
+SELECT Pieces.id,
        Pieces.pieceTitle,
-       ConcertCycles.concertID,
+       ConcertCycles.id,
        ConcertCycles.concertTitle
 FROM Pieces
-INNER JOIN PiecesConcertCycles ON Pieces.pieceID = PiecesConcertCycles.pieceID
-INNER JOIN ConcertCycles ON ConcertCycles.concertID = PiecesConcertCycles.concertID;
+INNER JOIN PiecesConcertCycles ON Pieces.id = PiecesConcertCycles.pieceID
+INNER JOIN ConcertCycles ON ConcertCycles.id = PiecesConcertCycles.concertID;
 
 
 -- MusiciansConcertCycles (To show instruments: for future implementation)
-SELECT Musicians.musicianID,
+SELECT Musicians.id,
        Musicians.firstName,
        Musicians.lastName,
        Instruments.name,
        ConcertCycles.concertTitle
 FROM Musicians
-INNER JOIN MusiciansConcertCycles ON Musicians.musicianID = MusiciansConcertCycles.musicianID
-INNER JOIN Instruments ON Musicians.musicianID = Instruments.instrumentID
-INNER JOIN ConcertCycles ON ConcertCycles.concertID = MusiciansConcertCycles.concertID;
+INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
+INNER JOIN Instruments ON Musicians.id = Instruments.id
+INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;

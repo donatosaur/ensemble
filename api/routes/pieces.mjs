@@ -7,8 +7,8 @@ const pieces = express.Router();
 /**
  * CREATE  POST    /api/Pieces
  * READ    GET     /api/Pieces
- * UPDATE  PUT     /api/Pieces?pieceID=...
- * DELETE  DELETE  /api/Pieces?pieceID=...
+ * UPDATE  PUT     /api/Pieces?id=...
+ * DELETE  DELETE  /api/Pieces?id=...
  */
 
 
@@ -58,7 +58,7 @@ pieces.get("/", (req, res) => {
       console.log(error);
       res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "OK", data: rows });
+      res.status(200).json(rows);
     }
   });
 });
@@ -67,7 +67,7 @@ pieces.get("/", (req, res) => {
 // UPDATE
 pieces.put("/", (req, res) => {
   // get body and query params
-  let pieceID = req.query.pieceID;
+  let id = req.query.id;
   let {
     pieceTitle,
     composerFirstName,
@@ -78,12 +78,12 @@ pieces.put("/", (req, res) => {
   } = req.body;
 
   // parse
-  pieceID = parseInt(pieceID);
-  pieceID = isNaN(pieceID) ? null : pieceID;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
   // query
   const updateQuery = "UPDATE Pieces SET pieceTitle = ?, composerFirstName = ?, composerLastName = ?, " +
-                      "arrangerFirstName = ?, arrangerLastName = ?, instrumentation = ? WHERE pieceID = ?;";
+                      "arrangerFirstName = ?, arrangerLastName = ?, instrumentation = ? WHERE id = ?;";
 
   db.query(
     updateQuery,
@@ -94,7 +94,7 @@ pieces.put("/", (req, res) => {
       arrangerFirstName,
       arrangerLastName,
       instrumentation,
-      pieceID
+      id
     ],
     (error) => {
       if (error) {
@@ -111,16 +111,16 @@ pieces.put("/", (req, res) => {
 // DELETE
 pieces.delete("/",  (req, res) => {
   // get query params
-  let pieceID = req.query.pieceID;
+  let id = req.query.id;
 
   // parse
-  pieceID = parseInt(pieceID);
-  pieceID = isNaN(pieceID) ? null : pieceID;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
   // query
-  const deleteQuery = "DELETE FROM Pieces WHERE pieceID = ?;";
+  const deleteQuery = "DELETE FROM Pieces WHERE id = ?;";
 
-  db.query(deleteQuery, [pieceID], (error) => {
+  db.query(deleteQuery, [id], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });

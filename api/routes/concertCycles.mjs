@@ -6,8 +6,8 @@ const concertCycles = express.Router();
 /**
  * CREATE  POST    /api/ConcertCycles
  * READ    GET     /api/ConcertCycles
- * UPDATE  PUT     /api/ConcertCycles?concertID=...
- * DELETE  DELETE  /api/ConcertCycles?concertID=...
+ * UPDATE  PUT     /api/ConcertCycles?id=...
+ * DELETE  DELETE  /api/ConcertCycles?id=...
  */
 
 
@@ -58,7 +58,7 @@ concertCycles.get("/", (req, res) => {
       console.log(error);
       res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "OK", data: rows });
+      res.status(200).json(rows);
     }
   });
 });
@@ -67,7 +67,7 @@ concertCycles.get("/", (req, res) => {
 // UPDATE
 concertCycles.put("/", (req, res) => {
   // get body and query params
-  let concertID = req.query.concertID;
+  let id = req.query.id;
   let {
     concertTitle,
     startDate,
@@ -79,12 +79,12 @@ concertCycles.put("/", (req, res) => {
   } = req.body;
 
   // parse
-  concertID = parseInt(concertID);
-  concertID = isNaN(concertID) ? null : concertID;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
   const updateQuery = "UPDATE ConcertCycles SET concertTitle = ?, startDate = ?, endDate = ?, " +
                       "conductorFirstName = ?, conductorLastName = ?, soloistFirstName = ?, " +
-                      "soloistLastName = ? WHERE concertID = ?;"
+                      "soloistLastName = ? WHERE id = ?;"
 
   db.query(
     updateQuery,
@@ -96,7 +96,7 @@ concertCycles.put("/", (req, res) => {
       conductorLastName,
       soloistFirstName,
       soloistLastName,
-      concertID
+      id
     ],
     (error) => {
       if (error) {
@@ -113,15 +113,15 @@ concertCycles.put("/", (req, res) => {
 // DELETE
 concertCycles.delete("/", (req, res) => {
   // get query params
-  let concertID = req.query.concertID;
+  let id = req.query.id;
 
   // parse
-  concertID = parseInt(concertID);
-  concertID = isNaN(concertID) ? null : concertID;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
-  const deleteQuery = "DELETE FROM Pieces WHERE pieceID = ?;"
+  const deleteQuery = "DELETE FROM ConcertCycles WHERE id = ?;"
 
-  db.query(deleteQuery, [concertID],(error) => {
+  db.query(deleteQuery, [id],(error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });

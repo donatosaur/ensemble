@@ -6,8 +6,8 @@ let musicians = express.Router();
 /**
  * CREATE  POST    /api/Musicians
  * READ    GET     /api/Musicians
- * UPDATE  PUT     /api/Musicians?musicianID=...
- * DELETE  DELETE  /api/Musicians?musicianID=...
+ * UPDATE  PUT     /api/Musicians?id=...
+ * DELETE  DELETE  /api/Musicians?id=...
  */
 
 // CREATE
@@ -62,20 +62,20 @@ musicians.get("/", (req, res) => {
       console.log(error);
       res.status(500).json({ error: error });
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json(rows);
     }
   });
 });
 
 // UPDATE
 musicians.put("/", function (req, res) {
-  let musicianID = req.query.musicianID;
+  let id = req.query.id;
   // parse
-  musicianID = parseInt(musicianID);
-  musicianID = isNaN(musicianID) ? null : musicianID;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
   const updateQuery =
-    "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE musicianID = ?";
+    "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
   let {
     firstName,
     lastName,
@@ -103,7 +103,7 @@ musicians.put("/", function (req, res) {
       zip,
       inEnsemble,
       active,
-      musicianID
+      id
     ],
     (error) => {
       if (error) {
@@ -117,12 +117,12 @@ musicians.put("/", function (req, res) {
 });
 
 musicians.delete("/", function (req, res) {
-  let musicianID = req.query.musicianID;
-  musicianID = parseInt(musicianID);
-  musicianID = isNaN(musicianID) ? null : musicianID;
+  let id = req.query.id;
+  id = parseInt(id);
+  id = isNaN(id) ? null : id;
 
-  const deleteQuery = "DELETE FROM Musicians WHERE musicianID = ?;";
-  db.query(deleteQuery, [musicianID], (error) => {
+  const deleteQuery = "DELETE FROM Musicians WHERE id = ?;";
+  db.query(deleteQuery, [id], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json({ error: error });

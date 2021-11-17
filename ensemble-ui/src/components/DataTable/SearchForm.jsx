@@ -4,10 +4,11 @@ import { Form, Row, Dropdown, DropdownButton, Button, InputGroup, Col } from "re
 /**
  * Creates a search form for the Musicians table
  *
+ * @param setSearchParameters state hook
  * @returns {JSX.Element}
  * @constructor
  */
-export default function MusicianSearchForm({ }){
+export default function MusicianSearchForm({setSearchParameters}){
   const [searchOn, setSearchOn] = useState(null);
   const [searchTitle, setDropdownTitle] = useState("Select a field")
 
@@ -15,7 +16,6 @@ export default function MusicianSearchForm({ }){
     // overwrite only the new fields that are passed in
     (oldEntityState, newEntityState) => ({...oldEntityState, ...newEntityState}),
     {
-      id: "",
       birthdate: "",
       firstName: "",
       lastName: "",
@@ -42,12 +42,11 @@ export default function MusicianSearchForm({ }){
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    console.log(musician);
+    setSearchParameters({[searchOn]: musician[searchOn]});
   }
 
   // todo: placeholder for now to just generate the forms quickly for the demo
   const searchFields = [
-    { controlID: "musicianID", label: "ID", type: "number", value: musician['id'] },
     { controlID: "birthdate", label: "Birthdate", type: "date", value: musician['birthdate'] },
     { controlID: "firstName", label: "First Name", type: "text", value: musician['firstName'] },
     { controlID: "lastName", label: "Last Name", type: "text", value: musician['lastName'] },
