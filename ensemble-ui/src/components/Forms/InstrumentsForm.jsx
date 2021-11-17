@@ -1,32 +1,50 @@
 import React, { useContext } from "react";
 import { Form, Row, Col, Button, FloatingLabel, InputGroup } from "react-bootstrap";
 import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
+import {useEntity} from "../../hooks/useEntity";
+import {useHistory} from "react-router-dom";
 
 
 /**
+ * Creates a form for create and update operations
  *
- * @param showID {boolean} true to show a (disabled) ID field; false to hide it
- * @param onSubmit {function(): void} handler for button click
+ * @param mode {"create" | "update"}
  * @param formLabel a short text description for the form
  * @param buttonLabel text to display on the form button
  * @returns {JSX.Element}
  * @constructor
  */
-export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLabel }){
+export default function InstrumentsForm({ mode, formLabel, buttonLabel }){
   // state hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const instrument = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
+
+  const { createEntity, updateEntity } = useEntity();
+  const history = useHistory();
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+
+    void async function submitForm(){
+      if (mode === "create" || mode ==="update") {
+        try {
+          const response = mode === "create"
+            ? await createEntity(instrument)
+            : await updateEntity(instrument);
+          console.log(response);
+          // refresh the page; history[0] is the current path
+          history.go(0);
+        } catch (error) {
+          alert(error['sqlMessage']);
+        }
+      }
+    }();
+  }
 
   const handleOnChange = (event) => {
     // slot the new value into the state
     dispatch({[event.target.id]: event.target.value});
   }
-
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    alert(JSON.stringify(instrument));
-  }
-
 
   return (
     <Form>
@@ -38,12 +56,11 @@ export default function InstrumentsForm({ showID, onSubmit, formLabel, buttonLab
       <InputGroup as={Row} hasValidation>
 
 
-      { showID &&
-        <Form.Group as={Col} controlId="instrumentID">
-          <FloatingLabel controlId="instrumentID" label="Instrument ID">
+      { mode === "update" &&
+        <Form.Group as={Col} controlId="id">
+          <FloatingLabel controlId="id" label="Instrument ID">
             <Form.Control
               disabled
-              type="number"
               value={instrument['id']}
             />
           </FloatingLabel>

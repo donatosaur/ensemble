@@ -4,6 +4,9 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 // site header and footer
 import NavigationBar from './components/NavigationBar';
 
+// context provider
+import EntityAPIProvider from "./hooks/useEntity";
+
 // pages
 import HomePage from './pages/HomePage';
 import MusiciansPage from "./pages/MusiciansPage";
@@ -21,19 +24,64 @@ function App() {
   return (
     <Router basename={"/~awanf"}>
       <NavigationBar />
+
       <Route path="/" exact component={HomePage} />
-      {/* toggle this back when the quarter is over: using static routes to be clearer */}
-      {/*<Route path="/:entityName" component={EntityPage}/>*/}
-      {/* for now, use clear static routes to make it easier to follow for people unfamiliar with react */}
-      <Route path="/Musicians" component={MusiciansPage}/>
-      <Route path="/Instruments" component={InstrumentsPage}/>
-      <Route path="/Venues" component={VenuesPage}/>
-      <Route path="/ConcertCycles" component={ConcertCyclesPage}/>
-      <Route path="/Services" component={ServicesPage}/>
-      <Route path="/Pieces" component={PiecesPage}/>
-      <Route path="/MusiciansInstruments" component={MusiciansInstrumentsPage}/>
-      <Route path="/MusiciansConcertCycles" component={MusiciansConcertCyclesPage}/>
-      <Route path="/PiecesConcertCycles" component={PiecesConcertCyclesPage}/>
+
+      <Route path="/Musicians">
+        <EntityAPIProvider entityName="Musicians">
+          <MusiciansPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/Instruments">
+        <EntityAPIProvider entityName="Instruments">
+          <InstrumentsPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/Venues">
+      <EntityAPIProvider entityName="Venues">
+        <VenuesPage />
+      </EntityAPIProvider>
+      </Route>
+
+      <Route path="/ConcertCycles">
+        <EntityAPIProvider entityName="ConcertCycles">
+          <ConcertCyclesPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/Services">
+        <EntityAPIProvider entityName="Services">
+          <ServicesPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/Pieces">
+        <EntityAPIProvider entityName="Pieces">
+          <PiecesPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/MusiciansInstruments">
+        <EntityAPIProvider entityName="MusiciansInstruments">
+          <MusiciansInstrumentsPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/MusiciansConcertCycles">
+        <EntityAPIProvider entityName="MusiciansConcertCycles">
+          <MusiciansConcertCyclesPage />
+        </EntityAPIProvider>
+      </Route>
+
+      <Route path="/PiecesConcertCycles">
+        <EntityAPIProvider entityName="PiecesConcertCycles">
+          <PiecesConcertCyclesPage />
+        </EntityAPIProvider>
+      </Route>
+
+    {/* site footer */}
     </Router>
   );
 }

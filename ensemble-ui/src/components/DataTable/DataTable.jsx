@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useMemo, useState } from "react";
-import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector } from "@mui/x-data-grid";
 import { Container } from "react-bootstrap";
-import { cloneDeep } from "lodash";
+import { cloneDeepWith } from "lodash";
+import { useEntity } from "../../hooks/useEntity";
 
 // button components for Grid Toolbar override
 import HelpButton from "./ToolbarButtons/HelpButton";
@@ -22,13 +23,13 @@ import customDataTypes from "./CustomFormats";
 // search form for enabled entities
 import MusicianSearchForm from "./SearchForm";
 
-
+// demo data loader for frontend debugging
+// import entityDemoDataMap from "../../data/entityDemoDataMap";
+// const getDemoData = async () => entityDemoDataMap.has(entityName) ? entityDemoDataMap.get(entityName) : [];
 
 /**
  * Creates a MUI Data Grid for an Entity using the passed in props
  *
- * @param columnData {array} an array of columns, formatted to MUI spec ()
- * @param getRows an async function that calls the api to fetch rows (SELECT -> GET)
  * @param createFormToggle a function that toggles the display state of the EntityForm
  * @param editFormToggle a function that toggles the display state of the EntityForm
  * @param allowSearch {boolean} whether search is enabled for this table
@@ -37,14 +38,15 @@ import MusicianSearchForm from "./SearchForm";
  * @constructor
  */
 export default function DataTable({
-  columnData,
-  getRows,
   createFormToggle,
   editFormToggle,
   allowSearch,
   allowEdit
 }) {
   /* ------------------------------------------ State Hooks ------------------------------------------ */
+  // get the column definitions and api caller from the entity context
+  const { columnDefs, getEntity } = useEntity();
+
   // context hook for edits; dispatch a copy of the row object being edited
   const dispatch = useContext(EntityDispatchContext);
 
@@ -54,10 +56,9 @@ export default function DataTable({
   /* eslint-disable no-unused-vars */
   // state and reducer hooks for search panels
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
-  const [searchParameters, setSearchParameters] = useState({});
+  const [searchParameters, setSearchParameters] = useState(null);
 
   // data model
-  const [fetchNewData, setFetchNewData] = useState(true);
   const [rows, setRows] = useState([]);
 
   // error model
@@ -68,12 +69,24 @@ export default function DataTable({
   // get data on page load (and whenever a change is successfully made)
   useEffect(() => {
     // if (!fetchNewData) return;                     // safety: fetching and rendering rows is expensive
-    const abortController = new AbortController(); // to abort async requests
+    const abortController = new AbortController();   // to abort async requests
     console.log('Fetching new data...');
     void async function getData() {
       try {
         // get the rows and set the data model
-        let rowData = await getRows();
+        let rowData = !!searchParameters ? await getEntity(searchParameters) : await getEntity();
+
+        /**
+         * Inspect the returned row data. The table **requires** an 'id' key to be present in each
+         * row object in order to identify it. If there is no such key (e.g. when we fetch data from
+         * an intersection table), we can just insert one; this will not change the underlying data
+         * in any meaningful way.
+         */
+        if (rowData.length > 0 && !rowData[0].hasOwnProperty('id')) {
+          for (let i = 0; i < rowData.length; i++) {
+            rowData[i]['id'] = i;  // set the row id to its index
+          }
+        }
         setRows(rowData);
         // setFetchNewData(false);
       } catch (err) {
@@ -84,7 +97,7 @@ export default function DataTable({
     // prevent memory leaks by aborting request if component is no longer mounted; for an explanation of
     // what cleanup functions do, see https://reactjs.org/docs/hooks-effect.html#example-using-hooks-1
     return () => abortController.abort();
-  }, [getRows, searchParameters]);
+  }, [getEntity, setRows, searchParameters]);
 
 
   /* -------------------------------------------- Columns -------------------------------------------- */
@@ -92,19 +105,18 @@ export default function DataTable({
   /**
    * We're using useMemo here to prevent the columns from re-rendering whenever *any* change is detected,
    * which includes instances where the same action button is pressed more than once (e.g. to toggle
-   * between editing different rows). In addition, this gives us a pretty decent savings in memory
-   * footprint: about 25% with memoization.
+   * between editing different rows). In addition, this gives us a pretty significant savings in memory
+   * footprint.
    */
   const columns = useMemo(() => [
-    ...columnData.map(
+    ...columnDefs.map(
       column => ({
         ...column,
         filterable: false,  // disable client-side filtering (we need to implement this ourselves)
         editable: false,    // disable inline editing
         sortable: false,    // disable client-side sorting
         flex: column.flex === undefined ? 1 : column.flex,  // flexGrow by default
-        valueFormatter: null,
-        ...customDataTypes.has(column.type) ? customDataTypes.get(column.type) : {},
+        // ...customDataTypes.has(column.type) ? customDataTypes.get(column.type) : {},
       })
     ),
     // Create a custom actions button column. See https://mui.com/components/data-grid/columns/#render-cell
@@ -117,7 +129,7 @@ export default function DataTable({
       flex: 0,
       disableClickEventBubbling: true,  // we don't need events to propagate; we are simply toggling state hooks
       renderCell: (rowParams) => {
-        // console.log('rendering...');
+        console.debug('Rendering table columns...'); // debug
         return (
           <>
             {allowEdit &&
@@ -131,13 +143,22 @@ export default function DataTable({
                     return;
                   }
 
-                  // get a deep copy to avoid modifying the original row's underlying data, and send it up
-                  // to the context provider so that it can be accessed from the edit form
+                  /**
+                   * TODO // NOTE
+                   * Get a deep copy for safety: we want to avoid modifying the original row's underlying data
+                   * and send that copy up to the context provider where it can be accessed from the edit form.
+                   * We'll need to replace null with '' because of just *how* lazy React's reducer hooks are.
+                   * This is a temporary solution to get forms to work.
+                   */
                   if (dispatch === null || dispatch === undefined) {
                     console.error('Dispatch function is null!');
                     return;
                   } else {
-                    dispatch(cloneDeep(rows[rowIndex]));
+                    dispatch(cloneDeepWith(rows[rowIndex], (value, key, object) => {
+                      if (value === null) {
+                        object[key] = '';
+                      }
+                    }));
                   }
 
                   // we should only have one form open at any one time
@@ -154,7 +175,7 @@ export default function DataTable({
       }
     },
   ],
-    [columnData, createFormToggle, editFormToggle, allowEdit, dispatch, rows]
+    [columnDefs, createFormToggle, editFormToggle, allowEdit, dispatch, rows]
   );
 
 
@@ -196,9 +217,10 @@ export default function DataTable({
         <Container fluid className="toolbarContainer">
         <AddButton onClick={onAddButtonClick} />
         {` `}{ allowSearch && <SearchButton onClick={onSearchButtonClick}/> }
-        {` |`}
+        <p className="d-inline text-primary">{` |`}</p>
         {` `}<GridToolbarDensitySelector/>
-        {` `}<GridToolbarExport />
+        {/*  disable grid export for now: there are new settings mui.com/api/data-grid/grid-print-export-options/ */}
+        {/*{` `}<GridToolbarExport />*/}
         {` `}<HelpButton />
         </Container>
       </GridToolbarContainer>

@@ -2,31 +2,52 @@ import React, {useContext, useState} from "react";
 import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
 import {EntityContext, EntityDispatchContext} from "../../hooks/EntityContextProvider";
 import AddressInput from "./FormComponents/AddressInput";
+import {useEntity} from "../../hooks/useEntity";
+import {useHistory} from "react-router-dom";
 
 /**
+ * Creates a form for create and update operations
  *
- * @param showID {boolean} true to show a (disabled) ID field; false to hide it
- * @param onSubmit {function(): void} handler for button click
+ * @param mode {"create" | "update"}
  * @param formLabel a short text description for the form
  * @param buttonLabel text to display on the form button
  * @returns {JSX.Element}
  * @constructor
  */
-export default function VenuesForm({ showID, onSubmit, formLabel, buttonLabel }){
+export default function VenuesForm({ mode, formLabel, buttonLabel }){
   // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const venue = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
 
   const [showHelpText, setShowHelpText] = useState(false);
 
-  const handleOnChange = (event) => {
-    // slot the new value into the piece state
-    dispatch({[event.target.id]: event.target.value});
-  }
+  const { createEntity, updateEntity } = useEntity();
+  const history = useHistory();
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    alert(JSON.stringify(venue));
+
+    void async function submitForm(){
+      if (mode === "create" || mode ==="update") {
+        try {
+          const response = mode === "create"
+            ? await createEntity(venue)
+            : await updateEntity(venue);
+
+          console.log(response);
+
+          // refresh the page; history[0] is the current path
+          history.go(0);
+        } catch (error) {
+          alert(error['sqlMessage']);
+        }
+      }
+    }();
+  }
+
+  const handleOnChange = (event) => {
+    // slot the new value into the piece state
+    dispatch({[event.target.id]: event.target.value});
   }
 
   return ( 
@@ -35,7 +56,7 @@ export default function VenuesForm({ showID, onSubmit, formLabel, buttonLabel })
         <Form.Label children={formLabel} />
       </Row>
 
-    {showID &&
+    { mode === "update" &&
     <Form.Group as={Col} controlId="venueID">
       <FloatingLabel controlId="venueID" label="Venue ID">
         <Form.Control

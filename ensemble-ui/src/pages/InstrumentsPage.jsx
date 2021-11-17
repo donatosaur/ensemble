@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import EntityContextProvider from "../hooks/EntityContextProvider";
 
-import DataTableProvider from "../components/DataTableProvider";
 import InstrumentsForm from "../components/Forms/InstrumentsForm";
+import DataTable from "../components/DataTable/DataTable";
 
 
 export default function InstrumentsPage() {
   const entityName = "Instruments";
-  const createFormLabel = "Add an Instrument";
-  const createButtonLabel = "Submit";
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -25,19 +23,20 @@ export default function InstrumentsPage() {
 
       <EntityContextProvider key={1}>
         <Container>
-          <DataTableProvider
-            entityName={entityName}
+          <DataTable
             createFormToggle={createFormToggle}
             editFormToggle={editFormToggle}
+            allowSearch={false}
+            allowEdit={true}
           />
         </Container>
 
         { editFormOpen &&
           <Container className={"entityFormContainer"}>
             <InstrumentsForm
-              showID={true}
-              formLabel={"Edit"}
-              buttonLabel={"Commit"}
+              mode="update"
+              formLabel="Edit"
+              buttonLabel="Commit"
             />
           </Container>
         }
@@ -47,9 +46,9 @@ export default function InstrumentsPage() {
       { createFormOpen &&
         <Container className={"entityFormContainer"}>
           <InstrumentsForm
-            showID={false}
-            formLabel={createFormLabel}
-            buttonLabel={createButtonLabel}
+            mode="create"
+            formLabel="Add an Instrument"
+            buttonLabel="Submit"
           />
         </Container>
       }

@@ -1,9 +1,20 @@
-import React, { createContext, useReducer, useContext } from "react";
+import React, {createContext, useReducer } from "react";
 
 // create a context hook for the entity object and its dispatch function
 export const EntityContext = createContext(null);
 export const EntityDispatchContext = createContext(null);
 
+/**
+ * Context provider to share state.
+ *
+ * TODO: This is a temporary, quick patch to get forms to work with shared state. It's not good form to leave
+ *       state uninitialized for React components (because it switches them between uncontrolled and controlled).
+ *       However, this works for now.
+ *
+ * @param children
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function EntityContextProvider({ children }) {
   // create a reducer hook: this will let us re-render only components that depend on a key-value pair
   // in the entity object, instead of causing every input field to be re-rendered
@@ -23,24 +34,4 @@ export default function EntityContextProvider({ children }) {
         </EntityDispatchContext.Provider>
     </EntityContext.Provider>
   )
-}
-
-/**
- *
- * @returns {{dispatch: null, entity: null}}
- */
-export function useEntity() {
-  const entity = useContext(EntityContext);
-  const dispatch = useContext(EntityDispatchContext);
-
-  if (EntityContext === undefined || EntityDispatchContext === undefined) {
-    throw new Error("Missing EntityContextProvider.")
-  } else if (EntityContext === null || EntityDispatchContext === null) {
-    throw new Error(
-      "Context hooks were not properly initialized by EntityContextProvider. " +
-      "Check "
-    )
-  }
-  return { entity, dispatch }
-
 }

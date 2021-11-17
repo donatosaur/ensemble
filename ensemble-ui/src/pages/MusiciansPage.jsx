@@ -1,15 +1,12 @@
 import React, { useState} from "react";
 import { Container } from "react-bootstrap";
-import DataTableProvider from "../components/DataTableProvider";
 import MusiciansForm from "../components/Forms/MusiciansForm";
 import EntityContextProvider from "../hooks/EntityContextProvider";
-import { getMusicians, createMusician, updateMusician, deleteMusician } from "../utils/callAPI";
+import DataTable from "../components/DataTable/DataTable";
 
 
 export default function MusiciansPage() {
   const entityName = "Musicians";
-  const createFormLabel = "Add a Musician";
-  const createButtonLabel = "Submit";
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -24,21 +21,21 @@ export default function MusiciansPage() {
       <h1>{entityName}</h1>
 
       <EntityContextProvider key={1}>
-        <Container fluid>
-          <DataTableProvider
-            entityName={entityName}
-            getRows={getMusicians}
+        <Container>
+          <DataTable
             createFormToggle={createFormToggle}
             editFormToggle={editFormToggle}
+            allowSearch={true}
+            allowEdit={true}
           />
         </Container>
 
         { editFormOpen &&
-        <Container className={"entityFormContainer"}>
+        <Container className="entityFormContainer">
           <MusiciansForm
-            showID={true}
-            formLabel={"Edit"}
-            buttonLabel={"Commit"}
+            mode="update"
+            formLabel="Edit"
+            buttonLabel="Commit"
           />
         </Container>
         }
@@ -46,11 +43,11 @@ export default function MusiciansPage() {
 
       <EntityContextProvider key={2}>
         { createFormOpen &&
-        <Container className={"entityFormContainer"}>
+        <Container className="entityFormContainer">
           <MusiciansForm
-            showID={false}
-            formLabel={createFormLabel}
-            buttonLabel={createButtonLabel}
+            mode="create"
+            formLabel="Add a Musician"
+            buttonLabel="Submit"
           />
         </Container>
         }

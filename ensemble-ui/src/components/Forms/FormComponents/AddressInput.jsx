@@ -28,9 +28,9 @@ export default function AddressInput({
       {/* Street Address */}
       <Row className="mb-3">
 
-        <Form.Group controlID="street">
+        <Form.Group controlId="street">
           <InputGroup hasValidation>
-            <FloatingLabel as={Col} controlID="street" label="Street Address">
+            <FloatingLabel as={Col} controlId="street" label="Street Address">
               <Form.Control
                 required
                 name="street"
@@ -55,9 +55,9 @@ export default function AddressInput({
 
       {/* City, State, Zip */}
       <Row className="mb-3">
-        <Form.Group as={Col} md="8" controlID="city">
+        <Form.Group as={Col} md="8" controlId="city">
           <InputGroup hasValidation>
-          <FloatingLabel as={Col} controlID="city" label="City">
+          <FloatingLabel as={Col} controlId="city" label="City">
             <Form.Control
               required
               name="city"
@@ -78,9 +78,9 @@ export default function AddressInput({
           </InputGroup>
         </Form.Group>
 
-        <Form.Group as={Col} md="2" controlID="state">
+        <Form.Group as={Col} md="2" controlId="state">
           <InputGroup hasValidation>
-            <FloatingLabel as={Col} controlID="state" label="State">
+            <FloatingLabel as={Col} controlId="state" label="State">
               <Form.Control
                 required
                 maxLength={2}
@@ -102,9 +102,9 @@ export default function AddressInput({
           </InputGroup>
         </Form.Group>
 
-        <Form.Group as={Col} md="2" controlID="zip">
+        <Form.Group as={Col} md="2" controlId="zip">
           <InputGroup hasValidation>
-            <FloatingLabel as={Col} controlID="zip" label="Zip">
+            <FloatingLabel as={Col} controlId="zip" label="Zip">
               <Form.Control
                 required
                 maxLength={5}

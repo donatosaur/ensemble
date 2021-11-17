@@ -71,7 +71,7 @@ services.put("/", (req, res) => {
   concertID = isNaN(concertID) ? null : concertID;
 
   // query
-  const updateQuery = "UPDATE Services SET startTime = ?, endTime = ?, isRehearsal = ?, venueID = ? " +
+  const updateQuery = "UPDATE Services SET startTime = ?, endTime = ?, isRehearsal = ?, venueID = ?, " +
                       "concertID = ? WHERE id = ?;";
 
   db.query(updateQuery, [startTime, endTime, isRehearsal, venueID, concertID, id], (error) => {

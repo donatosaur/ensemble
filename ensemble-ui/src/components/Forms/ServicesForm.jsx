@@ -1,31 +1,57 @@
 import React, { useContext } from "react";
 import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
+import {useEntity} from "../../hooks/useEntity";
+import {useHistory} from "react-router-dom";
 
 
 /**
+ * Creates a form for create and update operations
  *
- * @param showID {boolean} true to show a (disabled) ID field; false to hide it
- * @param onSubmit {function(): void} handler for button click
+ * @param mode {"create" | "update"}
  * @param formLabel a short text description for the form
  * @param buttonLabel text to display on the form button
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ServicesForm({ showID, onSubmit, formLabel, buttonLabel }){
+export default function ServicesForm({ mode, formLabel, buttonLabel }){
   // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const service = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
+  const { createEntity, updateEntity } = useEntity();
+  const history = useHistory();
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+
+    void async function submitForm(){
+      if (mode === "create" || mode ==="update") {
+        try {
+          const response = mode === "create"
+            // TODO: temporary solution; coerce checkbox values to boolean
+            ? await createEntity({...service, isRehearsal: !!service['isRehearsal']})
+            : await updateEntity(service);
+
+          console.log(response);
+
+          // refresh the page; history[0] is the current path
+          history.go(0);
+        } catch (error) {
+          alert(error['sqlMessage']);
+        }
+      }
+    }();
+  }
 
   const handleOnChange = (event) => {
     // slot the new value into the state
     dispatch({[event.target.id]: event.target.value});
   }
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    alert(JSON.stringify(service));
+  const handleOnCheckboxChange = (event) => {
+    dispatch({[event.target.id]: event.target.checked});
   }
+
 
   return(
     <Form>
@@ -34,7 +60,7 @@ export default function ServicesForm({ showID, onSubmit, formLabel, buttonLabel 
       </Row>
 
         <Row className="entityForm">
-        { showID &&
+        { mode === "update" &&
           <Form.Group as={Col} controlId="serviceID">
             <FloatingLabel controlId="serviceID" label="Service ID">
               <Form.Control
@@ -100,13 +126,13 @@ export default function ServicesForm({ showID, onSubmit, formLabel, buttonLabel 
         </Form.Group>
 
         <Col>
-        <br/> {/* todo replace with css */}
-        <Form.Group as={Col} className="entityFormCheckbox" id="isRehearsal">
+        <br/>
+        <Form.Group as={Col} className="entityFormCheckbox" controlId="isRehearsal">
           <Form.Check
             type="checkbox"
             label="Rehearsal?"
             value={service['isRehearsal']}
-            onChange={handleOnChange}
+            onChange={handleOnCheckboxChange}
           />
         </Form.Group>
         </Col>

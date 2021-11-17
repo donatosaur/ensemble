@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-import DataTableProvider from "../components/DataTableProvider";
 import MusiciansConcertCyclesForm from "../components/Forms/MusiciansConcertCyclesForm";
 import EntityContextProvider from "../hooks/EntityContextProvider";
+import DataTable from "../components/DataTable/DataTable";
 
 export default function MusiciansConcertCyclesPage() {
   const entityName = "MusiciansConcertCycles";
-  const createFormLabel = "Link a Musician to a Concert Cycle";
-  const createButtonLabel = "Submit";
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -23,10 +21,11 @@ export default function MusiciansConcertCyclesPage() {
 
       <EntityContextProvider key={1}>
         <Container>
-          <DataTableProvider
-            entityName={entityName}
+          <DataTable
             createFormToggle={createFormToggle}
             editFormToggle={editFormToggle}
+            allowSearch={false}
+            allowEdit={false}
           />
         </Container>
 
@@ -41,9 +40,9 @@ export default function MusiciansConcertCyclesPage() {
         { createFormOpen &&
         <Container className={"entityFormContainer"}>
           <MusiciansConcertCyclesForm
-            showID={false}
-            formLabel={createFormLabel}
-            buttonLabel={createButtonLabel}
+            mode="create"
+            formLabel="Link a Musician to a Concert Cycle"
+            buttonLabel="Submit"
           />
         </Container>
         }

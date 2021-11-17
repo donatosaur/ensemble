@@ -1,26 +1,56 @@
-import React, {useContext, useState } from "react";
+import React, {useContext, useState} from "react";
 import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
 
 import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
+import { useEntity } from "../../hooks/useEntity";
+import { useHistory } from "react-router-dom";
+
 import AddressInput from "./FormComponents/AddressInput";
 
-
 /**
+ * Creates a form for create and update operations
  *
- * @param showID {boolean} true to show a (disabled) ID field; false to hide it
- * @param onSubmit {function(): void} handler for button click
+ * @param mode {"create" | "update"}
  * @param formLabel a short text description for the form
  * @param buttonLabel text to display on the form button
  * @returns {JSX.Element}
  * @constructor
  */
-export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel }){
+export default function MusiciansForm({ mode, formLabel, buttonLabel }){
   // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
   const musician = useContext(EntityContext);
   const dispatch = useContext(EntityDispatchContext);
+  const { createEntity, updateEntity } = useEntity();
+  const history = useHistory();
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+
+
+    void async function submitForm(){
+      if (mode === "create" || mode ==="update") {
+        try {
+          const response = mode === "create"
+            // TODO: temporary solution; coerce checkbox values to boolean
+            ? await createEntity({
+              ...musician,
+              inEnsemble: !!musician['inEnsemble'],
+              active: !!musician['active']
+            })
+            : await updateEntity(musician);
+
+          console.log(response);
+
+          // refresh the page; history[0] is the current path
+          history.go(0);
+        } catch (error) {
+          alert(error['sqlMessage']);
+        }
+      }
+    }();
+  }
 
   const [showHelpText, setShowHelpText] = useState(false);
-
 
 
   const handleOnChange = (event) => {
@@ -32,11 +62,6 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
     dispatch({[event.target.name]: event.target.checked});
   }
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    alert(JSON.stringify(musician));
-  }
-
   return (
     <Form noValidate>
       <Row className="text-left m-3" >
@@ -45,19 +70,9 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
 
 
       <Row className="mb-3">
-        { showID
-            // displayed when editing an entity
-            ? <Form.Group as={Col} controlId="musicianID">
-                <FloatingLabel controlId="musicianID" label="Musician ID">
-                  <Form.Control
-                    disabled
-                    name="musicianID"
-                    value={musician['id']}
-                  />
-                </FloatingLabel>
-              </Form.Group>
+        { mode === "create"
             // displayed when creating a new entity
-            : <Form.Group as={Col} controlId="initialInstrumentID">
+            ? <Form.Group as={Col} controlId="initialInstrumentID">
                 <FloatingLabel controlId="initialInstrumentID" label="Initial Instrument">
                   <Form.Control
                     required
@@ -68,6 +83,16 @@ export default function MusiciansForm({ showID, onSubmit, formLabel, buttonLabel
                   />
                 </FloatingLabel>
               </Form.Group>
+            // displayed when editing an entity
+            : <Form.Group as={Col} controlId="id">
+              <FloatingLabel controlId="id" label="Musician ID">
+                <Form.Control
+                  disabled
+                  name="id"
+                  value={musician['id']}
+                />
+              </FloatingLabel>
+            </Form.Group>
         }
 
         <Form.Group as={Col} controlId="birthdate">

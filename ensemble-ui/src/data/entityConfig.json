@@ -62,7 +62,6 @@
       {
         "field": "zip",
         "headerName": "Zip",
-        "type": "zipCode",
         "minWidth": 90,
         "editable": true
       },
