@@ -14,7 +14,7 @@ import piecesConcertCycles from "./routes/piecesConcertCycles.mjs";
 
 // Config
 const PORT = process.env.PORT || 3332;
-const STATIC_CONTENT_DIR = null; // TODO
+const STATIC_CONTENT_DIR = "./public";
 
 const app = express();
 
@@ -45,8 +45,7 @@ app.use('/api/PiecesConcertCycles', piecesConcertCycles);
  * Attach static route to serve frontend. This needs to be attached after all the table endpoints so that any
  * requests are first matched to the API endpoints and lastly interpreted as a request for the frontend.
  */
-// TODO
-// app.use(express.static(STATIC_CONTENT_DIR));
+app.use(express.static(STATIC_CONTENT_DIR));
 
 
 // Handle any errors that we didn't catch
