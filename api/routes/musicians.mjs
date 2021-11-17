@@ -8,6 +8,7 @@ let musicians = express.Router();
  * READ    GET     /api/Musicians
  * UPDATE  PUT     /api/Musicians?id=...
  * DELETE  DELETE  /api/Musicians?id=...
+ * FILTER  GET     /api/Musicians/filter?field=...&value=...
  */
 
 // CREATE
@@ -28,8 +29,9 @@ musicians.post("/", function (req, res) {
   } = req.body;
 
   // query
-  const createQuery = "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
-                      "state, zip, inEnsemble, active) VALUES (?, ?, ? ,? ,?, ?, ?, ?, ?, ?, ?);";
+  const createQuery =
+    "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
+    "state, zip, inEnsemble, active) VALUES (?, ?, ? ,? ,?, ?, ?, ?, ?, ?, ?);";
 
   db.query(
     createQuery,
@@ -94,8 +96,9 @@ musicians.put("/", function (req, res) {
   id = isNaN(id) ? null : id;
 
   // query
-  const updateQuery = "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
-                      "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
+  const updateQuery =
+    "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
+    "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
 
   db.query(
     updateQuery,
@@ -111,7 +114,7 @@ musicians.put("/", function (req, res) {
       zip,
       inEnsemble,
       active,
-      id
+      id,
     ],
     (error) => {
       if (error) {
@@ -141,6 +144,30 @@ musicians.delete("/", function (req, res) {
       res.status(400).json(error);
     } else {
       res.status(200).json({ status: "OK" });
+    }
+  });
+});
+
+// FILTER
+musicians.get("/filter", (req, res) => {
+  // destructure the query
+  let { field, value } = req.query;
+  value = isNaN(value) ? value : parseInt(value);
+  /**
+   * int/bit columns birthdate, phoneNumber, zip, inEnsemble, active -> requires '=' operator for query
+   * varchar columns firstName, lastName, birthdate, email, street, city, state -> requires 'LIKE' operator for query
+   * determine correct operator:
+   */
+  const operator = Number.isInteger(value) ? "=" : "LIKE";
+  const filterQuery = `SELECT * FROM Musicians WHERE ?? ${operator} ?`;
+
+  db.query(filterQuery, [field, value], (error, rows) => {
+    if (error) {
+      // we should only get an error here if something's wrong with the database connection
+      console.log(error);
+      res.status(500).json(error);
+    } else {
+      res.status(200).json({ status: "ok", data: rows });
     }
   });
 });
