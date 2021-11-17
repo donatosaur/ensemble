@@ -49,9 +49,9 @@ export const createMusician = async (body) => await sendPostRequest("Musicians",
  * @returns {Promise} a promise resolving to server response
  */
 export const updateMusician = async (body) => {
-  // get query string from body (either keyed as 'musicianID' or 'id')
-  const id = body['musicianID'] !== undefined ? body['musicianID'] : body['id'];
-  return await sendPutRequest("Musicians", body, `musicianID=${id}`, idReplacer);
+  // split id from response body
+  const {id, ...rest} = body;
+  return await sendPutRequest("Musicians", rest, `id=${id}`);
 }
 
 
@@ -62,7 +62,7 @@ export const updateMusician = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteMusician = async (id) => {
-  return await sendDeleteRequest("Musicians", `musicianID=${id}`);
+  return await sendDeleteRequest("Musicians", `id=${id}`);
 }
 
 
@@ -91,8 +91,8 @@ export const createInstrument = async (body) => await sendPostRequest("Instrumen
  * @returns {Promise} a promise resolving to server response
  */
 export const updateInstrument = async (body) => {
-  const id = body['instrumentID'] !== undefined ? body['instrumentID'] : body['id'];
-  return await sendPutRequest("Instruments", body, `instrumentID=${id}`, idReplacer);
+  const {id, ...rest} = body;
+  return await sendPutRequest("Instruments", rest, `id=${id}`);
 }
 
 
@@ -103,7 +103,7 @@ export const updateInstrument = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteInstrument = async (id) => {
-  return await sendDeleteRequest("Instruments", `instrumentID=${id}`);
+  return await sendDeleteRequest("Instruments", `id=${id}`);
 }
 
 
@@ -132,8 +132,8 @@ export const createVenue = async (body) => await sendPostRequest("Venues", body)
  * @returns {Promise} a promise resolving to server response
  */
 export const updateVenue = async (body) => {
-  const id = body['venueID'] !== undefined ? body['venueID'] : body['id'];
-  return await sendPutRequest("Venues", body, `venueID=${id}`, idReplacer);
+  const {id, ...rest} = body;
+  return await sendPutRequest("Venues", rest, `id=${id}`);
 }
 
 
@@ -173,8 +173,8 @@ export const createConcertCycle = async (body) => await sendPostRequest("Concert
  * @returns {Promise} a promise resolving to server response
  */
 export const updateConcertCycle = async (body) => {
-  const id = body['concertID'] !== undefined ? body['concertID'] : body['id'];
-  return await sendPutRequest("ConcertCycles", body, `concertID=${id}`, idReplacer);
+  const {id, ...rest} = body;
+  return await sendPutRequest("ConcertCycles", rest, `id=${id}`);
 }
 
 
@@ -185,7 +185,7 @@ export const updateConcertCycle = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteConcertCycle = async (id) => {
-  return await sendDeleteRequest("ConcertCycles", `concertID=${id}`);
+  return await sendDeleteRequest("ConcertCycles", `id=${id}`);
 }
 
 
@@ -214,8 +214,8 @@ export const createService = async (body) => await sendPostRequest("Services", b
  * @returns {Promise} a promise resolving to server response
  */
 export const updateService = async (body) => {
-  const id = body['serviceID'] !== undefined ? body['serviceID'] : body['id'];
-  return await sendPutRequest("Services", body, `serviceID=${id}`, idReplacer);
+  const {id, ...rest} = body;
+  return await sendPutRequest("Services", rest, `id=${id}`);
 }
 
 
@@ -226,7 +226,7 @@ export const updateService = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteService = async (id) => {
-  return await sendDeleteRequest("Services", `serviceID=${id}`);
+  return await sendDeleteRequest("Services", `id=${id}`);
 }
 
 
@@ -255,8 +255,8 @@ export const createPiece = async (body) => await sendPostRequest("Pieces", body)
  * @returns {Promise} a promise resolving to server response
  */
 export const updatePiece = async (body) => {
-  const id = body['pieceID'] !== undefined ? body['pieceID'] : body['id'];
-  return await sendPutRequest("Pieces", body, `pieceID=${id}`, idReplacer);
+  const {id, ...rest} = body;
+  return await sendPutRequest("Pieces", rest, `id=${id}`);
 }
 
 
@@ -452,13 +452,4 @@ async function sendDeleteRequest(path, queryString) {
     return Promise.reject(await response.json());
   }
   return await response.json();
-}
-
-
-/**
- * Replacer function for JSON.stringify
- */
-function idReplacer(key, val) {
-  // remove any unnecessary 'id' keys: these are required for MUI tables
-  return key === 'id' ? undefined : val;
 }
