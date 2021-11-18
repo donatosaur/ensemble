@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import "dotenv/config";
+import loggingMiddleware from "./logger.mjs";
 
 // import routes
 import musicians from "./routes/musicians.mjs";
@@ -19,28 +20,30 @@ const STATIC_CONTENT_DIR = "./public";
 
 const app = express();
 
+// Logging middleware for responses
+app.use(loggingMiddleware)
 
 /**
  * Attach JSON parsing middleware. The backend accepts JSON objects with missing/empty fields represented either
  * by null explicitly, or by empty strings (implicitly null). By passing in a reviver, we will convert all
  * empty strings to explicit null values whenever we parse a JSON body for consistency.
  */
-app.use(express.json({
-    reviver: (key, value) => value === "" ? null : value,
-}));
-
+app.use(
+    express.json({
+        reviver: (key, value) => (value === "" ? null : value),
+    })
+);
 
 // Attach table endpoint routes
-app.use('/api/Musicians', musicians);
-app.use('/api/Instruments', instruments);
-app.use('/api/Venues', venues);
-app.use('/api/ConcertCycles', concertCycles);
-app.use('/api/Services', services);
-app.use('/api/Pieces', pieces);
-app.use('/api/MusiciansInstruments', musiciansInstruments);
-app.use('/api/MusiciansConcertCycles', musiciansConcertCycles);
-app.use('/api/PiecesConcertCycles', piecesConcertCycles);
-
+app.use("/api/Musicians", musicians);
+app.use("/api/Instruments", instruments);
+app.use("/api/Venues", venues);
+app.use("/api/ConcertCycles", concertCycles);
+app.use("/api/Services", services);
+app.use("/api/Pieces", pieces);
+app.use("/api/MusiciansInstruments", musiciansInstruments);
+app.use("/api/MusiciansConcertCycles", musiciansConcertCycles);
+app.use("/api/PiecesConcertCycles", piecesConcertCycles);
 
 /**
  * Attach static route to serve frontend. This needs to be attached after all the table endpoints so that any
@@ -57,8 +60,11 @@ app.get("/*", function (req, res) {
     res.sendFile(path.resolve(STATIC_CONTENT_DIR, "index.html"));
 });
 
-
 // Attach listener
-app.listen(PORT, function(){
-    console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.');
+app.listen(PORT, function () {
+    console.log(
+        "Express started on http://localhost:" +
+        PORT +
+        "; press Ctrl-C to terminate."
+    );
 });
