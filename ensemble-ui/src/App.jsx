@@ -22,7 +22,7 @@ import PiecesConcertCyclesPage from "./pages/PiecesConcertCyclesPage";
 
 function App() {
   return (
-    <Router basename={"/~awanf"}>
+    <Router>
       <NavigationBar />
 
       <Route path="/" exact component={HomePage} />

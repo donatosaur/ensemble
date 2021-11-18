@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import "dotenv/config";
 
 // import routes
@@ -44,15 +45,16 @@ app.use('/api/PiecesConcertCycles', piecesConcertCycles);
 /**
  * Attach static route to serve frontend. This needs to be attached after all the table endpoints so that any
  * requests are first matched to the API endpoints and lastly interpreted as a request for the frontend.
+ * In addition, because of how React apps handle paths, we need to ensure that all routes at this point
+ * are captured by the static directory. First, by serving the static html file, and secondly by redirecting
+ * any and all other requests to that same file.
+ *
+ * This is SOP for a React app. For additional info on this, see https://create-react-app.dev/docs/deployment/
+ * and also https://expressjs.com/en/5x/api.html#res.sendFile
  */
 app.use(express.static(STATIC_CONTENT_DIR));
-
-
-// Handle any errors that we didn't catch
-app.use((error, req, res, next) => {
-    // this is serious enough that we need to log it as an error
-    console.error(`Unhandled error occurred during ${req.method} request at ${req.originalUrl}`, `${error}`);
-    res.status(500).json({ error: '500 - Server Error' });
+app.get("/*", function (req, res) {
+    res.sendFile(path.resolve(STATIC_CONTENT_DIR, "index.html"));
 });
 
 

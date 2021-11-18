@@ -108,3 +108,6 @@ dist
 
 # VScode
 /.vscode
+
+# build
+/api/public/
