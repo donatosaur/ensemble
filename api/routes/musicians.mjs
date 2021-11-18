@@ -61,7 +61,11 @@ musicians.post("/", function (req, res) {
 });
 
 // READ
-musicians.get("/", (req, res) => {
+musicians.get("/", (req, res, next) => {
+  if (Object.keys(req.query).length !== 0){
+    next()
+    return
+  }
   db.query("SELECT * FROM Musicians;", (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
@@ -149,9 +153,11 @@ musicians.delete("/", function (req, res) {
 });
 
 // FILTER
-musicians.get("/filter", (req, res) => {
+musicians.get("/", (req, res) => {
   // destructure the query
-  let { field, value } = req.query;
+  let field = Object.keys(req.query)[0]
+  let value =Object.values(req.query)[0]
+
   value = isNaN(value) ? value : parseInt(value);
   /**
    * int/bit columns birthdate, phoneNumber, zip, inEnsemble, active -> requires '=' operator for query
@@ -160,6 +166,7 @@ musicians.get("/filter", (req, res) => {
    */
   const operator = Number.isInteger(value) ? "=" : "LIKE";
   const filterQuery = `SELECT * FROM Musicians WHERE ?? ${operator} ?`;
+  console.log(filterQuery)
 
   db.query(filterQuery, [field, value], (error, rows) => {
     if (error) {
@@ -167,7 +174,7 @@ musicians.get("/filter", (req, res) => {
       console.log(error);
       res.status(500).json(error);
     } else {
-      res.status(200).json({ status: "ok", data: rows });
+      res.status(200).json({ data: rows });
     }
   });
 });

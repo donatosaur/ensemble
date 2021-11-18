@@ -43,6 +43,10 @@ content-type: application/json
 ### Delete from Musicians (might need to change :id)
 DELETE http://localhost:4444/api/Musicians?musicianID=16 HTTP/1.1
 
+### filter from musicinas
+GET  http://localhost:4444/api/Musicians?firstName=Annabelle HTTP/1.1
+
+
 ############################ Instruments #################################
 
 
