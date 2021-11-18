@@ -21,7 +21,10 @@ export default function NavigationBar() {
           </Nav.Link>
 
           {Object.keys(entityConfig).map((item, index) => {
-            return(<Nav.Link key={index} href={String(item)}>
+            return(<Nav.Link key={index} onClick={(e)=>{
+              e.preventDefault()
+              history.push(`/${item}`)
+            }}>
               {item}
             </Nav.Link>)
 
