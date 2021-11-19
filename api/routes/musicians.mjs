@@ -142,8 +142,6 @@ musicians.get("/", (req, res, next) => {
       return;
   }
 
-  console.log(filterQuery);
-
   db.query(filterQuery, [value], (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection

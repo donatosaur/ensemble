@@ -51,13 +51,13 @@ export default function MusicianSearchForm({setSearchParameters}){
     { controlID: "firstName", label: "First Name", type: "text", value: musician['firstName'] },
     { controlID: "lastName", label: "Last Name", type: "text", value: musician['lastName'] },
     { controlID: "email", label: "Email", type: "email", value: musician['email'] },
-    { controlID: "phoneNumber", label: "Phone", type: "number", value: musician['phoneNumber'] },
+    { controlID: "phoneNumber", label: "Phone", type: "text", value: musician['phoneNumber'] },
     { controlID: "inEnsemble", label: "Ensemble?", type: "boolean", value: musician['inEnsemble']},
     { controlID: "active", label: "Active?", type: "boolean", value: musician['active'] },
     { controlID: "street", label: "Street Address", type: "text", value: musician['street'] },
     { controlID: "city", label: "City", type: "text", value: musician['city'] },
     { controlID: "state", label: "State", type: "text", value: musician['state'] },
-    { controlID: "zip", label: "Zip Code", type: "number", value: musician['zip'] },
+    { controlID: "zip", label: "Zip Code", type: "text", value: musician['zip'] },
   ]
 
   return (
