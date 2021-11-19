@@ -21,7 +21,7 @@ const STATIC_CONTENT_DIR = "./public";
 const app = express();
 
 // Logging middleware for responses
-app.use(loggingMiddleware)
+app.use(loggingMiddleware);
 
 /**
  * Attach JSON parsing middleware. The backend accepts JSON objects with missing/empty fields represented either

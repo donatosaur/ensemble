@@ -1,11 +1,17 @@
 import path from "path";
-import morgan from "morgan";
 import fs from "fs";
+import morgan from "morgan";
 import chalk from "chalk";
 
-// Logging file
-let logFileStream = fs.createWriteStream(
-  path.join(path.resolve(), "/logs/responses.log"),
+// set directory for log file
+const LOG_DIR = "./logs";
+
+// create the directory if it doesn't exist
+if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR);
+
+// set the log output file
+const logFileStream = fs.createWriteStream(
+  path.resolve(LOG_DIR, "responses.log"),
   { flags: "a" }
 );
 
@@ -15,7 +21,7 @@ function skip(req) {
   // do not skip requests for homepage
   if (url === "/") return false;
   // skip requests for these file extensions
-  if (url.match(/(js|jpg|png|json|js|ico|css|woff|woff2|map|txt)$/)) {
+  if (url.match(/(js|jpg|png|json|ico|css|woff|woff2|map|txt)$/)) {
     return true;
   }
   // do not skip any other requests

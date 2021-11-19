@@ -41,11 +41,11 @@ SELECT * FROM Musicians WHERE firstName LIKE :firstName;
 SELECT * FROM Musicians WHERE firstName LIKE :lastName;
 SELECT * FROM Musicians WHERE birthdate = :birthdate;
 SELECT * FROM Musicians WHERE firstName LIKE :email;
-SELECT * FROM Musicians WHERE phoneNumber = :phoneNumber;
+SELECT * FROM Musicians WHERE phoneNumber LIKE :phoneNumber;
 SELECT * FROM Musicians WHERE street LIKE :street;
 SELECT * FROM Musicians WHERE city LIKE :city;
 SELECT * FROM Musicians WHERE state LIKE :state;
-SELECT * FROM Musicians WHERE zip = :zip;
+SELECT * FROM Musicians WHERE zip LIKE :zip;
 SELECT * FROM Musicians WHERE inEnsemble = :inEnsemble;
 SELECT * FROM Musicians WHERE active = :active;
 
