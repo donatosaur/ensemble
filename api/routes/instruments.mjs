@@ -38,7 +38,7 @@ instruments.get("/", (req, res) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
-      res.status(500).json(error);
+      res.status(503).json(error);
     } else {
       res.status(200).json(rows);
     }
