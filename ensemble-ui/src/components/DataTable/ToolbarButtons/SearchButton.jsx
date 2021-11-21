@@ -1,20 +1,16 @@
-import Button from "@mui/material/Button";
+import { Button } from "react-bootstrap";
 import React from "react";
 
 export default function SearchButton({ onClick }) {
   return (
-    <>
-      <Button
-        className="toolbarButton"
-        variant="text"
-        color="primary"
-        size="small"
-        aria-label="Search"
-        onClick={onClick}
-      >
-        <i className="bi bi-search" />
-        {`Search`}
-      </Button>
-    </>
+    <Button
+      className="actionButton"
+      variant="outline-secondary"
+      aria-label="Search"
+      onClick={onClick}
+    >
+      <i className="bi bi-search" />
+      {`Search`}
+    </Button>
   );
 }

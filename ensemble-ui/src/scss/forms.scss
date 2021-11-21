@@ -1,15 +1,7 @@
-
 .entityFormContainer {
-    border: 1px solid lightgray;
-    border-radius: $border-radius-lg;
-    padding: $container-padding-y $container-padding-x;
-    margin-top: 5vh;
-    margin-bottom: 5vh;
+  border: 1px solid lightgray;
+  border-radius: $border-radius-lg;
+  padding: $container-padding-y $container-padding-x;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
 }
-
-
-.entityFormCheckbox {
-    text-align: left;
-    margin: inherit;
-}
-

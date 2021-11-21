@@ -25,57 +25,57 @@ function App() {
     <Router>
       <NavigationBar />
 
-      <Route path="/" exact component={HomePage} />
+      <Route exact path="/" component={HomePage} />
 
-      <Route path="/Musicians">
+      <Route exact path="/Musicians">
         <EntityAPIProvider entityName="Musicians">
           <MusiciansPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/Instruments">
+      <Route exact path="/Instruments">
         <EntityAPIProvider entityName="Instruments">
           <InstrumentsPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/Venues">
-      <EntityAPIProvider entityName="Venues">
-        <VenuesPage />
-      </EntityAPIProvider>
+      <Route exact path="/Venues">
+        <EntityAPIProvider entityName="Venues">
+          <VenuesPage />
+        </EntityAPIProvider>
       </Route>
 
-      <Route path="/ConcertCycles">
+      <Route exact path="/ConcertCycles">
         <EntityAPIProvider entityName="ConcertCycles">
           <ConcertCyclesPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/Services">
+      <Route exact path="/Services">
         <EntityAPIProvider entityName="Services">
           <ServicesPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/Pieces">
+      <Route exact path="/Pieces">
         <EntityAPIProvider entityName="Pieces">
           <PiecesPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/MusiciansInstruments">
+      <Route exact path="/MusiciansInstruments">
         <EntityAPIProvider entityName="MusiciansInstruments">
           <MusiciansInstrumentsPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/MusiciansConcertCycles">
+      <Route exact path="/MusiciansConcertCycles">
         <EntityAPIProvider entityName="MusiciansConcertCycles">
           <MusiciansConcertCyclesPage />
         </EntityAPIProvider>
       </Route>
 
-      <Route path="/PiecesConcertCycles">
+      <Route exact path="/PiecesConcertCycles">
         <EntityAPIProvider entityName="PiecesConcertCycles">
           <PiecesConcertCyclesPage />
         </EntityAPIProvider>

@@ -18,7 +18,6 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
       "name": string,
       "colDef": GridColDef,
     }]
-    "errorMessage"
   ```                 
 
 - GridColDef must at minimum contain "field", "headerName", and "editable"
@@ -36,6 +35,12 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 
 
 ## Citations
-- (October 2020) Material-UI (Version 4.12.3) [Package] https://mui.com/
-- (October 2020) React Bootstrap (Version 2.0.0) [Package] https://react-bootstrap.github.io/
-- (October 2020) react-datetime (Version 3.1.1) [Package] https://www.npmjs.com/package/react-datetime
+- (October 2021) MUI (Version 5.1.0) [Package] https://mui.com/
+- (October 2021) React Bootstrap (Version 2.0.0) [Package] https://react-bootstrap.github.io/
+- (October 2021) React (Version 17.0.2) [Framework] https://github.com/facebook/react/
+- (October 2021) react-datetime (Version 3.1.1) [Package] https://www.npmjs.com/package/react-datetime
+- (October 2021) Robertson, Christian (Version 2.138) [Fonts] https://github.com/google/roboto/
+- (October 2021) Bootstrap Icons (Version 1.6.1) [Package] https://icons.getbootstrap.com/
+- (November 2021) Lodash (Version 4.17.15) [Package] https://lodash.com/
+- (November 2021) MUI/X-Data-Grid (Version 5.0.1) [Package] https://mui.com/components/data-grid/
+

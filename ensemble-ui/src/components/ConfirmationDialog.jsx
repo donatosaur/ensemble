@@ -12,7 +12,6 @@ import {Button, Modal} from "react-bootstrap";
  * @param handleCancel function that handles close or cancel button presses
  * @param handleConfirm function that handles confirmation button presses
  * @returns {JSX.Element}
- * @constructor
  */
 export default function ConfirmationDialog({
   show,
