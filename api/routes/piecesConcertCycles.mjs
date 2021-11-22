@@ -3,13 +3,11 @@ import db from "../database/db_connector.mjs";
 
 const musiciansConcertCycles = express.Router();
 
-
 /**
  * CREATE  POST    /api/PiecesConcertCycles
  * READ    GET     /api/PiecesConcertCycles
  * DELETE  DELETE  /api/PiecesConcertCycles?pieceID=...&concertID=...
  */
-
 
 // CREATE
 musiciansConcertCycles.post("/", (req, res) => {
@@ -23,7 +21,8 @@ musiciansConcertCycles.post("/", (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const insertQuery = "INSERT INTO PiecesConcertCycles (pieceID, concertID) VALUES (?, ?);";
+  const insertQuery =
+    "INSERT INTO PiecesConcertCycles (pieceID, concertID) VALUES (?, ?);";
 
   db.query(insertQuery, [pieceID, concertID], (error) => {
     if (error) {
@@ -31,15 +30,19 @@ musiciansConcertCycles.post("/", (req, res) => {
       console.log(error);
       res.status(400).json(error);
     } else {
-      res.status(201).json( {status: "Created"});
+      res.status(201).json({ status: "Created" });
     }
   });
 });
 
-
 // READ
 musiciansConcertCycles.get("/", (req, res) => {
-  db.query("SELECT * FROM PiecesConcertCycles;", (error, rows) => {
+  const selectQuery =
+    "SELECT Pieces.id AS pieceID, Pieces.pieceTitle, ConcertCycles.id AS concertID, ConcertCycles.concertTitle FROM Pieces " +
+    "INNER JOIN PiecesConcertCycles ON Pieces.id = PiecesConcertCycles.pieceID " +
+    "INNER JOIN ConcertCycles ON ConcertCycles.id = PiecesConcertCycles.concertID;";
+  // db.query("SELECT * FROM PiecesConcertCycles;", (error, rows) => {
+  db.query(selectQuery, (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
@@ -50,15 +53,13 @@ musiciansConcertCycles.get("/", (req, res) => {
   });
 });
 
-
 // UPDATE is disallowed on this entity
 musiciansConcertCycles.put("/", (req, res) => {
   res.status(405).send();
 });
 
-
 // DELETE
-musiciansConcertCycles.delete("/",  (req, res) => {
+musiciansConcertCycles.delete("/", (req, res) => {
   // get query params
   let [pieceID, concertID] = [req.query.pieceID, req.query.concertID];
 
@@ -69,9 +70,10 @@ musiciansConcertCycles.delete("/",  (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const deleteQuery = "DELETE FROM PiecesConcertCycles WHERE pieceID = ? AND concertID = ?;";
+  const deleteQuery =
+    "DELETE FROM PiecesConcertCycles WHERE pieceID = ? AND concertID = ?;";
 
-  db.query(deleteQuery, [pieceID, concertID],(error) => {
+  db.query(deleteQuery, [pieceID, concertID], (error) => {
     if (error) {
       console.log(error);
       res.status(400).json(error);

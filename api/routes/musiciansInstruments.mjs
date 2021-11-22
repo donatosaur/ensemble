@@ -39,7 +39,11 @@ musiciansInstruments.post('/', (req, res) => {
 
 // READ
 musiciansInstruments.get("/", (req, res) => {
-  db.query("SELECT * FROM MusiciansInstruments;", (error, rows) => {
+  let selectQuery= "SELECT Musicians.id as musicianID, Musicians.firstName, Musicians.lastName, Instruments.id as instrumentID, Instruments.name " +
+  "FROM Musicians INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;"
+
+  // db.query("SELECT * FROM MusiciansInstruments;", (error, rows) => {
+  db.query(selectQuery, (error, rows) => {
     if (error) {
       // we should only get an error here if something's wrong with the database connection
       console.log(error);
