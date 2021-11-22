@@ -146,6 +146,14 @@ content-type: application/json
 }
 ### delete from Instruments
 DELETE http://localhost:4444/api/ConcertCycles/5 HTTP/1.1
-############################ Venues #################################
-############################ Venues #################################
-############################ Venues #################################
+
+############################ MusiciansInstruments #################################
+## get musiciansinstruments
+GET http://localhost:4444/api/MusiciansInstruments HTTP/1.1
+
+############################ MusiciansConcertCycles #################################
+GET http://localhost:4444/api/MusiciansConcertCycles HTTP/1.1
+
+############################ PiecesConcertCycles #################################
+GET http://localhost:4444/api/PiecesConcertCycles HTTP/1.1
+

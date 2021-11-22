@@ -272,10 +272,10 @@ DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concer
 -- can rearrange later put this here for ease of finding
 
 -- MusiciansInstruments
-SELECT Musicians.id,
+SELECT Musicians.id AS musicianID,
        Musicians.firstName,
        Musicians.lastName,
-       Instruments.id,
+       Instruments.id AS instrumentID,
        Instruments.name
 FROM Musicians
 INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID
@@ -283,10 +283,10 @@ INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;
 
 
 -- MusiciansConcertCycles
-SELECT Musicians.id,
+SELECT Musicians.id AS musicianID,
        Musicians.firstName,
        Musicians.lastName,
-       ConcertCycles.id,
+       ConcertCycles.id AS concertID,
        ConcertCycles.concertTitle
 FROM Musicians
 INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
@@ -294,9 +294,9 @@ INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;
 
 
 -- PiecesConcertCycles
-SELECT Pieces.id,
+SELECT Pieces.id AS pieceID,
        Pieces.pieceTitle,
-       ConcertCycles.id,
+       ConcertCycles.id AS concertID,
        ConcertCycles.concertTitle
 FROM Pieces
 INNER JOIN PiecesConcertCycles ON Pieces.id = PiecesConcertCycles.pieceID
@@ -304,10 +304,10 @@ INNER JOIN ConcertCycles ON ConcertCycles.id = PiecesConcertCycles.concertID;
 
 
 -- MusiciansConcertCycles (To show instruments: for future implementation)
-SELECT Musicians.id,
+SELECT Musicians.id as musicianID,
        Musicians.firstName,
        Musicians.lastName,
-       Instruments.name,
+       Instruments.name AS instrumentID,
        ConcertCycles.concertTitle
 FROM Musicians
 INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
