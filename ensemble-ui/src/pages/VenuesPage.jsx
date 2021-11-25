@@ -30,7 +30,7 @@ export default function VenuesPage() {
 
   const EditForm = () => (
     <VenuesForm
-      mode="edit"
+      mode="update"
       initialFormValues={editFormValues}
     />
   );

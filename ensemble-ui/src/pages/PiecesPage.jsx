@@ -30,7 +30,7 @@ export default function PiecesPage() {
 
   const EditForm = () => (
     <PiecesForm
-      mode="edit"
+      mode="update"
       initialFormValues={editFormValues}
     />
   );

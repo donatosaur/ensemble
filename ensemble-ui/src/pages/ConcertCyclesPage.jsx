@@ -31,7 +31,7 @@ export default function ConcertCyclesPage() {
 
   const EditForm = () => (
     <ConcertCyclesForm
-      mode="edit"
+      mode="update"
       initialFormValues={editFormValues}
     />
   );

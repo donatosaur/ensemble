@@ -17,7 +17,7 @@ const API_BASE = "/api";
  * Issues a GET request for Musicians
  *
  * @param {object} [searchParameters] key-value pairs to filter (search) rows
- * @returns {Promise<JSON>} a promise resolving to all rows for the Musicians table
+ * @returns {Promise} a promise resolving to all rows for the Musicians table
  *                          (optionally, that match the searchParameters passed)
  */
 export async function getMusicians(searchParameters) {

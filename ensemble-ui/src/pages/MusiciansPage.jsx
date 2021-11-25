@@ -35,7 +35,7 @@ export default function MusiciansPage() {
 
   const EditForm = () => (
     <MusiciansForm
-      mode="edit"
+      mode="update"
       initialFormValues={editFormValues}
     />
   );

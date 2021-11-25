@@ -25,8 +25,8 @@ export default function InstrumentsPage() {
 
   const EditForm = () => (
   <InstrumentsForm
-  mode="edit"
-  initialFormValues={editFormValues}
+    mode="update"
+    initialFormValues={editFormValues}
   />
 );
 

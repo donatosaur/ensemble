@@ -29,7 +29,7 @@ export default function ServicesPage() {
 
   const EditForm = () => (
     <ServicesForm
-      mode="edit"
+      mode="update"
       initialFormValues={editFormValues}
     />
   );
