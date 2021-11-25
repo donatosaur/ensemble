@@ -1,57 +1,78 @@
 import React, { useState} from "react";
 import { Container } from "react-bootstrap";
 import MusiciansForm from "../components/Forms/MusiciansForm";
-import EntityContextProvider from "../hooks/EntityContextProvider";
 import DataTable from "../components/DataTable/DataTable";
+import FormModal from '../components/FormModal';
 
 
 export default function MusiciansPage() {
   const entityName = "Musicians";
 
-  // state hooks for form display state
+  // state hooks for forms & display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
-
   const [editFormOpen, setEditFormOpen] = useState(false);
-  const editFormToggle = (newState) => setEditFormOpen(newState === undefined ? !createFormOpen : newState);
+  const [editFormValues, setEditFormValues] = useState({});
 
+  // forms
+  const CreateForm = () => (
+     <MusiciansForm
+       mode="create"
+       initialFormValues={{
+         birthdate: '',
+         firstName: '',
+         lastName: '',
+         email: '',
+         phoneNumber: '',
+         inEnsemble: false,
+         active: false,
+         street: '',
+         city: '',
+         state: '',
+         zip: '',
+       }}
+     />
+  );
+
+  const EditForm = () => (
+    <MusiciansForm
+      mode="edit"
+      initialFormValues={editFormValues}
+    />
+  );
 
   return (
     <>
       <h1>{entityName}</h1>
 
-      <EntityContextProvider key={1}>
-        <Container>
-          <DataTable
-            createFormToggle={createFormToggle}
-            editFormToggle={editFormToggle}
-            allowSearch={true}
-            allowEdit={true}
-          />
-        </Container>
+      <Container>
+        <DataTable
+          setEditFormValues={setEditFormValues}
+          setCreateFormOpen={setCreateFormOpen}
+          setEditFormOpen={setEditFormOpen}
+          allowSearch={true}
+          allowEdit={true}
+        />
+      </Container>
 
-        { editFormOpen &&
-        <Container className="entityFormContainer">
-          <MusiciansForm
-            mode="update"
-            formLabel="Edit"
-            buttonLabel="Commit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the create form modal */}
+      { createFormOpen &&
+        <FormModal
+          show={createFormOpen}
+          title="Create a Musician"
+          form={CreateForm}
+          handleCancel={() => setCreateFormOpen(false)}
+        />
+      }
 
-      <EntityContextProvider key={2}>
-        { createFormOpen &&
-        <Container className="entityFormContainer">
-          <MusiciansForm
-            mode="create"
-            formLabel="Add a Musician"
-            buttonLabel="Submit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the edit form modal */}
+      { editFormOpen &&
+        <FormModal
+          show={editFormOpen}
+          title="Edit Musician"
+          form={EditForm}
+          handleCancel={() => setEditFormOpen(false)}
+        />
+      }
     </>
   );
 }

@@ -350,7 +350,7 @@
       {
         "field": "concertID",
         "columnConfig": {
-          "headerName": "Concert Cycle ID"
+          "headerName": "Concert ID"
         }
       }
     ]

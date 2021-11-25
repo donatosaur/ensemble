@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from 'react-bootstrap';
+import { Modal, Container } from 'react-bootstrap';
 
 /**
  * Creates a modal intended to house a form. Only a close button is included, and should be passed
@@ -34,7 +34,9 @@ export default function FormModal({
       <Modal.Header className="mb-4" closeButton >
         <Modal.Title children={title} />
       </Modal.Header>
-      <Modal.Body as={form} />
+      <Container> 
+        <Modal.Body as={form} />
+      </Container>
       <Modal.Footer className="border-0" />
     </Modal>
   );

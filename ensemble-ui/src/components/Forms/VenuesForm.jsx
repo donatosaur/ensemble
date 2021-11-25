@@ -1,110 +1,155 @@
-import React, {useContext, useState} from "react";
-import {Form, Row, Col, Button, FloatingLabel} from "react-bootstrap";
-import {EntityContext, EntityDispatchContext} from "../../hooks/EntityContextProvider";
-import AddressInput from "./FormComponents/AddressInput";
-import {useEntity} from "../../hooks/useEntity";
-import {useHistory} from "react-router-dom";
+import React, { useReducer } from "react";
+import { Col, Row, Button, Form, Container, FloatingLabel } from "react-bootstrap";
+import { useEntity } from "../../hooks/useEntity";
+import { useHistory } from "react-router-dom";
+import { entityFormInitializer, entityFormReducer } from '../../utils/reducers';
+import { InputField } from './FormComponents/Fields';
 
 /**
- * Creates a form for create and update operations
+ * Generates a form for CREATE and UPDATE operations with fields pre-populated with initialFormValues.
  *
- * @param mode {"create" | "update"}
- * @param formLabel a short text description for the form
- * @param buttonLabel text to display on the form button
+ * @param {object} initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
+ * @param {"create" | "update"} mode
  * @returns {JSX.Element}
- * @constructor
  */
-export default function VenuesForm({ mode, formLabel, buttonLabel }){
-  // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
-  const venue = useContext(EntityContext);
-  const dispatch = useContext(EntityDispatchContext);
-
-  const [showHelpText, setShowHelpText] = useState(false);
-
+export default function VenuesForm({ initialFormValues, mode }){
+  // get API calls from context hook and create reducer; dispatch signature is {field, value, isInvalid, modified}
   const { createEntity, updateEntity } = useEntity();
+  const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
 
+  // define validation regex checks
+  // const validation = {};
+
+  // construct default props for each input field; these will be the same for each entity
+  const defaultProps = {
+    onBlur: (event) => dispatch({
+      field: event.target.name,
+      // isInvalid: !validation[event.target.name]?.test(`${event.target.value}`),
+      modified: true
+    }),
+    onChange: (event) => dispatch({
+      field: event.target.name,
+      // if onBlur fired at least once AND there's a validation check AND the validation check fails
+      // isInvalid: entity[event.target.name].modified && !validation[event.target.name]?.test(`${event.target.value}`),
+      value: event.target.type === 'checkbox' ? event.target.checked : event.target.value
+    })
+  }
+
+  // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
-
     void async function submitForm(){
-      if (mode === "create" || mode ==="update") {
+      if (mode === "create" || mode === "update") {
         try {
-          const response = mode === "create"
-            ? await createEntity(venue)
-            : await updateEntity(venue);
-
+          // map fields and check whether any value is marked as invalid before submitting; normally it would be
+          // best to use entries.forEach here, but we need to return control if something is invalid
+          const request = {}
+          for (const [field, fieldObject] of Object.entries(entity)) {
+            if (fieldObject.isInvalid) {
+              alert('At least one input field is invalid; please check the instructions under each field.')
+              return;
+            }
+            request[field] = fieldObject;
+          }
+          const response = mode === "create" ? await createEntity(request) : await updateEntity(request);
           console.log(response);
-
-          // refresh the page; history[0] is the current path
-          history.go(0);
+          history.go(0);  // refresh the page; history[0] is the current path
         } catch (error) {
-          alert(error['sqlMessage']);
+          alert(error?.sqlMessage);
         }
       }
     }();
   }
 
-  const handleOnChange = (event) => {
-    // slot the new value into the piece state
-    dispatch({[event.target.id]: event.target.value});
-  }
 
-  return ( 
-    <Form>
-      <Row className="entityForm">
-        <Form.Label children={formLabel} />
+  return (
+    <Form noValidate className="entityForm">
+      <Row>
+        { mode === "update" &&
+          <Col className="mb-3" xs="2">
+            <InputField
+              disabled
+              name="id"
+              label="ID"
+              value={entity.id.value}
+              isInvalid={entity.id.isInvalid}
+              {...defaultProps}
+            />
+          </Col>
+        }
+
+        <Col className="mb-3">
+          <InputField
+            name="capacity"
+            label="Capacity"
+            type="number"
+            min="0"
+            value={entity.capacity.value}
+            isInvalid={entity.capacity.isInvalid}
+            errorText="Please enter an unsigned integer value."
+            {...defaultProps}
+          />
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="name"
+            label="Venue Name"
+            value={entity.name.value}
+            isInvalid={entity.name.isInvalid}
+            errorText="Please enter the venue's name."
+            {...defaultProps}
+          />
+        </Col>
       </Row>
 
-    { mode === "update" &&
-    <Form.Group as={Col} controlId="venueID">
-      <FloatingLabel controlId="venueID" label="Venue ID">
-        <Form.Control
-          disabled
-          type="number"
-          value={venue['id']}
-        />
-      </FloatingLabel>
-    </Form.Group>
-    }
-
-    <Row className="entityForm">
-      <Form.Group as={Col} controlId="capacity">
-        <FloatingLabel controlId="capacity" label="Capacity">
-          <Form.Control
-            required
-            type="number"
-            placeholder="Enter Venue Capacity"
-            value={venue['capacity']}
-            onChange={handleOnChange}
+      <Row>
+        <Col className="mb-3">
+          <InputField
+            name="street"
+            type="street"
+            label="Street Address"
+            value={entity.street.value}
+            isInvalid={entity.street.isInvalid}
+            errorText="Please enter a street address."
+            {...defaultProps}
           />
-        </FloatingLabel>
-      </Form.Group>
-      
-      <Form.Group as={Col} controlId="name">
-        <FloatingLabel controlId="name" label="Venue Name">
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter Venue Name"
-            value={venue['name']}
-            onChange={handleOnChange}
-          />
-        </FloatingLabel>
-      </Form.Group>
-    </Row>
+        </Col>
+      </Row>
 
-      <AddressInput
-        streetValue={venue['street']}
-        cityValue={venue['city']}
-        stateValue={venue['state']}
-        zipValue={venue['zip']}
-        handleOnChange={handleOnChange}
-        showHelpText={showHelpText}
-      />
+      <Row>
+        <Col xs="7">
+          <InputField
+            name="city"
+            label="City"
+            value={entity.city.value}
+            isInvalid={entity.city.isInvalid}
+            errorText="Please enter a city."
+            {...defaultProps} />
+        </Col>
+        <Col xs="2">
+          <InputField
+            name="state"
+            label="State"
+            value={entity.state.value}
+            isInvalid={entity.state.isInvalid}
+            errorText="Please enter a 2-character state abbreviation."
+            {...defaultProps} />
+        </Col>
+        <Col xs="3">
+          <InputField
+            name="zip"
+            label="Zip Code"
+            type="tel"
+            value={entity.zip.value}
+            isInvalid={entity.zip.isInvalid}
+            errorText="Please enter exactly 5 digits."
+            {...defaultProps} />
+        </Col>
+      </Row>
 
     <Button className="mt-1" variant="primary" type="submit" onClick={handleOnSubmit}>
-      {buttonLabel || 'Submit'}
+      { mode === 'create' ? 'Submit' : 'Commit'}
     </Button>
   </Form>
   )

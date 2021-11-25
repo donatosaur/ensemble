@@ -1,53 +1,56 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-
 import PiecesConcertCyclesForm from "../components/Forms/PiecesConcertCyclesForm";
-import EntityContextProvider from "../hooks/EntityContextProvider";
 import DataTable from "../components/DataTable/DataTable";
+import FormModal from '../components/FormModal';
 
 export default function PiecesConcertCyclesPage() {
   const entityName = 'PiecesConcertCycles';
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
-
   const [editFormOpen, setEditFormOpen] = useState(false);
-  const editFormToggle = (newState) => setEditFormOpen(newState === undefined ? !createFormOpen : newState);
 
+  // forms
+  const CreateForm = () => (
+  <PiecesConcertCyclesForm
+      mode="create"
+      initialFormValues={{
+        pieceID: '',
+        concertID: ''
+      }}
+    />
+  );
 
   return (
     <>
       <h1>{entityName}</h1>
 
-      <EntityContextProvider key={1}>
-        <Container>
-          <DataTable
-            createFormToggle={createFormToggle}
-            editFormToggle={editFormToggle}
-            allowSearch={false}
-            allowEdit={false}
-          />
-        </Container>
+      <Container>
+        <DataTable
+          setCreateFormOpen={setCreateFormOpen}
+          setEditFormOpen={setEditFormOpen}
+          allowSearch={false}
+          allowEdit={false}
+        />
+      </Container>
 
-        { editFormOpen &&
-        <Container className={"entityFormContainer"}>
+      {/* this should never be rendered, but is here for safety */}
+      { editFormOpen &&
+        <Container>
           <p>Edits are disabled for this entity. Use add new/delete instead.</p>
         </Container>
-        }
-      </EntityContextProvider>
+      }
 
-      <EntityContextProvider key={2}>
-        { createFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <PiecesConcertCyclesForm
-            mode="create"
-            formLabel="Link a Piece to a ConcertCycle"
-            buttonLabel="Submit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the create form modal */}
+      { createFormOpen &&
+        <FormModal
+          show={createFormOpen}
+          title="Link a Piece to a ConcertCycle"
+          form={CreateForm}
+          handleCancel={() => setCreateFormOpen(false)}
+        />
+      }
     </>
   );
 }

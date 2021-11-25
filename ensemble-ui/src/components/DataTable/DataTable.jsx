@@ -82,6 +82,7 @@ export default function DataTable({
       <td key={rowIndex}>
         { setEditFormValues &&
           <EditButton onClick={() => {
+
             // make sure a row index was actually passed; if it was not, log it and stop
             if (rowIndex === null || rowIndex === undefined) {
               console.error('Edit button pressed, but row not found!');

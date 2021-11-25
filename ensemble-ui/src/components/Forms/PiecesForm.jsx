@@ -1,155 +1,148 @@
-import React, { useContext } from "react";
-import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
-import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
-
+import React, { useContext, useReducer } from "react";
+import { Col, Row, Button, Form, Container, FloatingLabel } from "react-bootstrap";
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
+import { entityFormInitializer, entityFormReducer } from '../../utils/reducers';
+import { InputField, TextAreaField } from './FormComponents/Fields';
 
 
 /**
- * Creates a form for create and update operations
+ * Generates a form for CREATE and UPDATE operations with fields pre-populated with initialFormValues.
  *
- * @param mode {"create" | "update"}
- * @param formLabel a short text description for the form
- * @param buttonLabel text to display on the form button
+ * @param {object} initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
+ * @param {"create" | "update"} mode
  * @returns {JSX.Element}
- * @constructor
  */
-export default function PiecesForm({ mode, formLabel, buttonLabel }){
-  // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
-  const piece = useContext(EntityContext);
-  const dispatch = useContext(EntityDispatchContext);
-
+export default function PiecesForm({ initialFormValues, mode }){
+  // get API calls from context hook and create reducer; dispatch signature is {field, value, isInvalid, modified}
   const { createEntity, updateEntity } = useEntity();
+  const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
 
+  // define validation regex checks
+  // const validation = {};
+
+  // construct default props for each input field; these will be the same for each entity
+  const defaultProps = {
+    onBlur: (event) => dispatch({
+      field: event.target.name,
+      // isInvalid: !validation[event.target.name]?.test(`${event.target.value}`),
+      modified: true
+    }),
+    onChange: (event) => dispatch({
+      field: event.target.name,
+      // if onBlur fired at least once AND there's a validation check AND the validation check fails
+      // isInvalid: entity[event.target.name].modified && !validation[event.target.name]?.test(`${event.target.value}`),
+      value: event.target.type === 'checkbox' ? event.target.checked : event.target.value
+    })
+  }
+
+  // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
     void async function submitForm(){
       if (mode === "create" || mode ==="update") {
         try {
-          const response = mode === "create"
-            ? await createEntity(piece)
-            : await updateEntity(piece);
-
+          const response = mode === "create" ? await createEntity(entity) : await updateEntity(entity);
           console.log(response);
-
-          // refresh the page; history[0] is the current path
-          history.go(0);
+          history.go(0);  // refresh the page; history[0] is the current path
         } catch (error) {
-          alert(error['sqlMessage']);
+          alert(error?.sqlMessage);
         }
       }
     }();
   }
 
-  const handleOnChange = (event) => {
-    // slot the new value into the state
-    dispatch({[event.target.id]: event.target.value});
-  }
 
   return(
-    <Form>
-      <Row className="entityForm">
-        <Form.Label>{formLabel}</Form.Label>
-      </Row>
-
-      <Row className="entityForm">
+    <Form noValidate className="entityForm">
+      <Row>
         { mode === "update" &&
-        <Form.Group as={Col} controlId="id">
-          <FloatingLabel controlId="id" label="Piece ID">
-            <Form.Control
+          <Col className="mb-3" xs="2">
+            <InputField
               disabled
-              value={piece['id']}
+              name="id"
+              label="ID"
+              value={entity.id.value}
+              isInvalid={entity.id.isInvalid}
+              {...defaultProps}
             />
-          </FloatingLabel>
-        </Form.Group>
+          </Col>
         }
-  
-        <Form.Group as={Col} controlId="pieceTitle">
-          <FloatingLabel controlId="pieceTitle" label="Piece Title">
-            <Form.Control
-              required
-              type="text"
-              placeholder="Enter Piece Title"
-              value={piece['pieceTitle']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-      </Row>
-  
 
-      <Row className="entityForm">
-        <Form.Group as={Col} controlId="composerFirstName">
-          <FloatingLabel controlId="composerFirstName" label="Composer First Name">
-            <Form.Control
-              required
-              type="text"
-              placeholder="Enter Composer's First Name"
-              value={piece['composerFirstName']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-          </Form.Group>
-  
-          <Form.Group as={Col} controlId="composerLastName">
-            <FloatingLabel controlId="composerLastName" label="Composer Last Name">
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter Composer's Last Name"
-                value={piece['composerLastName']}
-                onChange={handleOnChange}
-              />
-            </FloatingLabel>
-          </Form.Group>
+        <Col className="mb-3">
+          <InputField
+            name="pieceTitle"
+            label="Title"
+            value={entity.pieceTitle.value}
+            isInvalid={entity.pieceTitle.isInvalid}
+            errorText="Please enter the piece's title."
+            {...defaultProps}
+          />
+        </Col>
       </Row>
 
+      <Row xs={1} md={2}>
+        <Col className="mb-3">
+          <InputField
+            name="composerFirstName"
+            label="Composer First Name"
+            value={entity.composerFirstName.value}
+            isInvalid={entity.composerFirstName.isInvalid}
+            errorText="Please enter the composer's first name."
 
-    <Row className= "entityForm">
-      <Form.Group as={Col} controlId="arrangerFirstName">
-        <FloatingLabel controlId="arrangerFirstName" label="Arranger First Name">
-          <Form.Control
-            type="text"
-            placeholder="Enter Arranger's First Name"
-            value={piece['arrangerFirstName']}
-            onChange={handleOnChange}
+            {...defaultProps}
           />
-        </FloatingLabel>
-      </Form.Group>
-  
-      <Form.Group as={Col} controlId="arrangeLastName">
-        <FloatingLabel controlId="arrangeLastName" label="Arranger Last Name">
-          <Form.Control
-            type="text"
-            placeholder="Enter Arranger's Last Name"
-            value={piece['arrangerLastName']}
-            onChange={handleOnChange}
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="composerLastName"
+            label="Composer Last Name"
+            value={entity.composerLastName.value}
+            isInvalid={entity.composerLastName.isInvalid}
+            errorText="Please enter the composer's last name."
+            {...defaultProps}
           />
-        </FloatingLabel>
-      </Form.Group>
-    </Row>
+        </Col>
+      </Row>
 
-    <Row className= "entityForm">
-      <Form.Group as={Col} controlId="instrumentation">
-        <FloatingLabel controlId="instrumentation" label="Instrumentation">
-          <Form.Control
-            required
-            as="textarea"
-            type="text"
-            placeholder="Instrumentation"
-            value={piece['instrumentation']}
-            onChange={handleOnChange}
+      <Row xs={1} md={2}>
+        <Col className="mb-3">
+          <InputField
+            name="arrangerFirstName"
+            label="Arranger First Name"
+            value={entity.arrangerFirstName.value}
+            isInvalid={entity.arrangerFirstName.isInvalid}
+            {...defaultProps}
           />
-        </FloatingLabel>
-      </Form.Group>
-    </Row>
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="arrangerLastName"
+            label="Arranger Last Name"
+            value={entity.arrangerLastName.value}
+            isInvalid={entity.arrangerLastName.isInvalid}
+            {...defaultProps}
+          />
+        </Col>
+      </Row>
 
+      <Row>
+        <Col className="mb-3">
+          <TextAreaField
+            name="instrumentation"
+            label="Instrumentation"
+            value={entity.instrumentation.value}
+            isInvalid={entity.instrumentation.isInvalid}
+            errorText="Please enter the piece's instrumentation."
+            {...defaultProps}
+          />
+        </Col>
+      </Row>
   
       <Button className="mt-3" variant="primary" type="submit" onClick={handleOnSubmit}>
-        {buttonLabel || 'Submit'}
+        { mode === 'create' ? 'Submit' : 'Commit'}
       </Button>
     </Form>
   )
