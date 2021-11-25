@@ -8,7 +8,6 @@ import { Form, FloatingLabel } from "react-bootstrap";
  * @param {string} name a unique field name
  * @param {string} label a floating label
  * @param {string} [errorText] error text to display on isInvalid
- * @param {string} [helpText] help text to display under the input box (muted)
  * @param props any other props to pass to Form.Control
  * @returns {JSX.Element}
  */
@@ -40,7 +39,7 @@ export function InputField({name, label, errorText, helpText, ...props}){
  */
 export function CheckboxField({name, label, errorText, ...props}){
   return (
-    <Form.Group controlId={name}>
+    <Form.Group className="float-start" controlId={name}>
       <Form.Check name={name} {...props} />
       <Form.Label>{label ?? name}</Form.Label>
       { errorText && <Form.Control.Feedback type="invalid" children={errorText} /> }
@@ -55,7 +54,6 @@ export function CheckboxField({name, label, errorText, ...props}){
  * @param {string} name a unique field name
  * @param {string} label a floating label
  * @param {string} [errorText] error text to display on isInvalid
- * @param {string} [helpText] help text to display under the select box (muted)
  * @param props any other props to pass to Form.Group and Form.Control
  * @returns {JSX.Element}
  */
@@ -77,7 +75,6 @@ export function SelectField({name, label, errorText, ...props}){
  * @param {string} name a unique field name
  * @param {string} label a floating label
  * @param {string} [errorText] error text to display on isInvalid
- * @param {string} [helpText] help text to display under the input box (muted)
  * @param props any other props to pass to Form.Control
  * @returns {JSX.Element}
  */

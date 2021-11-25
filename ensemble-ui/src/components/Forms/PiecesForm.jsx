@@ -1,9 +1,10 @@
-import React, { useContext, useReducer } from "react";
-import { Col, Row, Button, Form, Container, FloatingLabel } from "react-bootstrap";
+import React, { useReducer, useState } from "react";
+import { Col, Row, Form } from "react-bootstrap";
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import { entityFormInitializer, entityFormReducer } from '../../utils/reducers';
 import { InputField, TextAreaField } from './FormComponents/Fields';
+import SpinnerButton from './FormComponents/SpinnerButton';
 
 
 /**
@@ -18,6 +19,7 @@ export default function PiecesForm({ initialFormValues, mode }){
   const { createEntity, updateEntity } = useEntity();
   const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   // define validation regex checks
   // const validation = {};
@@ -40,18 +42,40 @@ export default function PiecesForm({ initialFormValues, mode }){
   // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
+    setLoading(true);  // set the submit button to its "loading" state to prevent multiple identical requests
 
     void async function submitForm(){
-      if (mode === "create" || mode ==="update") {
+      if (mode === "create" || mode === "update") {
+        let validated = true;
+        const request = {};
+  
         try {
-          const response = mode === "create" ? await createEntity(entity) : await updateEntity(entity);
-          console.log(response);
-          history.go(0);  // refresh the page; history[0] is the current path
+          // map fields and check whether any value is marked as invalid before submitting      
+          Object.entries(entity).forEach(([field, fieldObject]) => {
+            if (fieldObject.isInvalid) { 
+              validated = false; 
+            }
+            request[field] = fieldObject.value;
+          })  
+
+          // check whether the form is in a valid state
+          if (validated) {
+            const response = mode === "create" ? await createEntity(request) : await updateEntity(request);
+            console.log(response);
+            history.go(0); // refresh the page; history[0] represents the current path
+          } else {
+            // let the user know something went wrong
+            alert('At least one input field is invalid; please check the instructions under each field.');
+          }
         } catch (error) {
-          alert(error?.sqlMessage);
+          // rejected promises should already be parsed; if the backend send back an error message from
+          // the sql database, we can display that error here, otherwise we should display whatever other
+          // error message the backend sends instead
+          alert(error?.sqlMessage ?? error);
         }
       }
     }();
+    setLoading(false);  // no matter what, we should return the button to its "not loading" state
   }
 
 
@@ -140,10 +164,10 @@ export default function PiecesForm({ initialFormValues, mode }){
           />
         </Col>
       </Row>
-  
-      <Button className="mt-3" variant="primary" type="submit" onClick={handleOnSubmit}>
-        { mode === 'create' ? 'Submit' : 'Commit'}
-      </Button>
+
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit}>
+        Submit
+      </SpinnerButton>
     </Form>
   )
 }

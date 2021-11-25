@@ -1,9 +1,10 @@
-import React, { useReducer } from "react";
-import { Col, Row, Button, Form } from "react-bootstrap";
+import React, { useReducer, useState } from "react";
+import { Col, Row, Form } from "react-bootstrap";
 import { InputField } from './FormComponents/Fields';
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from 'react-router-dom';
+import SpinnerButton from './FormComponents/SpinnerButton';
 
 
 
@@ -19,6 +20,7 @@ export default function InstrumentsForm({ initialFormValues, mode }){
   const { createEntity, updateEntity } = useEntity();
   const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   // define validation regex checks
   // const validation = {};
@@ -41,27 +43,40 @@ export default function InstrumentsForm({ initialFormValues, mode }){
   // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
+    setLoading(true);  // set the submit button to its "loading" state to prevent multiple identical requests
+
     void async function submitForm(){
       if (mode === "create" || mode === "update") {
+        let validated = true;
+        const request = {};
+  
         try {
-          // map fields and check whether any value is marked as invalid before submitting; normally it would be
-          // best to use entries.forEach here, but we need to return control if something is invalid
-          const request = {}
-          for (const [field, fieldObject] of Object.entries(entity)) {
-            if (fieldObject.isInvalid) {
-              alert('At least one input field is invalid; please check the instructions under each field.')
-              return;
+          // map fields and check whether any value is marked as invalid before submitting      
+          Object.entries(entity).forEach(([field, fieldObject]) => {
+            if (fieldObject.isInvalid) { 
+              validated = false; 
             }
-            request[field] = fieldObject;
+            request[field] = fieldObject.value;
+          })  
+
+          // check whether the form is in a valid state
+          if (validated) {
+            const response = mode === "create" ? await createEntity(request) : await updateEntity(request);
+            console.log(response);
+            history.go(0); // refresh the page; history[0] represents the current path
+          } else {
+            // let the user know something went wrong
+            alert('At least one input field is invalid; please check the instructions under each field.');
           }
-          const response = mode === "create" ? await createEntity(request) : await updateEntity(request);
-          console.log(response);
-          history.go(0);  // refresh the page; history[0] is the current path
         } catch (error) {
-          alert(error?.sqlMessage);
+          // rejected promises should already be parsed; if the backend send back an error message from
+          // the sql database, we can display that error here, otherwise we should display whatever other
+          // error message the backend sends instead
+          alert(error?.sqlMessage ?? error);
         }
       }
     }();
+    setLoading(false);  // no matter what, we should return the button to its "not loading" state
   }
 
 
@@ -94,9 +109,9 @@ export default function InstrumentsForm({ initialFormValues, mode }){
       </Row>
 
 
-      <Button className="m-1" variant="primary" type="submit" onClick={handleOnSubmit}>
-        { mode === 'create' ? 'Submit' : 'Commit'}
-      </Button>
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit}>
+        Submit
+      </SpinnerButton>
     </Form>
   );
 }
