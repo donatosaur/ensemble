@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-import EntityContextProvider from "../hooks/EntityContextProvider";
-
 import InstrumentsForm from "../components/Forms/InstrumentsForm";
 import DataTable from "../components/DataTable/DataTable";
+import FormModal from '../components/FormModal';
 
 
 export default function InstrumentsPage() {
@@ -11,48 +10,60 @@ export default function InstrumentsPage() {
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
-
   const [editFormOpen, setEditFormOpen] = useState(false);
-  const editFormToggle = (newState) => setEditFormOpen(newState === undefined ? !createFormOpen : newState);
+  const [editFormValues, setEditFormValues] = useState({});
 
+  // forms
+  const CreateForm = () => (
+  <InstrumentsForm
+  mode="create"
+  initialFormValues={{
+    name: ''
+  }}
+  />
+);
+
+  const EditForm = () => (
+  <InstrumentsForm
+    mode="update"
+    initialFormValues={editFormValues}
+  />
+);
 
   return (
     <>
       <h1>{entityName}</h1>
 
-      <EntityContextProvider key={1}>
+
         <Container>
           <DataTable
-            createFormToggle={createFormToggle}
-            editFormToggle={editFormToggle}
+            setEditFormValues={setEditFormValues}
+            setCreateFormOpen={setCreateFormOpen}
+            setEditFormOpen={setEditFormOpen}
             allowSearch={false}
             allowEdit={true}
           />
         </Container>
 
-        { editFormOpen &&
-          <Container className={"entityFormContainer"}>
-            <InstrumentsForm
-              mode="update"
-              formLabel="Edit"
-              buttonLabel="Commit"
-            />
-          </Container>
-        }
-      </EntityContextProvider>
-
-      <EntityContextProvider key={2}>
+      {/* render the create form modal */}
       { createFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <InstrumentsForm
-            mode="create"
-            formLabel="Add an Instrument"
-            buttonLabel="Submit"
-          />
-        </Container>
+      <FormModal
+        show={createFormOpen}
+        title="Create an Instrument"
+        form={CreateForm}
+        handleCancel={() => setCreateFormOpen(false)}
+      />
       }
-      </EntityContextProvider>
+
+      {/* render the edit form modal */}
+      { editFormOpen &&
+      <FormModal
+        show={editFormOpen}
+        title="Edit Instrument"
+        form={EditForm}
+        handleCancel={() => setEditFormOpen(false)}
+      />
+      }
     </>
   );
 }

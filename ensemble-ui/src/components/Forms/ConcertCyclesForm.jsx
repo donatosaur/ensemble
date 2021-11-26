@@ -1,158 +1,190 @@
-import React, { useContext } from "react";
-import { Form, Row, Col, Button, FloatingLabel } from "react-bootstrap";
-import { EntityContext, EntityDispatchContext } from "../../hooks/EntityContextProvider";
-import {useEntity} from "../../hooks/useEntity";
-import {useHistory} from "react-router-dom";
+import React, { useReducer, useState } from "react";
+import { Col, Row, Form, Alert } from "react-bootstrap";
+import { InputField } from './FormComponents/Fields';
+import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
+import { useEntity } from "../../hooks/useEntity";
+import { useHistory } from 'react-router-dom';
+import SpinnerButton from './FormComponents/SpinnerButton';
 
 
 /**
- * Creates a form for create and update operations
+ * Generates a form for CREATE and UPDATE operations with fields pre-populated with initialFormValues.
  *
- * @param mode {"create" | "update"}
- * @param formLabel a short text description for the form
- * @param buttonLabel text to display on the form button
+ * @param {object} initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
+ * @param {"create" | "update"} mode
  * @returns {JSX.Element}
- * @constructor
  */
-export default function ConcertCyclesForm({ mode, formLabel, buttonLabel }){
-  // reducer hook to hold form data: see https://reactjs.org/docs/hooks-reference.html#usereducer
-  const concertCycle = useContext(EntityContext);
-  const dispatch = useContext(EntityDispatchContext);
+export default function ConcertCyclesForm({ initialFormValues, mode }){
+  // get API calls from context hook and create reducer; dispatch signature is {field, value, isInvalid, modified}
   const { createEntity, updateEntity } = useEntity();
+  const [entity, dispatch] = useReducer(
+    entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [formAlert, setFormAlert] = useState(null);
 
+  // define validation regex checks
+  // const validation = {};
+
+  // construct default props for each input field; these will be the same for each entity
+  const defaultProps = {
+    onBlur: (event) => dispatch({
+      field: event.target.name,
+      // isInvalid: !validation[event.target.name]?.test(`${event.target.value}`),
+      modified: true
+    }),
+    onChange: (event) => dispatch({
+      field: event.target.name,
+      // if onBlur fired at least once AND there's a validation check AND the validation check fails
+      // isInvalid: entity[event.target.name].modified && !validation[event.target.name]?.test(`${event.target.value}`),
+      value: event.target.type === 'checkbox' ? event.target.checked : event.target.value
+    })
+  }
+
+  // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
+    setLoading(true);  // set the submit button to its "loading" state to prevent multiple identical requests
 
     void async function submitForm(){
-      if (mode === "create" || mode ==="update") {
+      if (mode === "create" || mode === "update") {
+        let validated = true;
+        const request = {};
+  
         try {
-          const response = mode === "create"
-            ? await createEntity(concertCycle)
-            : await updateEntity(concertCycle);
-          console.log(response);
-          // refresh the page; history[0] is the current path
-          history.go(0);
+          // map fields and check whether any value is marked as invalid before submitting      
+          Object.entries(entity).forEach(([field, fieldObject]) => {
+            if (fieldObject.isInvalid) { 
+              validated = false; 
+            }
+            request[field] = fieldObject.value;
+          })  
+
+          // check whether the form is in a valid state
+          if (validated) {
+            const response = mode === "create" ? await createEntity(request) : await updateEntity(request);
+            console.log(response);
+            history.go(0); // refresh the page; history[0] represents the current path
+          } else {
+            // let the user know something went wrong
+            setFormAlert('At least one input field is invalid; please check the instructions under each field.');
+          }
         } catch (error) {
-          alert(error['sqlMessage']);
+          // rejected promises should already be parsed; if the backend send back an error message from
+          // the sql database, we can display that error here, otherwise we should display whatever other
+          // error message the backend sends instead
+          setFormAlert(error?.sqlMessage ?? error);
         }
       }
     }();
-  }
-
-  const handleOnChange = (event) => {
-    // slot the new value into the state
-    dispatch({[event.target.id]: event.target.value});
+    setLoading(false);  // no matter what, we should return the button to its "not loading" state
   }
 
 
   return (
-    <Form>
-      <Row className="entityForm">
-        <Form.Label children={formLabel} />
-      </Row>
-
-      { mode === "update" &&
-      <Form.Group as={Col} controlId="id">
-        <FloatingLabel controlId="id" label="Concert ID">
-          <Form.Control
-            disabled
-            type="number"
-            value={concertCycle['id']}
-          />
-        </FloatingLabel>
-      </Form.Group>
+    <Form noValidate className="entityForm">
+      { formAlert &&
+        <Alert 
+          key="formAlert" 
+          variant="danger"
+          onClose={() => setFormAlert(null)}
+          children={formAlert}
+          dismissible
+        />
       }
 
-      <Row className="entityForm">
-        <Form.Group as={Col} controlId="concertTitle">
-          <FloatingLabel controlId="concertTitle" label="Concert Title">
-            <Form.Control
-              required
-              type="text"
-              placeholder="Enter Concert Title"
-              value={concertCycle['concertTitle']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="startDate">
-          <FloatingLabel controlId="startDate" label="Start Date">
-            <Form.Control
-              required
-              type="date"
-              value={concertCycle['startDate']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="endDate">
-          <FloatingLabel controlId="endDate" label="End Date">
-            <Form.Control
-              required
-              type="date"
-              value={concertCycle['endDate']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
+      <Row>
+        { mode === "update" &&
+        <Col className="mb-3" xs="2">
+          <InputField
+            disabled
+            name="id"
+            label="ID"
+            value={entity.id.value}
+            isInvalid={entity.id.isInvalid}
+            {...defaultProps}
+          />
+        </Col>
+        }
+        <Col className="mb-3">
+          <InputField
+            name="concertTitle"
+            label="Concert Title"
+            value={entity.concertTitle.value}
+            isInvalid={entity.concertTitle.isInvalid}
+            errorText="Please enter the concert's title."
+            {...defaultProps}
+          />
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="startDate"
+            label="Start Date"
+            type="date"
+            value={entity.startDate.value}
+            isInvalid={entity.startDate.isInvalid}
+            errorText="Please enter a start date."
+            {...defaultProps}
+          />
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="endDate"
+            label="End Date"
+            type="date"
+            value={entity.endDate.value}
+            isInvalid={entity.endDate.isInvalid}
+            errorText="Please enter an end date."
+            {...defaultProps}
+          />
+        </Col>
       </Row>
 
-      <Row className="entityForm">
-        <Form.Group as={Col} controlId="conductorFirstName">
-          <FloatingLabel controlId="conductorFirstName" label="Conductor First Name">
-            <Form.Control
-              required
-              type="text"
-              placeholder="Enter Conductor's First Name"
-              value={concertCycle['conductorFirstName']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="conductorLastName">
-          <FloatingLabel controlId="conductorLastName" label="Conductor Last Name">
-            <Form.Control
-              required
-              type="text"
-              placeholder="Enter Conductor's Last Name"
-              value={concertCycle['conductorLastName']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
+      <Row>
+        <Col className="mb-3">
+          <InputField
+            name="conductorFirstName"
+            label="Conductor First Name"
+            value={entity.conductorFirstName.value}
+            isInvalid={entity.conductorFirstName.isInvalid}
+            errorText="Please enter the conductor's first name."
+            {...defaultProps}
+          />
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="conductorLastName"
+            label="Conductor Last Name"
+            value={entity.conductorLastName.value}
+            isInvalid={entity.conductorLastName.isInvalid}
+            errorText="Please enter the conductor's last name."
+            {...defaultProps}
+          />
+        </Col>
       </Row>
 
-      <Row className="entityForm">
-        <Form.Group as={Col} controlId="soloistFirstName">
-          <FloatingLabel controlId="soloistFirstName" label="Soloist First Name">
-            <Form.Control
-              type="text"
-              placeholder="Enter Soloist's First Name"
-              value={concertCycle['soloistFirstName']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="soloistLastName">
-          <FloatingLabel controlId="soloistLastName" label="Soloist Last Name">
-            <Form.Control
-              type="text"
-              placeholder="Enter Soloist's Last Name"
-              value={concertCycle['soloistLastName']}
-              onChange={handleOnChange}
-            />
-          </FloatingLabel>
-        </Form.Group>
+      <Row>
+        <Col className="mb-3">
+          <InputField
+            name="soloistFirstName"
+            label="Soloist First Name"
+            value={entity.soloistFirstName.value}
+            isInvalid={entity.soloistFirstName.isInvalid}
+            {...defaultProps}
+          />
+        </Col>
+        <Col className="mb-3">
+          <InputField
+            name="soloistLastName"
+            label="Soloist Last Name"
+            value={entity.soloistLastName.value}
+            isInvalid={entity.soloistLastName.isInvalid}
+            {...defaultProps}
+          />
+        </Col>
       </Row>
 
-      <Button className="mt-3" variant="primary" type="submit" onClick={handleOnSubmit}>
-        {buttonLabel || 'Submit'}
-      </Button>
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit} />
     </Form>
   );
 }

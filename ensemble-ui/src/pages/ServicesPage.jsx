@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import ServicesForm from "../components/Forms/ServicesForm";
-import EntityContextProvider from "../hooks/EntityContextProvider";
 import DataTable from "../components/DataTable/DataTable";
+import FormModal from '../components/FormModal';
 
 
 export default function ServicesPage() {
@@ -10,48 +10,63 @@ export default function ServicesPage() {
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
-
   const [editFormOpen, setEditFormOpen] = useState(false);
-  const editFormToggle = (newState) => setEditFormOpen(newState === undefined ? !createFormOpen : newState);
+  const [editFormValues, setEditFormValues] = useState({});
 
+  // forms
+  const CreateForm = () => (
+    <ServicesForm
+      mode="create"
+      initialFormValues={{
+        startTime: '',
+        endTime: '',
+        isRehearsal: false,
+        venueID: '',
+        concertID: ''
+      }}
+    />
+  );
+
+  const EditForm = () => (
+    <ServicesForm
+      mode="update"
+      initialFormValues={editFormValues}
+    />
+  );
 
   return (
     <>
       <h1>{entityName}</h1>
 
-      <EntityContextProvider key={1}>
-        <Container>
-          <DataTable
-            createFormToggle={createFormToggle}
-            editFormToggle={editFormToggle}
-            allowSearch={false}
-            allowEdit={true}
-          />
-        </Container>
+      <Container>
+        <DataTable
+          setEditFormValues={setEditFormValues}
+          setCreateFormOpen={setCreateFormOpen}
+          setEditFormOpen={setEditFormOpen}
+          allowSearch={false}
+          allowEdit={true}
+        />
+      </Container>
 
-        { editFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <ServicesForm
-            mode="update"
-            formLabel="Edit"
-            buttonLabel="Commit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the create form modal */}
+      { createFormOpen &&
+      <FormModal
+        show={createFormOpen}
+        title="Create a Service"
+        form={CreateForm}
+        handleCancel={() => setCreateFormOpen(false)}
+      />
+      }
 
-      <EntityContextProvider key={2}>
-        { createFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <ServicesForm
-            mode="create"
-            formLabel=""
-            buttonLabel="Submit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the edit form modal */}
+      { editFormOpen &&
+      <FormModal
+        show={editFormOpen}
+        title="Edit Service"
+        form={EditForm}
+        handleCancel={() => setEditFormOpen(false)}
+      />
+      }
     </>
   );
 }

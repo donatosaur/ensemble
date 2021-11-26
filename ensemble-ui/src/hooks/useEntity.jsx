@@ -2,7 +2,27 @@ import React, { createContext, useContext } from "react";
 import * as callAPI from "../utils/callAPI";
 import entityConfig from "../data/entityConfig.json";
 
-// create the context hook
+/**
+ * @module useEntity
+ *
+ * JSON field definition
+ * @typedef {object} field
+ * @property {string} field
+ * @property {{"headerName": string; "type"?: string; "wrap"?: boolean}} columnConfig
+ * @property {{"label": string; "errorText"?: string}} formConfig
+ *
+ * Entity context returned by useEntity
+ * @typedef {object} entityContext
+ * @property {field[]} fields
+ * @property {() => Promise} getEntity async API call for READ
+ * @property {() => Promise} createEntity async API for CREATE
+ * @property {() => Promise} updateEntity async API call for UPDATE
+ * @property {() => Promise} deleteEntity async API call for DELETE
+ * @property {string[]} deleteParamsAsFields  the parameters required to send a DELETE request
+ * 
+ */
+
+ // create the context hook
 const EntityAPIContext = createContext(null);
 
 // fetch the data and api calls we want to provide depending on the entity
@@ -10,75 +30,84 @@ const initializeContext = (entityName) => {
   switch(entityName) {
     case "Musicians":
       return {
-        columnDefs: entityConfig['Musicians']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getMusicians,
         createEntity: callAPI.createMusician,
         updateEntity: callAPI.updateMusician,
         deleteEntity: callAPI.deleteMusician,
+        deleteParamsAsFields: ['id'],
       }
     case "Instruments":
       return {
-        columnDefs: entityConfig['Instruments']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getInstruments,
         createEntity: callAPI.createInstrument,
         updateEntity: callAPI.updateInstrument,
         deleteEntity: callAPI.deleteInstrument,
+        deleteParamsAsFields: ['id'],
       }
     case "Pieces":
       return {
-        columnDefs: entityConfig['Pieces']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getPieces,
         createEntity: callAPI.createPiece,
         updateEntity: callAPI.updatePiece,
         deleteEntity: callAPI.deletePiece,
+        deleteParamsAsFields: ['id'],
       }
     case "Services":
       return {
-        columnDefs: entityConfig['Services']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getServices,
         createEntity: callAPI.createService,
         updateEntity: callAPI.updateService,
         deleteEntity: callAPI.deleteService,
+        deleteParamsAsFields: ['id'],
       }
     case "Venues":
       return {
-        columnDefs: entityConfig['Venues']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getVenues,
         createEntity: callAPI.createVenue,
         updateEntity: callAPI.updateVenue,
         deleteEntity: callAPI.deleteVenue,
+        deleteParamsAsFields: ['id'],
       }
     case "ConcertCycles":
       return {
-        columnDefs: entityConfig['ConcertCycles']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getConcertCycles,
         createEntity: callAPI.createConcertCycle,
         updateEntity: callAPI.updateConcertCycle,
         deleteEntity: callAPI.deleteConcertCycle,
+        deleteParamsAsFields: ['id'],
       }
     case "MusiciansInstruments":
       return {
-        columnDefs: entityConfig['MusiciansInstruments']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getMusiciansInstruments,
         createEntity: callAPI.createMusicianInstrument,
-        updateEntity: null,
+        updateEntity: () => {}, // do nothing
         deleteEntity: callAPI.deleteMusicianInstrument,
+        deleteParamsAsFields: ['musicianID', 'instrumentID'],
       }
     case "MusiciansConcertCycles":
       return {
-        columnDefs: entityConfig['MusiciansConcertCycles']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getMusiciansConcertCycles,
         createEntity: callAPI.createMusicianConcertCycle,
-        updateEntity: null,
-        deleteEntity: callAPI.deleteConcertCycle,
+        updateEntity: () => {},
+        deleteEntity: callAPI.deleteMusicianConcertCycle,
+        deleteParamsAsFields: ['musicianID', 'concertID'],
       }
     case "PiecesConcertCycles":
       return {
-        columnDefs: entityConfig['PiecesConcertCycles']['fields'],
+        fields: entityConfig[entityName].fields,
         getEntity: callAPI.getPiecesConcertCycles,
         createEntity: callAPI.createPieceConcertCycle,
-        updateEntity: null,
+        updateEntity: () => {},
         deleteEntity: callAPI.deletePieceConcertCycle,
+        deleteParamsAsFields: ['pieceID', 'concertID'],
       }
     default: {
       console.warn("initializeContext called with undefined entityName");
@@ -96,13 +125,12 @@ const initializeContext = (entityName) => {
  *                    "MusiciansInstruments" | "MusiciansConcertCycles" | "PiecesConcertCycles"}
  * @param children
  * @returns {JSX.Element}
- * @constructor
  */
 export default function EntityAPIProvider({ entityName, children }) {
   // provide the entityAPI
   return(
     <EntityAPIContext.Provider value={initializeContext(entityName)}>
-        {children}
+      {children}
     </EntityAPIContext.Provider>
   )
 }
@@ -111,7 +139,7 @@ export default function EntityAPIProvider({ entityName, children }) {
 /**
  * Returns the entityAPI context hook provided by an EntityAPIProvider
  *
- * @returns { columnDefs, getEntity, createEntity, updateEntity, deleteEntity }
+ * @returns {entityContext}
  * @throws Error if the entity or context provider are undefined
  */
 export function useEntity() {

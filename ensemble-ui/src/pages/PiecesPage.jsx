@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import PiecesForm from "../components/Forms/PiecesForm";
-import EntityContextProvider from "../hooks/EntityContextProvider";
 import DataTable from "../components/DataTable/DataTable";
+import FormModal from '../components/FormModal';
 
 
 export default function PiecesPage() {
@@ -10,48 +10,64 @@ export default function PiecesPage() {
 
   // state hooks for form display state
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const createFormToggle = (newState) => setCreateFormOpen(newState === undefined ? !createFormOpen : newState);
-
   const [editFormOpen, setEditFormOpen] = useState(false);
-  const editFormToggle = (newState) => setEditFormOpen(newState === undefined ? !createFormOpen : newState);
+  const [editFormValues, setEditFormValues] = useState({});
 
+  // forms
+  const CreateForm = () => (
+    <PiecesForm
+      mode="create"
+      initialFormValues={{
+        pieceTitle: '',
+        composerFirstName: '',
+        composerLastName: '',
+        arrangerFirstName: '',
+        arrangerLastName: '',
+        instrumentation: ''
+    }}
+    />
+  );
+
+  const EditForm = () => (
+    <PiecesForm
+      mode="update"
+      initialFormValues={editFormValues}
+    />
+  );
 
   return (
     <>
       <h1>{entityName}</h1>
 
-      <EntityContextProvider key={1}>
-        <Container>
-          <DataTable
-            createFormToggle={createFormToggle}
-            editFormToggle={editFormToggle}
-            allowSearch={false}
-            allowEdit={true}
-          />
-        </Container>
+      <Container>
+        <DataTable
+          setEditFormValues={setEditFormValues}
+          setCreateFormOpen={setCreateFormOpen}
+          setEditFormOpen={setEditFormOpen}
+          allowSearch={false}
+          allowEdit={true}
+        />
+      </Container>
 
-        { editFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <PiecesForm
-            mode="update"
-            formLabel="Edit"
-            buttonLabel="Commit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the create form modal */}
+      { createFormOpen &&
+      <FormModal
+        show={createFormOpen}
+        title="Create a Piece"
+        form={CreateForm}
+        handleCancel={() => setCreateFormOpen(false)}
+      />
+      }
 
-      <EntityContextProvider key={2}>
-        { createFormOpen &&
-        <Container className={"entityFormContainer"}>
-          <PiecesForm
-            mode="create"
-            formLabel="Add a Piece"
-            buttonLabel="Submit"
-          />
-        </Container>
-        }
-      </EntityContextProvider>
+      {/* render the edit form modal */}
+      { editFormOpen &&
+      <FormModal
+        show={editFormOpen}
+        title="Edit Piece"
+        form={EditForm}
+        handleCancel={() => setEditFormOpen(false)}
+      />
+      }
     </>
   );
 }

@@ -1,0 +1,28 @@
+.actionButton {
+  margin-top: 0.25em;
+  margin-right: 1em;
+  padding: 0.25em 0.5em;
+}
+
+.dataTableContainer {
+  border: 1px solid lightgray;
+  @extend .rounded;
+  @extend .py-2;
+  @extend .mt-2;
+
+  table {
+    @extend .mt-2;
+  }
+
+}
+
+.paginationContainer {
+  margin: 0.5em 1em;
+}
+
+.searchContainer {
+  @extend .rounded;
+  border: 1px solid lightgray;
+  margin-top: 1.5em;
+  padding:  $container-padding-y * 0.5 $container-padding-x $container-padding-y $container-padding-x;
+}

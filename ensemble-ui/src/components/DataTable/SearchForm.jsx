@@ -6,9 +6,9 @@ import { Form, Row, Dropdown, DropdownButton, Button, InputGroup, Col } from "re
  *
  * @param setSearchParameters state hook
  * @returns {JSX.Element}
- * @constructor
+ 
  */
-export default function MusicianSearchForm({setSearchParameters}){
+export default function SearchForm({setSearchParameters}){
   const [searchOn, setSearchOn] = useState(null);
   const [searchTitle, setDropdownTitle] = useState("Select a field")
 
@@ -64,7 +64,7 @@ export default function MusicianSearchForm({setSearchParameters}){
 
     <Form>
       <Row className="entityForm" >
-        <Form.Label><h5>Search for Musicians</h5></Form.Label>
+        <Form.Label><h5>Search</h5></Form.Label>
       </Row>
 
       <Row>
@@ -120,7 +120,7 @@ export default function MusicianSearchForm({setSearchParameters}){
 
           <Button
             disabled={searchOn === null}
-            variant="secondary"
+            variant="primary"
             type="submit"
             onClick={handleOnSubmit}
           >
