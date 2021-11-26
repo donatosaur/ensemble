@@ -8,7 +8,7 @@ import entityConfig from "../data/entityConfig.json";
  * JSON field definition
  * @typedef {object} field
  * @property {string} field
- * @property {{"headerName": string; "type"?: string}} columnConfig
+ * @property {{"headerName": string; "type"?: string; "wrap"?: boolean}} columnConfig
  * @property {{"label": string; "errorText"?: string}} formConfig
  *
  * Entity context returned by useEntity

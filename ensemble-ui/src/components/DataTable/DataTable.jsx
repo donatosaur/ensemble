@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Container, Table, Alert } from 'react-bootstrap';
+import { Container, Table, Alert, Spinner } from 'react-bootstrap';
+import { useEntity } from "../../hooks/useEntity";
+import { useHistory } from 'react-router-dom';
+import { valueFormatter } from '../../utils/valueFormatter';
 import { cloneDeepWith } from "lodash";
 
 // button components for custom actions cell
 import EditButton from "./ActionButtons/EditButton";
 import DeleteButton from "./ActionButtons/DeleteButton";
 
-// other components and hooks
+// other components
 import ConfirmationModal from "../ConfirmationDialog";
-import Pagination from "./TablePagination";
-import { useEntity } from "../../hooks/useEntity";
-
-// search form for enabled entities
 import SearchForm from "./SearchForm";
 import Toolbar from './Toolbar';
-
-import { valueFormatter } from '../../utils/valueFormatter';
-import { useHistory } from 'react-router-dom';
+import Pagination from "./TablePagination";
 
 
 /**
@@ -29,56 +26,46 @@ import { useHistory } from 'react-router-dom';
  * @returns {JSX.Element}
  
  */
-export default function DataTable({
-  setCreateFormOpen,
-  setEditFormOpen,
-  setEditFormValues,
-  allowSearch,
-}) {
-  /* ------------------------------------------ State Hooks ------------------------------------------ */
-  // get the column definitions and api caller from the entity context
-  const { fields, getEntity, deleteEntity, deleteParamsAsFields } = useEntity();
+export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditFormValues, allowSearch }) {
+  /* ---------------------------------------------- Hooks ----------------------------------------------- */
   const history = useHistory();
+  const { fields, getEntity, deleteEntity, deleteParamsAsFields } = useEntity();
 
   const [searchParameters, setSearchParameters] = useState(null); // search query parameters for API call
+  const [loading, setLoading] = useState(true);                   // loading indicator
   const [deleteParams, setDeleteParams] = useState(null);         // params for delete; *null* to hide modal
   const [alertContent, setAlertContent] = useState(null);         // alert above table; *null* to hide alert
-  const [pageSize, setPageSize] = useState(10);                   // pages per row
+  const [pageSize] = useState(10);                                // pages per row
   const [currentPage, setCurrentPage] = useState(1);              // current page
   const [rows, setRows] = useState([]);
   
 
-  /* ------------------------------------------ Effect Hooks ------------------------------------------ */
-  // get data on page load (and whenever a change is successfully made)
+  // READ data on page load (and whenever a change is successfully made)
   useEffect(() => {
-    // if (!fetchNewData) return;                     // safety: fetching and rendering rows is expensive
     const abortController = new AbortController();   // to abort async requests
-    console.log('Fetching new data...');
     void async function getData() {
       try {
-        // get the rows and set the data model
-        let rowData = !!searchParameters ? await getEntity(searchParameters) : await getEntity();
+        setLoading(true);
+        const rowData = !!searchParameters ? await getEntity(searchParameters) : await getEntity();
         setRows(rowData);
-        // setFetchNewData(false);
       } catch (error) {
         console.warn(error);
-        setAlertContent(error);  // todo: placeholder; push alert onto stack
+        setAlertContent(error);
+      } finally {
+        setLoading(false);
       }
     }();
     // prevent memory leaks by aborting request if component is no longer mounted; for an explanation of
     // what cleanup functions do, see https://reactjs.org/docs/hooks-effect.html#example-using-hooks-1
     return () => abortController.abort();
-  }, [getEntity, setRows, searchParameters]);
+  }, [getEntity, searchParameters]);
 
 
-    
-
-
-  /* ------------------------------------------- Action Cell ------------------------------------------- */
-  const ActionCell = ({rowIndex}) => {
+  /* -------------------------------------------- Action Cell ------------------------------------------- */
+  const ActionCell = ({ rowIndex }) => {
     return (
       <td key={rowIndex} className="text-nowrap">
-        {/* If UPDATE is allowed, sets the correct row value for the form to obtain data and opens the form */}
+        {/* Button for UPDATE: initializes the form with the correct row data */}
         { setEditFormValues &&
           <EditButton onClick={() => {
 
@@ -96,7 +83,8 @@ export default function DataTable({
                 }
               }));
             } catch (error) {
-              console.error(error)  // we should never get here; passing a null/undefined value should disable edits
+              // we should never get here; if something goes terribly wrong, avoid crashing the table
+              console.error(error)
             }
 
             // we should only have one form open at any one time
@@ -105,12 +93,12 @@ export default function DataTable({
             }}
           />
         }
-        {/* Button for DELETE; sets the correct params and opens a modal */}
+
+        {/* Button for DELETE: sets the correct params for the query string and opens a modal */}
         <DeleteButton onClick={() => {
           // close other forms
           setCreateFormOpen(false);
           setEditFormOpen(false);
-
           // make sure a row index was actually passed; if it was not, log it and stop
           if (rowIndex === null || rowIndex === undefined) {
             console.error('Delete button pressed, but row not found!');
@@ -118,10 +106,9 @@ export default function DataTable({
           }
           // get the correct parameters to pass to deleteEntity
           const deleteParams = deleteParamsAsFields?.map(field => rows[rowIndex]?.[field]);
-          console.log(`Setting delete to fields ${deleteParamsAsFields} as ${deleteParams}...`);
+          console.log(`Setting delete to fields ${deleteParamsAsFields} as ${deleteParams}.`);
           setDeleteParams(deleteParams);
-        }}
-        />
+        }} />
       </td>
     );
   }
@@ -154,15 +141,6 @@ export default function DataTable({
   }
 
 
-  /* ------------------------------------- Toolbar Event Handlers ---------------------------------------- */
-  const handleAddButtonClick = (event) => {
-    event.preventDefault();
-    // only one form modal should be open at any one time; close other forms
-    setCreateFormOpen(true);
-    setEditFormOpen(false);
-  }
-
-
   /* --------------------------------------------- Data Table -------------------------------------------- */
 
   /**
@@ -179,32 +157,64 @@ export default function DataTable({
     // determine the range of rows to display (without exceeding the array boundaries)
     const i = Math.round((currentPage - 1) * pageSize);
     const j = Math.round(currentPage * pageSize) <= rows.length ? Math.round(currentPage * pageSize) : rows.length;
-    console.log(i, j)
-    
-    // slice the correct range of rows and map them to a table body; return a closure here 
-    return rows.slice(i, j).map((row, index) => (
-        <tr key={index}>
-          {/* map the row by by matching the correct column field value for each cell */}
-          {fields.map((column, i) => (
-            // optionally format the row, if its custom data type formatting is defined
-            <td key={i}>
-              { valueFormatter.has(column.columnConfig?.type)
-                ? valueFormatter.get(column.columnConfig?.type)(row[column.field])
-                : row[column.field] 
-              }
-            </td>
-          ))}
-          {/* render the action cell with edit and delete buttons */}
-          <ActionCell rowIndex={index} />
-        </tr>
-    ))
-    }
+      
+    // slice the correct range of rows and map them to a table body 
+    return (
+      <tbody>
+        { rows.slice(i, j).map((row, index) => (
+          <tr key={index}>
+            {/* map the row by by matching the correct column field value for each cell */}
+            { fields.map((column, i) => (
+              // optionally format the row, if its custom data type formatting is defined;
+              // default wrap text to "false"
+              <td key={i} className={column.columnConfig?.wrap ?? false ? "" : "text-nowrap"}>
+                { valueFormatter.has(column.columnConfig?.type)
+                  ? valueFormatter.get(column.columnConfig?.type)(row[column.field])
+                  : row[column.field] 
+                }
+              </td>
+            ))}
+            {/* render the action cell with edit and delete buttons */}
+            <ActionCell rowIndex={index} />
+          </tr>
+        ))
+        }
+      </tbody>
+    );
+  }
 
+  const TableHeader = () => (
+    <thead className="table-dark text-nowrap">
+      <tr>
+        { fields.map((field, i) => <td key={i}>{field.columnConfig?.headerName}</td>) }
+        <td key={fields.length} children={"Actions"} />
+      </tr>
+    </thead>
+  );
+
+  const TableToolbar = () => (
+    <Toolbar handleAddButtonClick={(event) => {
+      event.preventDefault();
+      setCreateFormOpen(true);
+      setEditFormOpen(false);
+    }} />
+  );
+
+  const TablePagination = () => (
+    <Container className="paginationContainer">
+      <Pagination
+        currentPage={currentPage}
+        minPage={1}
+        maxPage={Math.ceil(rows.length / pageSize)}
+        setCurrentPage={setCurrentPage}
+      />
+    </Container>
+  );
 
 
   return (
     <>
-      {/* render any alerts above the table */}
+      {/* Render alerts (if any) above table */}
       { alertContent &&
         <Alert 
           key="tableAlert" 
@@ -214,48 +224,39 @@ export default function DataTable({
           dismissible
         />
       }
-
-      {/* render the toolbar above the table */}
-      <Toolbar handleAddButtonClick={handleAddButtonClick} />
-
-      <Table responsive className="mt-2 text-nowrap" bordered striped size="sm">
-        {/* Header */}
-        <thead className="table-dark">
-        <tr>
-          { fields.map((field, i) => <td key={i}>{field.columnConfig?.headerName}</td>) }
-          <td key={fields.length} children={"Actions"} />
-        </tr>
-        </thead>
-
-        {/* only render the current paginated */}
-        <tbody>
-          <PaginatedTableBody />
-        </tbody>
-        
-
-        {/* table footer with pagination */}
-        <caption className="text-reset">
-          <Pagination
-            currentPage={currentPage}
-            minPage={1}
-            maxPage={Math.floor(rows.length / pageSize)}
-            // setCurrentPage={setCurrentPage}
-            // setPageSize={setPageSize}
-          />
-        </caption>
-
-      </Table>
+      
+      {/* Render Table */}
+      <Container className="dataTableContainer">
+        <TableToolbar />
+        <Table responsive bordered striped size="sm">
+         <TableHeader />
+          {/* While Loading: Loading Indiciator */}
+          { loading &&
+            <caption className="border-0 mt-4 text-center">
+              <Spinner animation="border" variant="secondary"/>
+            </caption>
+          }
+          {/* After Loading: Table Body */}
+          { !loading && (rows.length === 0
+              ? <caption className="border-0 mt-4 text-center">
+                  <h2>No rows.</h2>
+                </caption> 
+              : <PaginatedTableBody />
+            )
+          }
+        </Table>
+        { !loading && rows.length > 0 && <TablePagination /> }
+      </Container>
 
       {/* Render Delete Confirmation Dialogue */}
       <DeleteConfirmation />
 
       {/* Render Search Panel */}
       { allowSearch &&
-        <Container className="entityFormContainer">
+        <Container className="searchContainer">
           <SearchForm setSearchParameters={setSearchParameters} />
         </Container>
       }
-
     </>
   );
 }

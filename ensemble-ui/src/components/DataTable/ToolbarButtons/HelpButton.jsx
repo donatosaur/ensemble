@@ -5,7 +5,7 @@ export default function HelpButton() {
   return (
     <OverlayTrigger
       trigger="focus"
-      placement="bottom"
+      placement="right-start"
       overlay={
         <Popover id="help-popover">
           <Popover.Body>

@@ -46,7 +46,7 @@ export default function ConcertCyclesPage() {
           setEditFormValues={setEditFormValues}
           setCreateFormOpen={setCreateFormOpen}
           setEditFormOpen={setEditFormOpen}
-          allowSearch={true}
+          allowSearch={false}
           allowEdit={true}
         />
       </Container>

@@ -11,24 +11,29 @@ import { Button } from "react-bootstrap";
 export default function TablePagination({
   currentPage,
   maxPage,
-  // setCurrentPage,
-  // setPageSize,
+  setCurrentPage
 }) {
 
   return (
    <>
       <Button 
-        disabled={Math.round(currentPage) === 1} 
+        disabled={currentPage === 1} 
         variant="outline" 
-        // onClick={setCurrentPage(Math.max(currentPage - 1, 1))}
+        onClick={(event) => {
+          event.preventDefault();
+          setCurrentPage(Math.max(currentPage - 1, 1));
+        }}
         >
         <i className="bi bi-chevron-left" />
       </Button>
-        {`Page ${currentPage} of 2`}
+        <p className="d-inline">{`Page ${currentPage} of ${maxPage}`}</p>
       <Button 
-        disabled={Math.round(currentPage) === maxPage} 
+        disabled={currentPage === maxPage} 
         variant="outline" 
-        // onClick={setCurrentPage(Math.min(currentPage + 1, maxPage))}
+        onClick={(event) => {
+            event.preventDefault();
+            setCurrentPage(Math.min(currentPage + 1, maxPage));
+        }}
       >
         <i className="bi bi-chevron-right" />
       </Button>

@@ -117,7 +117,8 @@
       {
         "field": "name",
         "columnConfig": {
-          "headerName": "Name"
+          "headerName": "Name",
+          "wrap": true
         }
       },
       {
@@ -159,7 +160,8 @@
       {
         "field": "concertTitle",
         "columnConfig": {
-          "headerName": "Concert Title"
+          "headerName": "Concert Title",
+          "wrap": true
         }
       },
       {
@@ -266,7 +268,8 @@
       {
         "field": "pieceTitle",
         "columnConfig": {
-          "headerName": "Piece Title"
+          "headerName": "Piece Title",
+          "wrap": true
         }
       },
       {
@@ -296,7 +299,8 @@
       {
         "field": "instrumentation",
         "columnConfig": {
-          "headerName": "Instrumentation"
+          "headerName": "Instrumentation",
+          "wrap": true
         }
       }
     ]

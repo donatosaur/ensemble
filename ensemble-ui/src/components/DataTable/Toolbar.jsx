@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 import HelpButton from "./ToolbarButtons/HelpButton";
 import AddButton from "./ToolbarButtons/AddButton";
@@ -11,15 +11,12 @@ import AddButton from "./ToolbarButtons/AddButton";
  * @param handleAddButtonClick
  * @returns {JSX.Element}
  */
-export default function Toolbar({
-  handleAddButtonClick,
-}) {
-
+export default function Toolbar({ handleAddButtonClick }) {
   return (
     <Container className="text-start justify-content-left border-0 p-0 m-0">
       { handleAddButtonClick && <AddButton onClick={handleAddButtonClick}/> }
       <HelpButton/>
     </Container>
-  )
+  );
 }
 
