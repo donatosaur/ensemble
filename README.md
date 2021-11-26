@@ -12,27 +12,36 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 - Entity configuration is stored in `/ensemble-ui/config/entityConfig.json`
   - The format for `entityConfig.json` is:
     ```
-                              | REQ | DESCRIPTION
-    "entityName": {           |  *  | database table name
-      "description": string,  |  *  | short description, displayed on homepage
-      "fields": [{            |  *  | 
-        "field": string,      |  *  | API field identifier
-        "headerName": string, |  *  | displayed as column header
-        "minWidth": number,   |     | minimum width for columns
-        "label": string,      |     | displayed as the form label instead of headerName
-      
+                                | REQ | DESCRIPTION
+    "entityName": {             |  *  | database table name
+      "description": string,    |  *  | short description, displayed on homepage
+      "fields": [{              |  *  | 
+        "field": string,        |  *  | API field identifier (should match SQL column name)
+        "columnConfig": {       |     | 
+          "headerName": string, |  *  | displayed as column header
+          "type": string        |     | type definition for table formatting
+        } 
       }]
+    }
     ```                 
 
-- GridColDef must at minimum contain "field", "headerName", and "editable"
-- For additional GridColDef options, see https://v4.mui.com/api/data-grid/grid-col-def/
 - For example:
   ```
   "Instruments": {
     "description": "records the instruments that may be played by musicians in the orchestra",
     "fields": [
-      { "field": "id", "headerName": "ID", "flex": 0, "editable": false },
-      { "field": "name", "headerName": "Name", "minWidth": 180, "editable": true }
+      {
+        "field": "id",
+        "columnConfig": {
+          "headerName": "ID"
+        }
+      },
+      {
+        "field": "name",
+        "columnConfig": {
+          "headerName": "Name"
+        }
+      }
     ]
   }
   ```
@@ -44,4 +53,3 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 - (October 2021) React (Version 17.0.2) [Framework] https://github.com/facebook/react/
 - (October 2021) Bootstrap Icons (Version 1.6.1) [Package] https://icons.getbootstrap.com/
 - (November 2021) Lodash (Version 4.17.15) [Package] https://lodash.com/
-
