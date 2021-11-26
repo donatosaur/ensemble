@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import * as callAPI from "../utils/callAPI";
-import entityConfig from "../data/entityConfig.json";
+import entityConfig from "../entityConfig.json";
 
 /**
  * @module useEntity

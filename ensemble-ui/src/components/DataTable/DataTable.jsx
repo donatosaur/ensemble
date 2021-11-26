@@ -184,7 +184,7 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
   }
 
   const TableHeader = () => (
-    <thead className="table-dark text-nowrap">
+    <thead className="text-nowrap">
       <tr>
         { fields.map((field, i) => <td key={i}>{field.columnConfig?.headerName}</td>) }
         <td key={fields.length} children={"Actions"} />
@@ -228,9 +228,9 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
       {/* Render Table */}
       <Container className="dataTableContainer">
         <TableToolbar />
-        <Table responsive bordered striped size="sm">
+        <Table responsive hover size="lg">
          <TableHeader />
-          {/* While Loading: Loading Indiciator */}
+          {/* While Loading: Loading Indicator */}
           { loading &&
             <caption className="border-0 mt-4 text-center">
               <Spinner animation="border" variant="secondary"/>

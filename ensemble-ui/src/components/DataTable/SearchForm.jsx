@@ -16,17 +16,18 @@ export default function SearchForm({setSearchParameters}){
     // overwrite only the new fields that are passed in
     (oldEntityState, newEntityState) => ({...oldEntityState, ...newEntityState}),
     {
-      birthdate: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      inEnsemble: "",
-      active: "",
-      street: "",
-      city: "",
-      state: "",
-      zip: "",
+      id: '',
+      birthdate: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      inEnsemble: 1,
+      active: 1,
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
     }
   );
 
@@ -45,9 +46,10 @@ export default function SearchForm({setSearchParameters}){
     setSearchParameters({[searchOn]: musician[searchOn]});
   }
 
-  // todo: placeholder for now to just generate the forms quickly for the demo
+  // to generate search fields
   const searchFields = [
-    { controlID: "birthdate", label: "Birthdate", type: "date", value: musician['birthdate'] },
+    { controlID: "id", label: "ID", type: "text", value: musician['id'] },
+    // { controlID: "birthdate", label: "Birthdate", type: "date", value: musician['birthdate'] },
     { controlID: "firstName", label: "First Name", type: "text", value: musician['firstName'] },
     { controlID: "lastName", label: "Last Name", type: "text", value: musician['lastName'] },
     { controlID: "email", label: "Email", type: "email", value: musician['email'] },
@@ -61,7 +63,6 @@ export default function SearchForm({setSearchParameters}){
   ]
 
   return (
-
     <Form>
       <Row className="entityForm" >
         <Form.Label><h5>Search</h5></Form.Label>
@@ -98,9 +99,8 @@ export default function SearchForm({setSearchParameters}){
                     value={group.value}
                     onChange={handleOnChange}
                   >
-                    <option key={2} value={""}/>
-                    <option key={1} value={true}>Yes</option>
-                    <option key={0} value={false}>No</option>
+                    <option key={1} value={1}>Yes</option>
+                    <option key={0} value={0}>No</option>
                   </Form.Select>
                   : <Form.Control
                     type={group.type}

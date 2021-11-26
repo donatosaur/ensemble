@@ -63,14 +63,13 @@ musicians.post("/", function (req, res) {
 // READ
 musicians.get("/", (req, res, next) => {
   // check whether there are any query parameters
-  if (req.query === undefined) {
+  if (req.query === undefined || Object.keys(req.query).length === 0) {
     next();
     return;
   }
 
   // get the first key-value pair (currently, only filtering by one field at a time is allowed)
-  // todo: this is a temporary patch to get search to behave
-  let [key, value] = Object.entries(req.query)[0] ?? [null, null];
+  let [key, value] = Object.entries(req.query)[0];
 
   // value parser (reduce code duplication)
   function formatString() { value = `%${value}%` }
@@ -94,11 +93,10 @@ musicians.get("/", (req, res, next) => {
       filterQuery = "SELECT * FROM Musicians WHERE lastName LIKE ?";
       break;
     }
-    case 'birthdate': {
-      formatString();
-      filterQuery = "SELECT * FROM Musicians WHERE birthdate LIKE ?";
-      break;
-    }
+    // case 'birthdate': {
+    //   filterQuery = "SELECT * FROM Musicians WHERE birthdate LIKE ?";
+    //   break;
+    // }
     case 'email': {
       formatString();
       filterQuery = "SELECT * FROM Musicians WHERE email LIKE ?";

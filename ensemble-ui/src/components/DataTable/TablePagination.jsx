@@ -4,8 +4,8 @@ import { Button } from "react-bootstrap";
 /**
  * Creates a table pagination component
  * @param {number} currentPage the current page number
- * @param handleDecrease handle left chevron click
- * @param handleIncrease handle right chevron click
+ * @param {number} maxPage the maximum page number
+ * @param setCurrentPage sets the current page number state
  * @returns {JSX.Element}
  */
 export default function TablePagination({

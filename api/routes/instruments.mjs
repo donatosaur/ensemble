@@ -67,7 +67,7 @@ instruments.put("/", (req, res) => {
   });
 });
 
-services.delete("/",  (req, res) => {
+instruments.delete("/",  (req, res) => {
   // parse
   let id = parseInt(req.query.id);
   id = isNaN(id) ? null : id;

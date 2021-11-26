@@ -17,11 +17,12 @@ const logFileStream = fs.createWriteStream(
 
 // determines which requests to log response for
 function skip(req) {
-  let { url } = req;
   // do not skip requests for homepage
-  if (url === "/") return false;
+  if (req.url === "/") {
+    return false;
+  }
   // skip requests for these file extensions
-  if (url.match(/(js|jpg|png|json|ico|css|woff|woff2|map|txt)$/)) {
+  if (/(js|jpg|png|json|ico|css|woff|woff2|map|txt)$/.test(req.url)) {
     return true;
   }
   // do not skip any other requests
@@ -32,15 +33,19 @@ const morganConfig = (tokens, req, res) => {
   try {
     let color;
     switch (req.method) {
-      case "PUT":
+      case "PUT": {
         color = "#EAEA1A";
         break;
-      case "POST":
+      }
+      case "POST": {
         color = "#EA461A";
         break;
-      default:
+      }
+      default: {
         color = "#1AEA20";
+      }
     }
+
     return [
       chalk.greenBright.bold(tokens["response-time"](req, res) + " ms"),
       chalk.redBright.bold("@ " + tokens.date(req, res)),

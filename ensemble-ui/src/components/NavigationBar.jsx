@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 
 import { Navbar, Nav } from "react-bootstrap";
-import entityConfig from '../data/entityConfig.json'
+import entityConfig from '../entityConfig.json'
 
 export default function NavigationBar() {
   const history = useHistory()

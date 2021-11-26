@@ -55,7 +55,7 @@ musiciansConcertCycles.get("/", (req, res) => {
 
 // UPDATE is disallowed on this entity
 musiciansConcertCycles.put("/", (req, res) => {
-  res.status(405).send();
+  res.status(405).json({status: "Method not allowed"});
 });
 
 // DELETE

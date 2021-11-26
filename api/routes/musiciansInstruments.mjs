@@ -57,7 +57,7 @@ musiciansInstruments.get("/", (req, res) => {
 
 // UPDATE is disallowed on this entity
 musiciansInstruments.put("/", (req, res) => {
-  res.status(405).send();
+  res.status(405).json({status: "Method not allowed"});
 });
 
 
