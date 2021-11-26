@@ -120,7 +120,7 @@ export default function SearchForm({setSearchParameters}){
 
           <Button
             disabled={searchOn === null}
-            variant="secondary"
+            variant="primary"
             type="submit"
             onClick={handleOnSubmit}
           >

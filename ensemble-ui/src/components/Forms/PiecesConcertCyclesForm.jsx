@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import { Col, Row, Form } from "react-bootstrap";
+import { Col, Row, Form, Alert } from "react-bootstrap";
 import { SelectField } from './FormComponents/Fields';
 import { PieceOptions, ConcertCycleOptions } from './FormComponents/SelectOptions';
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
@@ -19,6 +19,7 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
   const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [formAlert, setFormAlert] = useState(null);
 
   // define validation regex checks
   // const validation = {};
@@ -63,13 +64,13 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
           history.go(0); // refresh the page; history[0] represents the current path
         } else {
           // let the user know something went wrong
-          alert('At least one input field is invalid; please check the instructions under each field.');
+          setFormAlert('At least one input field is invalid; please check the instructions under each field.');
         }
       } catch (error) {
         // rejected promises should already be parsed; if the backend send back an error message from
         // the sql database, we can display that error here, otherwise we should display whatever other
         // error message the backend sends instead
-        alert(error?.sqlMessage ?? error);
+        setFormAlert(error?.sqlMessage ?? error);
       }
     }();
     setLoading(false);  // no matter what, we should return the button to its "not loading" state
@@ -77,6 +78,16 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
 
   return (
     <Form noValidate className="entityForm">
+      { formAlert &&
+        <Alert 
+          key="formAlert" 
+          variant="danger"
+          onClose={() => setFormAlert(null)}
+          children={formAlert}
+          dismissible
+        />
+      }
+
       <Row>
         <Col className="mb-3">
           <SelectField
@@ -104,9 +115,7 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
         </Col>
       </Row>
 
-      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit}>
-        Submit
-      </SpinnerButton>
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit} />
     </Form>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import { Col, Row, Form } from "react-bootstrap";
+import { Col, Row, Form, Alert } from "react-bootstrap";
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import { entityFormInitializer, entityFormReducer } from '../../utils/reducers';
@@ -20,6 +20,7 @@ export default function PiecesForm({ initialFormValues, mode }){
   const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [formAlert, setFormAlert] = useState(null);
 
   // define validation regex checks
   // const validation = {};
@@ -65,13 +66,13 @@ export default function PiecesForm({ initialFormValues, mode }){
             history.go(0); // refresh the page; history[0] represents the current path
           } else {
             // let the user know something went wrong
-            alert('At least one input field is invalid; please check the instructions under each field.');
+            setFormAlert('At least one input field is invalid; please check the instructions under each field.');
           }
         } catch (error) {
           // rejected promises should already be parsed; if the backend send back an error message from
           // the sql database, we can display that error here, otherwise we should display whatever other
           // error message the backend sends instead
-          alert(error?.sqlMessage ?? error);
+          setFormAlert(error?.sqlMessage ?? error);
         }
       }
     }();
@@ -81,6 +82,16 @@ export default function PiecesForm({ initialFormValues, mode }){
 
   return(
     <Form noValidate className="entityForm">
+      { formAlert &&
+        <Alert 
+          key="formAlert" 
+          variant="danger"
+          onClose={() => setFormAlert(null)}
+          children={formAlert}
+          dismissible
+        />
+      }
+
       <Row>
         { mode === "update" &&
           <Col className="mb-3" xs="2">
@@ -165,9 +176,7 @@ export default function PiecesForm({ initialFormValues, mode }){
         </Col>
       </Row>
 
-      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit}>
-        Submit
-      </SpinnerButton>
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit} />
     </Form>
   )
 }
