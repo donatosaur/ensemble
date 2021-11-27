@@ -1,10 +1,10 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect } from 'react';
 import { Col, Row, Form, Alert } from "react-bootstrap";
 import { CheckboxField, InputField, SelectField } from './FormComponents/Fields';
-import { VenueOptions, ConcertCycleOptions } from './FormComponents/SelectOptions';
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import { entityFormInitializer, entityFormReducer } from '../../utils/reducers';
+import { useGetConcertOptions, useGetVenueOptions } from '../../hooks/useGetOptions';
 import SpinnerButton from './FormComponents/SpinnerButton';
 
 
@@ -22,6 +22,15 @@ export default function ServicesForm({ initialFormValues, mode }){
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
+  const { venueOptions, error: venueError } = useGetVenueOptions();
+  const { concertOptions, error: concertError } = useGetConcertOptions();
+
+  // if fetching venues or concerts failed, let the user know
+  useEffect(() => {
+    if (!!venueError || !!concertError) {
+      setFormAlert(venueError ?? concertError);
+    }
+  }, [venueError, concertError]);
 
   // define validation regex checks
   // const validation = {};
@@ -134,19 +143,21 @@ export default function ServicesForm({ initialFormValues, mode }){
       <Row>
         <Col className="mb-3">
           <SelectField
+            disabled={venueOptions === null}
             name="venueID"
             label="Venue"
             value={entity.venueID.value}
             isInvalid={entity.venueID.isInvalid}
             {...defaultProps}
           >
-            <VenueOptions />
+            {venueOptions ?? <option>Loading...</option> }
           </SelectField>
           {/* make it clear that selecting NULL by default is intended  */}
           <small className="text-muted small-caps">This relationship is nullable.</small>
         </Col>
         <Col className="mb-3">
           <SelectField
+            disabled={concertOptions === null}
             name="concertID"
             label="ConcertCycle"
             value={entity.concertID.value}
@@ -154,7 +165,7 @@ export default function ServicesForm({ initialFormValues, mode }){
             errorText="Please select a Concert Cycle."
             {...defaultProps}
           >
-            <ConcertCycleOptions />
+            { concertOptions ?? <option>Loading...</option> }
           </SelectField>
         </Col>
       <Col>
@@ -162,7 +173,7 @@ export default function ServicesForm({ initialFormValues, mode }){
           inline
           name="isRehearsal"
           label="Rehearsal?"
-          value={entity.isRehearsal.value}
+          checked={entity.isRehearsal.value}
           isInvalid={entity.isRehearsal.isInvalid}
           {...defaultProps}
         />

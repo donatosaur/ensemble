@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
 
-const musiciansConcertCycles = express.Router();
+const piecesConcertCycles = express.Router();
 
 /**
  * CREATE  POST    /api/PiecesConcertCycles
@@ -10,7 +10,7 @@ const musiciansConcertCycles = express.Router();
  */
 
 // CREATE
-musiciansConcertCycles.post("/", (req, res) => {
+piecesConcertCycles.post("/", (req, res) => {
   // destructure body params
   let { pieceID, concertID } = req.body;
 
@@ -21,8 +21,7 @@ musiciansConcertCycles.post("/", (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const insertQuery =
-    "INSERT INTO PiecesConcertCycles (pieceID, concertID) VALUES (?, ?);";
+  const insertQuery = "INSERT INTO PiecesConcertCycles (pieceID, concertID) VALUES (?, ?);";
 
   db.query(insertQuery, [pieceID, concertID], (error) => {
     if (error) {
@@ -36,11 +35,12 @@ musiciansConcertCycles.post("/", (req, res) => {
 });
 
 // READ
-musiciansConcertCycles.get("/", (req, res) => {
-  const selectQuery =
-    "SELECT Pieces.id AS pieceID, Pieces.pieceTitle, ConcertCycles.id AS concertID, ConcertCycles.concertTitle FROM Pieces " +
-    "INNER JOIN PiecesConcertCycles ON Pieces.id = PiecesConcertCycles.pieceID " +
-    "INNER JOIN ConcertCycles ON ConcertCycles.id = PiecesConcertCycles.concertID;";
+piecesConcertCycles.get("/", (req, res) => {
+  const selectQuery = "SELECT Pieces.id AS pieceID, Pieces.pieceTitle AS piece, ConcertCycles.id AS concertID, " +
+                      "ConcertCycles.concertTitle AS concertCycle FROM Pieces INNER JOIN PiecesConcertCycles " +
+                      "ON Pieces.id = PiecesConcertCycles.pieceID INNER JOIN ConcertCycles ON " +
+                      "ConcertCycles.id = PiecesConcertCycles.concertID;"
+
   // db.query("SELECT * FROM PiecesConcertCycles;", (error, rows) => {
   db.query(selectQuery, (error, rows) => {
     if (error) {
@@ -54,12 +54,12 @@ musiciansConcertCycles.get("/", (req, res) => {
 });
 
 // UPDATE is disallowed on this entity
-musiciansConcertCycles.put("/", (req, res) => {
+piecesConcertCycles.put("/", (req, res) => {
   res.status(405).json({status: "Method not allowed"});
 });
 
 // DELETE
-musiciansConcertCycles.delete("/", (req, res) => {
+piecesConcertCycles.delete("/", (req, res) => {
   // get query params
   let [pieceID, concertID] = [req.query.pieceID, req.query.concertID];
 
@@ -70,8 +70,7 @@ musiciansConcertCycles.delete("/", (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const deleteQuery =
-    "DELETE FROM PiecesConcertCycles WHERE pieceID = ? AND concertID = ?;";
+  const deleteQuery = "DELETE FROM PiecesConcertCycles WHERE pieceID = ? AND concertID = ?;";
 
   db.query(deleteQuery, [pieceID, concertID], (error) => {
     if (error) {
@@ -83,4 +82,4 @@ musiciansConcertCycles.delete("/", (req, res) => {
   });
 });
 
-export default musiciansConcertCycles;
+export default piecesConcertCycles;

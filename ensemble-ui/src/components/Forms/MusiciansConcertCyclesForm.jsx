@@ -1,11 +1,11 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from 'react';
 import { Col, Row, Form, Alert } from "react-bootstrap";
 import { SelectField } from './FormComponents/Fields';
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
+import { useGetConcertOptions, useGetMusicianOptions } from '../../hooks/useGetOptions';
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import SpinnerButton from './FormComponents/SpinnerButton';
-import { ConcertCycleOptions, MusicianOptions } from "./FormComponents/SelectOptions";
 
 /**
  * Generates a form for CREATE operations.
@@ -20,6 +20,15 @@ export default function MusiciansConcertCyclesForm({ initialFormValues }){
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
+  const { musicianOptions, error: musicianError } = useGetMusicianOptions();
+  const { concertOptions, error: concertError } = useGetConcertOptions();
+
+  // if fetching musicians or concerts failed, let the user know
+  useEffect(() => {
+    if (!!musicianError || !!concertError) {
+      setFormAlert(musicianError ?? concertError);
+    }
+  }, [musicianError, concertError]);
 
   // define validation regex checks
   // const validation = {};
@@ -91,6 +100,7 @@ export default function MusiciansConcertCyclesForm({ initialFormValues }){
       <Row>
         <Col className="mb-3">
           <SelectField
+            disabled={musicianOptions === null}
             name="musicianID"
             label="Musician"
             value={entity.musicianID.value}
@@ -98,11 +108,12 @@ export default function MusiciansConcertCyclesForm({ initialFormValues }){
             errorText="Please select a musician."
             {...defaultProps}
           >
-            <MusicianOptions />
+            { musicianOptions ?? <option>Loading...</option> }
           </SelectField>
         </Col>
         <Col className="mb-3">
           <SelectField
+            disabled={concertOptions === null}
             name="concertID"
             label="Concert Cycle"
             value={entity.concertID.value}
@@ -110,7 +121,7 @@ export default function MusiciansConcertCyclesForm({ initialFormValues }){
             errorText="Please select a Concert Cycle."
             {...defaultProps}
           >
-            <ConcertCycleOptions />
+            { concertOptions ?? <option>Loading...</option> }
           </SelectField>
         </Col>
       </Row>

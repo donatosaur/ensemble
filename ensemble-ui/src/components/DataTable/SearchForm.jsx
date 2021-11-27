@@ -49,7 +49,7 @@ export default function SearchForm({setSearchParameters}){
   // to generate search fields
   const searchFields = [
     { controlID: "id", label: "ID", type: "text", value: musician['id'] },
-    // { controlID: "birthdate", label: "Birthdate", type: "date", value: musician['birthdate'] },
+    { controlID: "birthdate", label: "Birthdate", type: "date", value: musician['birthdate'] },
     { controlID: "firstName", label: "First Name", type: "text", value: musician['firstName'] },
     { controlID: "lastName", label: "Last Name", type: "text", value: musician['lastName'] },
     { controlID: "email", label: "Email", type: "email", value: musician['email'] },

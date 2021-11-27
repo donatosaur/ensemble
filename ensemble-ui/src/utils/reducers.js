@@ -35,7 +35,8 @@ export const entityFormInitializer = (initialEntityValues) => {
   // construct an appropriately-initialized object from the passed-in field-value pairs
   const initializedEntity = {};
   for (const [field, value] of Object.entries(initialEntityValues)) {
-    initializedEntity[field] = { value: value, isInvalid: false, modified: false }
+    // coerce null values to empty string; react controlled forms require all form values to be not nullish
+    initializedEntity[field] = { value: value ?? '', isInvalid: false, modified: false }
   }
   return initializedEntity;
 }

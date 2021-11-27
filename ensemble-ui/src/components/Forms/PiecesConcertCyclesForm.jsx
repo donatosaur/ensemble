@@ -1,11 +1,12 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from 'react';
 import { Col, Row, Form, Alert } from "react-bootstrap";
 import { SelectField } from './FormComponents/Fields';
-import { PieceOptions, ConcertCycleOptions } from './FormComponents/SelectOptions';
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
+import { useGetConcertOptions, useGetPieceOptions } from '../../hooks/useGetOptions';
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import SpinnerButton from './FormComponents/SpinnerButton';
+
 
 /**
  * Generates a form for CREATE operations.
@@ -20,6 +21,15 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
+  const { pieceOptions, error: pieceError } = useGetPieceOptions();
+  const { concertOptions, error: concertError } = useGetConcertOptions();
+
+  // if fetching musicians or concerts failed, let the user know
+  useEffect(() => {
+    if (!!pieceError || !!concertError) {
+      setFormAlert(pieceError ?? concertError);
+    }
+  }, [pieceError, concertError]);
 
   // define validation regex checks
   // const validation = {};
@@ -91,6 +101,7 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
       <Row>
         <Col className="mb-3">
           <SelectField
+            disabled={pieceOptions === null}
             name="pieceID"
             label="Piece"
             value={entity.pieceID.value}
@@ -98,11 +109,12 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
             errorText="Please select a Piece."
             {...defaultProps}
           >
-            <PieceOptions />
+            { pieceOptions ?? <option>Loading...</option> }
           </SelectField>
         </Col>
         <Col className="mb-3">
           <SelectField
+            disabled={concertOptions === null}
             name="concertID"
             label="Concert Cycle"
             value={entity.concertID.value}
@@ -110,7 +122,7 @@ export default function PiecesConcertCyclesForm({ initialFormValues }){
             errorText="Please select a Concert Cycle."
             {...defaultProps}
           >
-            <ConcertCycleOptions />
+            { concertOptions ??  <option>Loading...</option> }
           </SelectField>
         </Col>
       </Row>

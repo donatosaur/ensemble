@@ -1,6 +1,6 @@
 -- CS-340 Project Step 4
 -- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
--- Last Modified: 2021-11-16
+-- Last Modified: 2021-11-27
 
 -- Drop all tables simultaneously and in reverse order to avoid FK conflicts
 DROP TABLE IF EXISTS
@@ -99,7 +99,7 @@ COMMENT 'records details about the musical pieces that are performed by the orch
 CREATE TABLE MusiciansInstruments (
     musicianID INT NOT NULL,
     instrumentID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES Musicians(id),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(id) ON DELETE CASCADE,
     FOREIGN KEY (instrumentID) REFERENCES Instruments(id),
     PRIMARY KEY (musicianID, instrumentID)
 )
@@ -124,6 +124,15 @@ CREATE TABLE PiecesConcertCycles (
     PRIMARY KEY (pieceID, concertID)
 )
 COMMENT 'an intersection table that implements M:M relationships between Pieces and ConcertCycles';
+
+
+-- Add constraints; we would normally add this during CREATE TABLE, but PHPMyAdmin incorrectly flags it as an error.
+-- Also we had some issues getting regular expression to behave; normally, we would have used something like \d here,
+-- which the MariaDB documentation indicates is supported (https://mariadb.com/kb/en/pcre/), but it didn't work when
+-- combined with any other operators like intervals or + so we resorted to using character ranges instead.
+ALTER TABLE Musicians
+    ADD CONSTRAINT tenDigitPhoneNumber CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
+    ADD CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$');
 
 
 -- Write initial data to each table

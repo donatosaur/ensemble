@@ -1,6 +1,6 @@
 -- CS-340 Project Step 4
 -- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
--- Last Modified: 2021-11-11
+-- Last Modified: 2021-11-27
 -- NOTE: A colon (:) denotes a variable that represents data from the backend
 
 -- ------------------------------------ Musicians -----------------------------------
@@ -38,9 +38,9 @@ SELECT * FROM Musicians;
 
 -- SELECT (filtered)
 SELECT * FROM Musicians WHERE firstName LIKE :firstName;
-SELECT * FROM Musicians WHERE firstName LIKE :lastName;
+SELECT * FROM Musicians WHERE lastName LIKE :lastName;
 SELECT * FROM Musicians WHERE birthdate = :birthdate;
-SELECT * FROM Musicians WHERE firstName LIKE :email;
+SELECT * FROM Musicians WHERE email LIKE :email;
 SELECT * FROM Musicians WHERE phoneNumber LIKE :phoneNumber;
 SELECT * FROM Musicians WHERE street LIKE :street;
 SELECT * FROM Musicians WHERE city LIKE :city;
@@ -267,16 +267,15 @@ SELECT * FROM PiecesConcertCycles;
 DELETE FROM PiecesConcertCycles WHERE pieceID = :pieceID AND concertID = :concertID;
 
 
-
 -- ------------------------------- INTERSECTION TABLE QUERIES --------------------------------
--- can rearrange later put this here for ease of finding
+-- These are JOIN queries to display intersection table data in a more user-friendly format.
+-- For an explanation on what CONCAT_WS does, see https://mariadb.com/kb/en/concat_ws/
 
 -- MusiciansInstruments
 SELECT Musicians.id AS musicianID,
-       Musicians.firstName,
-       Musicians.lastName,
+       CONCAT_WS(' ', Musicians.firstName, Musicians.lastName) AS musician,
        Instruments.id AS instrumentID,
-       Instruments.name
+       Instruments.name AS instrument
 FROM Musicians
 INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID
 INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;
@@ -284,10 +283,9 @@ INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;
 
 -- MusiciansConcertCycles
 SELECT Musicians.id AS musicianID,
-       Musicians.firstName,
-       Musicians.lastName,
+       CONCAT_WS(' ', Musicians.firstName, Musicians.lastName) AS musician,
        ConcertCycles.id AS concertID,
-       ConcertCycles.concertTitle
+       ConcertCycles.concertTitle AS concertCycle
 FROM Musicians
 INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
 INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;
@@ -295,20 +293,20 @@ INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;
 
 -- PiecesConcertCycles
 SELECT Pieces.id AS pieceID,
-       Pieces.pieceTitle,
+       Pieces.pieceTitle AS piece,
        ConcertCycles.id AS concertID,
-       ConcertCycles.concertTitle
+       ConcertCycles.concertTitle AS concertCycle
 FROM Pieces
 INNER JOIN PiecesConcertCycles ON Pieces.id = PiecesConcertCycles.pieceID
 INNER JOIN ConcertCycles ON ConcertCycles.id = PiecesConcertCycles.concertID;
 
 
--- MusiciansConcertCycles (To show instruments: for future implementation)
+-- This one is not currently in use; it's for a future implementation (it would show the instruments a
+-- musician may be playing during a concert cycle in addition to the MusiciansConcertCycles relationship)
 SELECT Musicians.id as musicianID,
-       Musicians.firstName,
-       Musicians.lastName,
-       Instruments.name AS instrumentID,
-       ConcertCycles.concertTitle
+       CONCAT_WS(' ', Musicians.firstName, Musicians.lastName) AS musician,
+       Instruments.name AS instrument,
+       ConcertCycles.concertTitle AS concertCycle
 FROM Musicians
 INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID
 INNER JOIN Instruments ON Musicians.id = Instruments.id

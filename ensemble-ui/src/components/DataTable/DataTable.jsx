@@ -3,7 +3,7 @@ import { Container, Table, Alert, Spinner } from 'react-bootstrap';
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from 'react-router-dom';
 import { valueFormatter } from '../../utils/valueFormatter';
-import { cloneDeepWith } from "lodash";
+import { cloneDeep } from 'lodash';
 
 // button components for custom actions cell
 import EditButton from "./ActionButtons/EditButton";
@@ -77,11 +77,7 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
 
             // get a deep copy for safety: we want to avoid modifying the original row's underlying data
             try {
-              setEditFormValues(cloneDeepWith(rows[rowIndex], (value, key, object) => {
-                if (value === null) {
-                  object[key] = '';
-                }
-              }));
+              setEditFormValues(cloneDeep(rows[rowIndex]));
             } catch (error) {
               // we should never get here; if something goes terribly wrong, avoid crashing the table
               console.error(error)
@@ -167,7 +163,7 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
             { fields.map((column, i) => (
               // optionally format the row, if its custom data type formatting is defined;
               // default wrap text to "false"
-              <td key={i} className={column.columnConfig?.wrap ?? false ? "" : "text-nowrap"}>
+              <td key={i} className={column.columnConfig?.wrap ?? false ? "text-wrap" : "text-nowrap"}>
                 { valueFormatter.has(column.columnConfig?.type)
                   ? valueFormatter.get(column.columnConfig?.type)(row[column.field])
                   : row[column.field] 

@@ -18,7 +18,7 @@ const API_BASE = "/api";
  *
  * @param {object} [searchParameters] key-value pairs to filter (search) rows
  * @returns {Promise} a promise resolving to all rows for the Musicians table
- *                          (optionally, that match the searchParameters passed)
+ *                    (optionally, that match the searchParameters passed)
  */
 export async function getMusicians(searchParameters) {
   if (!!searchParameters) {
@@ -144,7 +144,7 @@ export const updateVenue = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteVenue = async (id) => {
-  return await sendDeleteRequest("Venues", `venueID=${id}`);
+  return await sendDeleteRequest("Venues", `id=${id}`);
 }
 
 
@@ -267,7 +267,7 @@ export const updatePiece = async (body) => {
  * @returns {Promise} a promise resolving to server response
  */
 export const deletePiece = async (id) => {
-  return await sendDeleteRequest("Pieces", `pieceID=${id}`);
+  return await sendDeleteRequest("Pieces", `id=${id}`);
 }
 
 

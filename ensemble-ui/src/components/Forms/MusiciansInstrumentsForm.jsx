@@ -1,8 +1,8 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from 'react';
 import { Col, Row, Form, Alert } from "react-bootstrap";
 import { SelectField } from './FormComponents/Fields';
-import { MusicianOptions, InstrumentOptions } from './FormComponents/SelectOptions';
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
+import { useGetInstrumentOptions, useGetMusicianOptions } from '../../hooks/useGetOptions';
 import { useEntity } from "../../hooks/useEntity";
 import { useHistory } from "react-router-dom";
 import SpinnerButton from './FormComponents/SpinnerButton';
@@ -20,6 +20,15 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
+  const { musicianOptions, error: musicianError } = useGetMusicianOptions();
+  const { instrumentOptions, error: instrumentError } = useGetInstrumentOptions();
+
+  // if fetching musicians or instruments failed, let the user know
+  useEffect(() => {
+    if (!!musicianError || !!instrumentError) {
+      setFormAlert(musicianError ?? instrumentError);
+    }
+  }, [musicianError, instrumentError]);
 
   // define validation regex checks
   // const validation = {};
@@ -91,6 +100,7 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
       <Row>
         <Col className="mb-3">
           <SelectField
+            disabled={musicianOptions === null}
             name="musicianID"
             label="Musician"
             value={entity.musicianID.value}
@@ -98,11 +108,12 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
             errorText="Please select a musician."
             {...defaultProps}
           >
-            <MusicianOptions />
+            { musicianOptions ?? <option>Loading...</option>}
           </SelectField>
         </Col>
         <Col className="mb-3">
           <SelectField
+            disabled={instrumentOptions === null}
             name="instrumentID"
             label="Instrument"
             value={entity.instrumentID.value}
@@ -110,7 +121,7 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
             errorText="Please select an instrument."
             {...defaultProps}
           >
-            <InstrumentOptions />
+            { instrumentOptions ?? <option>Loading...</option>}
           </SelectField>
         </Col>
       </Row>

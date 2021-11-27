@@ -25,7 +25,8 @@ export const valueFormatter = new Map(
       const options = {
         year: 'numeric',
         month: '2-digit',
-        day: '2-digit'
+        day: '2-digit',
+        timeZone: 'UTC'
       }
       const valueAsDate = new Date(value);
       return valueAsDate.toLocaleDateString() !== 'Invalid Date' 

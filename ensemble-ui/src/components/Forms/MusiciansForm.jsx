@@ -195,7 +195,7 @@ export default function MusiciansForm({ initialFormValues, mode }) {
             style={{textAlign: 'left'}}
             name="inEnsemble"
             label="In Ensemble?"
-            value={entity.inEnsemble.value}
+            checked={entity.inEnsemble.value}
             isInvalid={entity.inEnsemble.isInvalid}
             {...defaultProps}
           />
@@ -203,7 +203,7 @@ export default function MusiciansForm({ initialFormValues, mode }) {
             inline
             name="active"
             label="Active?"
-            value={entity.active.value}
+            checked={entity.active.value}
             isInvalid={entity.active.isInvalid}
             {...defaultProps}
           />

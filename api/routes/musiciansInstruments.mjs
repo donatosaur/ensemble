@@ -39,8 +39,10 @@ musiciansInstruments.post('/', (req, res) => {
 
 // READ
 musiciansInstruments.get("/", (req, res) => {
-  let selectQuery= "SELECT Musicians.id as musicianID, Musicians.firstName, Musicians.lastName, Instruments.id as instrumentID, Instruments.name " +
-  "FROM Musicians INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;"
+  let selectQuery= "SELECT Musicians.id AS musicianID, CONCAT_WS(' ', Musicians.firstName, Musicians.lastName) AS " +
+                   "musician, Instruments.id AS instrumentID, Instruments.name AS instrument FROM Musicians " +
+                   "INNER JOIN MusiciansInstruments ON Musicians.id = MusiciansInstruments.musicianID " +
+                   "INNER JOIN Instruments ON MusiciansInstruments.instrumentID = Instruments.id;";
 
   // db.query("SELECT * FROM MusiciansInstruments;", (error, rows) => {
   db.query(selectQuery, (error, rows) => {

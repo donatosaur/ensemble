@@ -7,9 +7,16 @@ The largest 85 symphony orchestras in the United States performed 1,532 piecees 
 ## Scope
 Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 pieces, and over 1,000 services, venues, concert cycles and instruments each, so that historical data may be maintained over a several decade timespan.
 
+## CRUD
+- Backend API calls are defined in `api/routes/:entity`
+- Frontend API calls are defined in `ensemble_ui/src/utils/callAPI`
+- All Frontend CRUD operations are accessed through a React Context Hook defined in `ensemble_ui/src/hooks/useEntity`
+- **CREATE** and **UPDATE** are implemented via forms for each entity, defined in `/ensemble_ui/src/components/Forms/`
+- **READ** and **DELETE** are implemented via the table in `/ensemble_ui/src/components/DataTable/`
+
 ## UI Configuration
 #### Configuring entity and field definitions:
-- Entity configuration is stored in `/ensemble-ui/config/entityConfig.json`
+- Entity configuration is stored in `/ensemble-ui/src/entityConfig.json`
   - The format for `entityConfig.json` is:
     ```
                                 | REQ | DESCRIPTION
@@ -17,7 +24,7 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
       "description": string,    |  *  | short description, displayed on homepage
       "fields": [{              |  *  | 
         "field": string,        |  *  | API field identifier (should match SQL column name)
-        "columnConfig": {       |     | 
+        "columnConfig": {       |  *  | 
           "headerName": string, |  *  | displayed as column header
           "type": string        |     | type definition for table formatting
         } 
@@ -49,7 +56,9 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 
 ## Citations
 - (October 2021) Robertson, Christian (Version 2.138) [Fonts] https://github.com/google/roboto/
-- (October 2021) React Bootstrap (Version 2.0.0) [Package] https://react-bootstrap.github.io/
-- (October 2021) React (Version 17.0.2) [Framework] https://github.com/facebook/react/
+- (October 2021) Bootstrap (Version 5.1.3) [Framework] https://getbootstrap.com/
 - (October 2021) Bootstrap Icons (Version 1.6.1) [Package] https://icons.getbootstrap.com/
-- (November 2021) Lodash (Version 4.17.15) [Package] https://lodash.com/
+- (October 2021) React (Version 17.0.2) [Framework] https://github.com/facebook/react/
+- (October 2021) React Bootstrap (Version 2.0.0) [Package] https://react-bootstrap.github.io/
+- (October 2021) React Router (5.3.0) [Package] https://reactrouter.com/
+- (November 2021) Lodash (Version 4.17.21) [Package] https://lodash.com/

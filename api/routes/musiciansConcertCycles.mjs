@@ -21,8 +21,7 @@ musiciansConcertCycles.post("/", (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const insertQuery =
-    "INSERT INTO MusiciansConcertCycles (musicianID, concertID) VALUES (?, ?);";
+  const insertQuery = "INSERT INTO MusiciansConcertCycles (musicianID, concertID) VALUES (?, ?);";
 
   db.query(insertQuery, [musicianID, concertID], (error) => {
     if (error) {
@@ -37,10 +36,10 @@ musiciansConcertCycles.post("/", (req, res) => {
 
 // READ
 musiciansConcertCycles.get("/", (req, res) => {
-  const selectQuery =
-    "SELECT Musicians.id AS musicianID, Musicians.firstName, Musicians.lastName, ConcertCycles.id AS concertID, ConcertCycles.concertTitle FROM Musicians " +
-    "INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID " +
-    "INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID;";
+  const selectQuery = "SELECT Musicians.id AS musicianID, CONCAT_WS(' ', Musicians.firstName, Musicians.lastName) " +
+                      "AS musician, ConcertCycles.id AS concertID, ConcertCycles.concertTitle AS concertCycle FROM " +
+                      "Musicians INNER JOIN MusiciansConcertCycles ON Musicians.id = MusiciansConcertCycles.musicianID " +
+                      "INNER JOIN ConcertCycles ON ConcertCycles.id = MusiciansConcertCycles.concertID"
   db.query(selectQuery, (error, rows) => {
     // db.query("SELECT * FROM MusiciansConcertCycles;", (error, rows) => {
     if (error) {
@@ -70,8 +69,7 @@ musiciansConcertCycles.delete("/", (req, res) => {
   concertID = parseInt(concertID);
   concertID = isNaN(concertID) ? null : concertID;
 
-  const deleteQuery =
-    "DELETE FROM MusiciansConcertCycles WHERE musicianID = ? AND concertID = ?;";
+  const deleteQuery = "DELETE FROM MusiciansConcertCycles WHERE musicianID = ? AND concertID = ?;";
 
   db.query(deleteQuery, [musicianID, concertID], (error) => {
     if (error) {

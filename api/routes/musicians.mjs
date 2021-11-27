@@ -28,9 +28,8 @@ musicians.post("/", function (req, res) {
   } = req.body;
 
   // query
-  const createQuery =
-    "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
-    "state, zip, inEnsemble, active) VALUES (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);";
+  const createQuery = "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
+                      "state, zip, inEnsemble, active) VALUES (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);";
 
   db.query(
     createQuery,
@@ -93,10 +92,10 @@ musicians.get("/", (req, res, next) => {
       filterQuery = "SELECT * FROM Musicians WHERE lastName LIKE ?";
       break;
     }
-    // case 'birthdate': {
-    //   filterQuery = "SELECT * FROM Musicians WHERE birthdate LIKE ?";
-    //   break;
-    // }
+    case 'birthdate': {
+      filterQuery = "SELECT * FROM Musicians WHERE birthdate = ?";
+      break;
+    }
     case 'email': {
       formatString();
       filterQuery = "SELECT * FROM Musicians WHERE email LIKE ?";
@@ -189,9 +188,8 @@ musicians.put("/", function (req, res) {
   id = isNaN(id) ? null : id;
 
   // query
-  const updateQuery =
-    "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
-    "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
+  const updateQuery = "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
+                      "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
 
   db.query(
     updateQuery,

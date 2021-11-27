@@ -320,6 +320,18 @@
         "columnConfig": {
           "headerName": "Instrument ID"
         }
+      },
+      {
+        "field": "musician",
+        "columnConfig": {
+          "headerName": "Linked Musician"
+        }
+      },
+      {
+        "field": "instrument",
+        "columnConfig": {
+          "headerName": "Linked Instrument"
+        }
       }
     ]
   },
@@ -337,6 +349,19 @@
         "field": "concertID",
         "columnConfig": {
           "headerName": "Concert ID"
+        }
+      },
+      {
+        "field": "musician",
+        "columnConfig": {
+          "headerName": "Linked Musician"
+        }
+      },
+      {
+        "field": "concertCycle",
+        "columnConfig": {
+          "headerName": "Linked Concert Cycle",
+          "wrap": true
         }
       }
     ]
@@ -356,7 +381,22 @@
         "columnConfig": {
           "headerName": "Concert ID"
         }
+      },
+      {
+        "field": "piece",
+        "columnConfig": {
+          "headerName": "Linked Piece",
+          "wrap": true
+        }
+      },
+      {
+        "field": "concertCycle",
+        "columnConfig": {
+          "headerName": "Linked Concert Cycle",
+          "wrap": true
+        }
       }
+
     ]
   }
 }
