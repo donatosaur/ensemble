@@ -62,3 +62,7 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 - (October 2021) React Bootstrap (Version 2.0.0) [Package] https://react-bootstrap.github.io/
 - (October 2021) React Router (5.3.0) [Package] https://reactrouter.com/
 - (November 2021) Lodash (Version 4.17.21) [Package] https://lodash.com/
+- (November 2021) Morgan (Version 1.10.0) [Package] https://github.com/expressjs/morgan
+- (November 2021) Express (Version 4.17.1) [Package] https://expressjs.com/
+- (November 2021) Chalk (Version 4.1.2) [Package] https://github.com/chalk/chalk
+- (November 2021) Mysql (Version 2.18.1) [Package] https://github.com/mysqljs/mysql

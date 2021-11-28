@@ -133,6 +133,8 @@ COMMENT 'an intersection table that implements M:M relationships between Pieces 
 ALTER TABLE Musicians
     ADD CONSTRAINT tenDigitPhoneNumber CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
     ADD CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$');
+ALTER TABLE Venues
+    ADD CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$');
 
 
 -- Write initial data to each table

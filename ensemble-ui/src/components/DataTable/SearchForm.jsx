@@ -10,8 +10,7 @@ import { Form, Row, Dropdown, DropdownButton, Button, InputGroup, Col } from "re
  */
 export default function SearchForm({setSearchParameters}){
   const [searchOn, setSearchOn] = useState(null);
-  const [searchTitle, setDropdownTitle] = useState("Select a field")
-
+  const [dropdownTitle, setDropdownTitle] = useState("Select a field");
   const [musician, dispatch] = useReducer(
     // overwrite only the new fields that are passed in
     (oldEntityState, newEntityState) => ({...oldEntityState, ...newEntityState}),
@@ -31,14 +30,14 @@ export default function SearchForm({setSearchParameters}){
     }
   );
 
+  // event handlers
   const handleDropdownOnClick = (event) => {
     setDropdownTitle(event.target.text);
     setSearchOn(event.target.id);
   }
 
   const handleOnChange = (event) => {
-    // slot the new value into the state
-    dispatch({[event.target.id]: event.target.value});
+    dispatch({[event.target.id]: event.target.value});  // slot the new value into the state
   }
 
   const handleOnSubmit = (event) => {
@@ -70,13 +69,13 @@ export default function SearchForm({setSearchParameters}){
 
       <Row>
         <InputGroup>
+          {/* Display a dropdown button to select the field to search on */}
           <DropdownButton
             variant="outline-secondary"
-            title={searchTitle}
+            title={dropdownTitle}
             id="searchOnDropdown"
           >
-            {
-              searchFields.map( (group, index) => (
+            {searchFields.map((group, index) => (
                 <Dropdown.Item
                   key={index}
                   id={group.controlID}
@@ -88,7 +87,8 @@ export default function SearchForm({setSearchParameters}){
             }
           </DropdownButton>
 
-          { searchFields.map( (group, index) => (
+          {/* Display the appropriate search input depending on what field has been selected */}
+          {searchFields.map((group, index) => (
             searchOn === group.controlID &&
             <Form.Group
               key={index}
@@ -109,9 +109,9 @@ export default function SearchForm({setSearchParameters}){
                   />
                 }
               </Form.Group>
-          ))
-          }
+          ))}
 
+          {/* Display placeholder if no field has been selected */}
           {searchOn === null &&
             <Form.Group as={Col}>
               <Form.Control disabled type="text"/>

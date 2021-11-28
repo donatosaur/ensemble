@@ -189,11 +189,27 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
   );
 
   const TableToolbar = () => (
-    <Toolbar handleAddButtonClick={(event) => {
-      event.preventDefault();
-      setCreateFormOpen(true);
-      setEditFormOpen(false);
-    }} />
+    <Toolbar
+      handleAddButtonClick={(event) => {
+        event.preventDefault();
+        setCreateFormOpen(true);
+        setEditFormOpen(false);
+      }}
+      handleReloadButtonClick={
+        // render reload button only if search is enabled on this entity
+        allowSearch ?
+          (event) => {
+          event.preventDefault();
+          setCreateFormOpen(false);
+          setEditFormOpen(false);
+          // trigger a refresh only once (searchParameters is already in our dependency array)
+          if (searchParameters !== null) {
+            setSearchParameters(null);
+          }
+        }
+        : null
+      }
+    />
   );
 
   const TablePagination = () => (
