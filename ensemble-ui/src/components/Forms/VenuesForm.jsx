@@ -64,7 +64,6 @@ export default function VenuesForm({ initialFormValues, mode }){
   // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    console.log(entity.capacity, typeof entity.capacity.value)
     setLoading(true);  // set the submit button to its "loading" state to prevent multiple identical requests
 
     // validate input and construct the request object (this way we only iterate over entity at most once)
