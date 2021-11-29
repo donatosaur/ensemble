@@ -24,7 +24,7 @@ CREATE TABLE Musicians (
     email VARCHAR(100),
     phoneNumber CHAR(10),
     street VARCHAR(100) NOT NULL,
-    city VARCHAR(100) NOT NULL,
+    city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
     zip CHAR(5) NOT NULL,
     inEnsemble BOOLEAN NOT NULL,

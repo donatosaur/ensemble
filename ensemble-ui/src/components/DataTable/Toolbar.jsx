@@ -8,8 +8,9 @@ import ReloadButton from './ToolbarButtons/ReloadButton';
 /**
  * Creates a toolbar with any combination of the following buttons: Add, Search, Reload.
  *
- * @param handleAddButtonClick
- * @param handleReloadButtonClick
+ * @param {Object} props
+ * @param {() => {}} props.handleAddButtonClick
+ * @param {() => {}} props.handleReloadButtonClick
  * @returns {JSX.Element}
  */
 export default function Toolbar({ handleAddButtonClick, handleReloadButtonClick }) {

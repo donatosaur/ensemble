@@ -10,7 +10,8 @@ import SpinnerButton from './FormComponents/SpinnerButton';
 /**
  * Generates a form for CREATE operations.
  *
- * @param initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
+ * @param {Object} props
+ * @param {Object} props.initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
  * @returns {JSX.Element}
  */
 export default function MusiciansInstrumentsForm({ initialFormValues }){
@@ -30,63 +31,85 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
     }
   }, [musicianError, instrumentError]);
 
-  // define validation regex checks
-  // const validation = {};
+  // define validation checks
+  const validate = new Map([
+    ['musicianID', /./],       // required
+    ['instrumentID', /./],     // required
+  ]);
 
-  // construct default props for each input field; these will be the same for each entity
+  /**
+   * Returns true only if *all* the following hold:
+   *   - the field was modified at least once AND
+   *   - there is a **valid** regex check defined on the field (this is why we null coalesce to false) AND
+   *   - the regex check fails (because the regex is defined on valid states)
+   * @returns {boolean} true if the input is invalid
+   */
+  const setIsInvalid = (field, value) => validate.has(field) && (!validate.get(field)?.test(`${value}`) ?? false);
+
+  /**
+   * Construct default props for each entity (these are event handlers that will be identical for all fields).
+   * Since this may be a bit difficult to follow:
+   *  - `event.target.name` should match the field's name since `name` is a required attribute on our elements
+   *  - `event.target.value` will hold the value of each input element, since these are all controlled components
+   *  - `modified` is set if the input element was entered at least once (i.e., if onBlur has fired on it)
+   */
   const defaultProps = {
     onBlur: (event) => dispatch({
       field: event.target.name,
-      // isInvalid: !validation[event.target.name]?.test(`${event.target.value}`),
+      isInvalid: setIsInvalid(event.target.name, event.target.value),
       modified: true
     }),
     onChange: (event) => dispatch({
       field: event.target.name,
-      // if onBlur fired at least once AND there's a validation check AND the validation check fails
-      // isInvalid: entity[event.target.name].modified && !validation[event.target.name]?.test(`${event.target.value}`),
-      value: event.target.value
+      value: event.target.type === 'checkbox' ? event.target.checked : event.target.value,
+      isInvalid: entity[event.target.name].modified  && setIsInvalid(event.target.name, event.target.value)
     })
   }
+
+
 
   // override default form submit behavior
   const handleOnSubmit = (event) => {
     event.preventDefault();
     setLoading(true);  // set the submit button to its "loading" state to prevent multiple identical requests
 
-    void async function submitForm(){
-      let validated = true;
-      const request = {};
-  
-      try {
-        // map fields and check whether any value is marked as invalid before submitting      
-        Object.entries(entity).forEach(([field, fieldObject]) => {
-          if (fieldObject.isInvalid) { 
-            validated = false; 
-          }
-          request[field] = fieldObject.value;
-        })  
+    // validate input and construct the request object (this way we only iterate over entity at most once)
+    let validated = true;
+    const request = {};
+    Object.entries(entity).forEach(([field, fieldObject]) => {
+      // map to request object so that it contains field-value pairs
+      request[field] = fieldObject.value;
 
-        // check whether the form is in a valid state
-        if (validated) {
-          const response = await createEntity(request);
-          console.log(response);
-          history.go(0); // refresh the page; history[0] represents the current path
-        } else {
-          // let the user know something went wrong
-          setFormAlert('At least one input field is invalid; please check the instructions under each field.');
-        }
-      } catch (error) {
-        // rejected promises should already be parsed; if the backend send back an error message from
-        // the sql database, we can display that error here, otherwise we should display whatever other
-        // error message the backend sends instead
-        setFormAlert(error?.sqlMessage ?? error);
+      // check validation state
+      const fieldIsInvalid = setIsInvalid(field, fieldObject.value);
+      if (fieldIsInvalid) {
+        dispatch({field: field, isInvalid: fieldIsInvalid});
+        validated = false;
       }
-    }();
+    });
+
+    // if the input was invalid, let the user know; otherwise immediately submit the request
+    if (!validated) {
+      setFormAlert('At least one input field is invalid. Please check the instructions under each field.');
+    } else {
+      void async function submitForm() {
+        try {
+          const response = await createEntity(request)
+          console.log(response);
+          history.go(0);  // refresh the page; history[0] represents the current path
+        } catch (error) {
+          // rejected promises should already be parsed: if the backend send back an error message from
+          // the sql database, we can display that error here, otherwise we should display whatever other
+          // error message the backend sends instead
+          setFormAlert(error?.sqlMessage ?? error);
+        }
+      }();
+    }
     setLoading(false);  // no matter what, we should return the button to its "not loading" state
   }
 
   return (
-    <Form noValidate className="entityForm">
+    <Form noValidate className="entityForm" onSubmit={handleOnSubmit}>
       { formAlert &&
         <Alert 
           key="formAlert" 
@@ -97,7 +120,7 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
         />
       }
 
-      <Row>
+      <Row xs={1} md={2}>
         <Col className="mb-3">
           <SelectField
             disabled={musicianOptions === null}
@@ -126,7 +149,7 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
         </Col>
       </Row>
 
-      <SpinnerButton loading={loading} className="mt-4" variant="primary" onClick={handleOnSubmit} />
+      <SpinnerButton loading={loading} className="mt-4" variant="primary" type="submit" />
     </Form>
   );
 }

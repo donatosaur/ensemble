@@ -19,12 +19,12 @@ import Pagination from "./TablePagination";
 /**
  * Creates a Data Table for an Entity using the passed in props
  *
- * @param setCreateFormOpen a function that toggles the display state of the EntityForm
- * @param setEditFormOpen a function that toggles the display state of the EntityForm
- * @param [setEditFormValues] a function that sets the initial state of the edit form; pass nothing to disable edit
- * @param allowSearch {boolean} whether search is enabled for this table
+ * @param {Object} props
+ * @param {(boolean) => {}} props.setCreateFormOpen a function that toggles the display state of the EntityForm
+ * @param {(boolean) => {}} props.setEditFormOpen a function that toggles the display state of the EntityForm
+ * @param {(Object) => {}} [props.setEditFormValues] a function that sets the initial state of the edit form; pass nothing to disable edit
+ * @param {boolean} props.allowSearch whether search is enabled for this table
  * @returns {JSX.Element}
- 
  */
 export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditFormValues, allowSearch }) {
   /* ---------------------------------------------- Hooks ----------------------------------------------- */

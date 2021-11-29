@@ -3,16 +3,13 @@ import { Button } from "react-bootstrap";
 
 /**
  * Creates a table pagination component
- * @param {number} currentPage the current page number
- * @param {number} maxPage the maximum page number
- * @param setCurrentPage sets the current page number state
+ * @param {Object} props
+ * @param {number} props.currentPage the current page number
+ * @param {number} props.maxPage the maximum page number
+ * @param {() => {}} props.setCurrentPage sets the current page number state
  * @returns {JSX.Element}
  */
-export default function TablePagination({
-  currentPage,
-  maxPage,
-  setCurrentPage
-}) {
+export default function TablePagination({ currentPage, maxPage, setCurrentPage }) {
 
   return (
    <>

@@ -6,13 +6,13 @@ import entityConfig from "../entityConfig.json";
  * @module useEntity
  *
  * JSON field definition
- * @typedef {object} field
+ * @typedef {Object} field
  * @property {string} field
  * @property {{"headerName": string; "type"?: string; "wrap"?: boolean}} columnConfig
  * @property {{"label": string; "errorText"?: string}} formConfig
  *
  * Entity context returned by useEntity
- * @typedef {object} entityContext
+ * @typedef {Object} entityContext
  * @property {field[]} fields
  * @property {() => Promise} getEntity async API call for READ
  * @property {() => Promise} createEntity async API for CREATE
@@ -20,6 +20,9 @@ import entityConfig from "../entityConfig.json";
  * @property {() => Promise} deleteEntity async API call for DELETE
  * @property {string[]} deleteParamsAsFields  the parameters required to send a DELETE request
  * 
+ * 
+ * @typedef { "Musicians" | "Instruments" | "Pieces" | "Services" | "Venues" | "ConcertCycles" | 
+ *            "MusiciansInstruments" | "MusiciansConcertCycles" | "PiecesConcertCycles" } entityName
  */
 
  // create the context hook
@@ -121,9 +124,9 @@ const initializeContext = (entityName) => {
  * Provides the appropriate context provider based on the passed entity name. The entity name **MUST** have
  * a corresponding definition in entityConfig.json and be one of the defined entityNames
  *
- * @param entityName {"Musicians" | "Instruments" | "Pieces" | "Services" | "Venues" | "ConcertCycles" |
- *                    "MusiciansInstruments" | "MusiciansConcertCycles" | "PiecesConcertCycles"}
- * @param children
+ * @param {Object} props
+ * @param {entityName} props.entityName 
+ * @param {JSX.Element} props.children
  * @returns {JSX.Element}
  */
 export default function EntityAPIProvider({ entityName, children }) {

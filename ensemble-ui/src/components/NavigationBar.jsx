@@ -1,6 +1,5 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-
 import { Navbar, Nav } from "react-bootstrap";
 import entityConfig from '../entityConfig.json'
 
@@ -8,7 +7,7 @@ export default function NavigationBar() {
   const history = useHistory()
 
   return (
-    <Navbar className="navbar mb-2" bg="light" sticky="top" fixed="top" expand="xl">
+    <Navbar className="navbar mb-2 text-start" bg="light" sticky="top" fixed="top" expand="xl">
       <Navbar.Brand>Ensemble</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">

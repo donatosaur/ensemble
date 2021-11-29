@@ -16,7 +16,7 @@ const API_BASE = "/api";
 /**
  * Issues a GET request for Musicians
  *
- * @param {object} [searchParameters] key-value pairs to filter (search) rows
+ * @param {Object} [searchParameters] key-value pairs to filter (search) rows
  * @returns {Promise} a promise resolving to all rows for the Musicians table
  *                    (optionally, that match the searchParameters passed)
  */
@@ -36,7 +36,7 @@ export async function getMusicians(searchParameters) {
 /**
  * Issues a POST requests for Musicians
  *
- * @param {object} body field-value pairs representing Musicians data
+ * @param {Object} body field-value pairs representing Musicians data
  * @returns {Promise} a promise resolving to server response
  */
 export const createMusician = async (body) => await sendPostRequest("Musicians", body);
@@ -45,7 +45,7 @@ export const createMusician = async (body) => await sendPostRequest("Musicians",
 /**
  * Issues a PUT request for Musicians
  *
- * @param {object} body field-value pairs representing Musicians data
+ * @param {Object} body field-value pairs representing Musicians data
  * @returns {Promise} a promise resolving to server response
  */
 export const updateMusician = async (body) => {
@@ -78,7 +78,7 @@ export const getInstruments = async () => await sendGetRequest("Instruments");
 /**
  * Issues a POST request for Instruments
  *
- * @param {object} body field-value pairs representing Instruments data
+ * @param {Object} body field-value pairs representing Instruments data
  * @returns {Promise} a promise resolving to server response
  */
 export const createInstrument = async (body) => await sendPostRequest("Instruments", body);
@@ -87,7 +87,7 @@ export const createInstrument = async (body) => await sendPostRequest("Instrumen
 /**
  * Issues a PUT request for Instruments
  *
- * @param {object} body field-value pairs representing Instruments data
+ * @param {Object} body field-value pairs representing Instruments data
  * @returns {Promise} a promise resolving to server response
  */
 export const updateInstrument = async (body) => {
@@ -119,7 +119,7 @@ export const getVenues = async () => await sendGetRequest("Venues");
 /**
  * Issues a POST request for Venues
  *
- * @param {object} body field-value pairs representing Venues data
+ * @param {Object} body field-value pairs representing Venues data
  * @returns {Promise} a promise resolving to server response
  */
 export const createVenue = async (body) => await sendPostRequest("Venues", body);
@@ -128,7 +128,7 @@ export const createVenue = async (body) => await sendPostRequest("Venues", body)
 /**
  * Issues a PUT request for Venues
  *
- * @param {object} body field-value pairs representing Venues data
+ * @param {Object} body field-value pairs representing Venues data
  * @returns {Promise} a promise resolving to server response
  */
 export const updateVenue = async (body) => {
@@ -160,7 +160,7 @@ export const getConcertCycles = async () => await sendGetRequest("ConcertCycles"
 /**
  * Issues a POST request for ConcertCycles
  *
- * @param {object} body field-value pairs representing ConcertCycles data
+ * @param {Object} body field-value pairs representing ConcertCycles data
  * @returns {Promise} a promise resolving to server response
  */
 export const createConcertCycle = async (body) => await sendPostRequest("ConcertCycles", body);
@@ -169,7 +169,7 @@ export const createConcertCycle = async (body) => await sendPostRequest("Concert
 /**
  * Issues a PUT request for ConcertCycles
  *
- * @param {object} body field-value pairs representing ConcertCycles data
+ * @param {Object} body field-value pairs representing ConcertCycles data
  * @returns {Promise} a promise resolving to server response
  */
 export const updateConcertCycle = async (body) => {
@@ -201,7 +201,7 @@ export const getServices = async () => await sendGetRequest("Services");
 /**
  * Issues a POST request for Services
  *
- * @param {object} body field-value pairs representing Services data
+ * @param {Object} body field-value pairs representing Services data
  * @returns {Promise} a promise resolving to server response
  */
 export const createService = async (body) => await sendPostRequest("Services", body);
@@ -210,7 +210,7 @@ export const createService = async (body) => await sendPostRequest("Services", b
 /**
  * Issues a PUT request for Services
  *
- * @param {object} body field-value pairs representing Services data
+ * @param {Object} body field-value pairs representing Services data
  * @returns {Promise} a promise resolving to server response
  */
 export const updateService = async (body) => {
@@ -242,7 +242,7 @@ export const getPieces = async () => await sendGetRequest("Pieces");
 /**
  * Issues a POST request for Pieces
  *
- * @param {object} body field-value pairs representing Pieces data
+ * @param {Object} body field-value pairs representing Pieces data
  * @returns {Promise} a promise resolving to server response
  */
 export const createPiece = async (body) => await sendPostRequest("Pieces", body);
@@ -251,7 +251,7 @@ export const createPiece = async (body) => await sendPostRequest("Pieces", body)
 /**
  * Issues a PUT request for Pieces
  *
- * @param {object} body field-value pairs representing Pieces data
+ * @param {Object} body field-value pairs representing Pieces data
  * @returns {Promise} a promise resolving to server response
  */
 export const updatePiece = async (body) => {
@@ -283,7 +283,7 @@ export const getMusiciansInstruments = async () => await sendGetRequest("Musicia
 /**
  *  Issues a POST request for MusiciansInstruments
  *
- * @param {object} body field-value pairs representing MusiciansInstruments data
+ * @param {Object} body field-value pairs representing MusiciansInstruments data
  * @returns {Promise} a promise resolving to server response
  */
 export const createMusicianInstrument = async (body) => await sendPostRequest("MusiciansInstruments", body);
@@ -314,7 +314,7 @@ export const getMusiciansConcertCycles = async () => await sendGetRequest("Music
 /**
  * Issues a POST request for MusiciansConcertCycles
  *
- * @param {object} body field-value pairs representing MusiciansConcertCycles data
+ * @param {Object} body field-value pairs representing MusiciansConcertCycles data
  * @returns {Promise} a promise resolving to server response
  */
 export const createMusicianConcertCycle = async (body) => await sendPostRequest("MusiciansConcertCycles", body);
@@ -345,7 +345,7 @@ export const getPiecesConcertCycles = async () => await sendGetRequest("PiecesCo
 /**
  * Issues a POST request for PiecesConcertCycles
  *
- * @param {object} body field-value pairs representing PiecesConcertCycles data
+ * @param {Object} body field-value pairs representing PiecesConcertCycles data
  * @returns {Promise} a promise resolving to server response
  */
 export const createPieceConcertCycle = async (body) => await sendPostRequest("PiecesConcertCycles", body);
@@ -392,7 +392,7 @@ async function sendGetRequest(path) {
  * POST requests
  *
  * @param {string} path the entity's path
- * @param {object} body a JSON-compatible object
+ * @param {Object} body a JSON-compatible object
  * @returns {Promise} a promise resolving to server response
  */
 async function sendPostRequest(path, body) {
@@ -415,7 +415,7 @@ async function sendPostRequest(path, body) {
  * PUT requests
  *
  * @param {string} path the entity's path
- * @param {object} body a JSON-compatible object
+ * @param {Object} body a JSON-compatible object
  * @param {string} queryString a query string consisting of entityID-value pairs(s) *without* a leading `?` character
  * @param {function} [replacer] a {@link https://mzl.la/2YNrn8W replacer function}
  * @returns {Promise} a promise resolving to server response

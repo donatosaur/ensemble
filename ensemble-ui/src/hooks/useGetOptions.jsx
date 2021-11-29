@@ -12,7 +12,7 @@ import { getInstruments, getMusicians, getVenues, getConcertCycles, getPieces } 
 
 /**
  * Fetches and sets option elements set to each Instrument's ID but displayed with Instrument Names
- * @returns {{instrumentOptions: JSX.Element, error: string | null}}
+ * @returns {{ instrumentOptions: JSX.Element, error: string | null }}
  */
 export const useGetInstrumentOptions = () => {
   const [instrumentOptions, setInstrumentOptions] = useState(null);
@@ -54,7 +54,7 @@ export const useGetInstrumentOptions = () => {
 
 /**
  * Fetches and sets option elements set to each Musician's ID but displayed as Musician Names
- * @returns {{musicianOptions: JSX.Element, error: string | null}}
+ * @returns {{ musicianOptions: JSX.Element, error: string | null }}
  */
 export const useGetMusicianOptions = () => {
   const [musicianOptions, setMusicianOptions] = useState(null);
@@ -90,7 +90,7 @@ export const useGetMusicianOptions = () => {
 
 /**
  * Fetches and sets option elements set to each Piece's ID but displayed as Piece Titles
- * @returns {{pieceOptions: JSX.Element, error: string | null}}
+ * @returns {{ pieceOptions: JSX.Element, error: string | null }}
  */
 export const useGetPieceOptions = () => {
   const [pieceOptions, setPieceOptions] = useState(null);
@@ -126,7 +126,7 @@ export const useGetPieceOptions = () => {
 
 /**
  * Fetches and sets option elements set to each Venue's ID but displayed as Venue Names
- * @returns {{venueOptions: JSX.Element, error: string | null}}
+ * @returns {{ venueOptions: JSX.Element, error: string | null }}
  */
 export const useGetVenueOptions = () => {
   const [venueOptions, setVenueOptions] = useState(null);
@@ -162,7 +162,7 @@ export const useGetVenueOptions = () => {
 
 /**
  * Fetches and sets option elements set to each ConcertCycle's ID but displayed as Concert Titles
- * @returns {{concertOptions: JSX.Element, error: string | null}}
+ * @returns {{ concertOptions: JSX.Element, error: string | null }}
  */
 export const useGetConcertOptions = () => {
   const [concertOptions, setConcertOptions] = useState(null);

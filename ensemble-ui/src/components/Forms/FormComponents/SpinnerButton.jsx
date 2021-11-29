@@ -4,8 +4,9 @@ import { Button, Spinner } from 'react-bootstrap';
 /**
  * A button that displays a spinner when loading
  *
- * @param {boolean} loading if true, disables the button and displays a spinner
- * @param buttonProps
+ * @param {Object} props
+ * @param {boolean} props.loading if true, disables the button and displays a spinner
+ * @param props.buttonProps
  * @returns {JSX.Element}
  */
 export default function SpinnerButton({loading, ...buttonProps}) {

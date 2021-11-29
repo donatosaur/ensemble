@@ -4,20 +4,15 @@ import {Button, Modal} from "react-bootstrap";
 /**
  * Generates a confirmation dialog box (modal) that requires the user to select an action.
  *
- * @param show {boolean} a state hook that toggles the display state of the
- * @param title {string} a text title to show in the modal body
- * @param description {string} a text description to show in the modal body
- * @param handleCancel function that handles close or cancel button presses
- * @param handleConfirm function that handles confirmation button presses
+ * @param {Object} props
+ * @param {boolean} props.show a state hook that toggles the display state of the
+ * @param {string} props.title a text title to show in the modal body
+ * @param {string} props.description  a text description to show in the modal body
+ * @param {() => {}} props.handleCancel function that handles close or cancel button presses
+ * @param {() => {}} props.handleConfirm function that handles confirmation button presses
  * @returns {JSX.Element}
  */
-export default function ConfirmationDialog({
-  show,
-  title,
-  description,
-  handleCancel,
-  handleConfirm
-}) {
+export default function ConfirmationDialog({ show, title, description, handleCancel, handleConfirm }) {
   return (
     <Modal
       centered

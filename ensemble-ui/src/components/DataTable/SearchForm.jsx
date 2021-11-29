@@ -4,11 +4,11 @@ import { Form, Row, Dropdown, DropdownButton, Button, InputGroup, Col } from "re
 /**
  * Creates a search form for the Musicians table
  *
- * @param setSearchParameters state hook
+ * @param {Object} props
+ * @param {() => {}} props.setSearchParameters
  * @returns {JSX.Element}
- 
  */
-export default function SearchForm({setSearchParameters}){
+export default function SearchForm({ setSearchParameters }){
   const [searchOn, setSearchOn] = useState(null);
   const [dropdownTitle, setDropdownTitle] = useState("Select a field");
   const [musician, dispatch] = useReducer(
