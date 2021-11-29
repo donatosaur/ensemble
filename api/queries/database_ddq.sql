@@ -29,16 +29,24 @@ CREATE TABLE Musicians (
     zip CHAR(5) NOT NULL,
     inEnsemble BOOLEAN NOT NULL,
     active BOOLEAN NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT tenDigitPhoneNumber CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
+    CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$')
 )
+ENGINE = InnoDB,
 COMMENT 'records the details and contact records of all musicians contracted for service by the orchestra';
 
+
+-- Regarding the constraints, we had issues getting regular expression to behave; normally, we would have used \d here,
+-- which the MariaDB documentation indicates is supported (https://mariadb.com/kb/en/pcre/), but it didn't work when
+-- combined with any other operators like intervals or + so we resorted to using character ranges instead.
 
 CREATE TABLE Instruments (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
     name VARCHAR(50) UNIQUE NOT NULL,
     PRIMARY KEY (id)
 )
+ENGINE = InnoDB,
 COMMENT 'records the instruments that may be played by musicians in the orchestra';
 
 
@@ -50,8 +58,10 @@ CREATE TABLE Venues (
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
     zip CHAR(5) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$')
 )
+ENGINE = InnoDB,
 COMMENT 'records the details of venues where the orchestra may perform';
 
 
@@ -66,6 +76,7 @@ CREATE TABLE ConcertCycles (
     soloistLastName VARCHAR(50),
     PRIMARY KEY (id)
 )
+ENGINE = InnoDB,
 COMMENT 'records the details of a group (cycle) of concerts';
 
 
@@ -80,6 +91,7 @@ CREATE TABLE Services (
     FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (id)
 )
+ENGINE = InnoDB,
 COMMENT 'records the details of specific services (i.e., performances) made by the orchestra';
 
 
@@ -93,6 +105,7 @@ CREATE TABLE Pieces (
     instrumentation TEXT NOT NULL,
     PRIMARY KEY (id)
 )
+ENGINE = InnoDB,
 COMMENT 'records details about the musical pieces that are performed by the orchestra during concert cycles';
 
 
@@ -103,6 +116,7 @@ CREATE TABLE MusiciansInstruments (
     FOREIGN KEY (instrumentID) REFERENCES Instruments(id),
     PRIMARY KEY (musicianID, instrumentID)
 )
+ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Musicians and Instruments';
 
 
@@ -113,6 +127,7 @@ CREATE TABLE MusiciansConcertCycles (
     FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (musicianID, concertID)
 )
+ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Musicians and ConcertCycles';
 
 
@@ -123,18 +138,8 @@ CREATE TABLE PiecesConcertCycles (
     FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (pieceID, concertID)
 )
+ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Pieces and ConcertCycles';
-
-
--- Add constraints; we would normally add this during CREATE TABLE, but PHPMyAdmin incorrectly flags it as an error.
--- Also we had some issues getting regular expression to behave; normally, we would have used something like \d here,
--- which the MariaDB documentation indicates is supported (https://mariadb.com/kb/en/pcre/), but it didn't work when
--- combined with any other operators like intervals or + so we resorted to using character ranges instead.
-ALTER TABLE Musicians
-    ADD CONSTRAINT tenDigitPhoneNumber CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
-    ADD CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$');
-ALTER TABLE Venues
-    ADD CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$');
 
 
 -- Write initial data to each table
