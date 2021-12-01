@@ -15,4 +15,7 @@
     background-clip: border-box;
     border: 1px solid $border-color;
   }
+  .card-title{
+    white-space: nowrap;
+  }
 }

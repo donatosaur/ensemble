@@ -18,11 +18,16 @@ import PiecesPage from "./pages/PiecesPage";
 import MusiciansInstrumentsPage from "./pages/MusiciansInstrumentsPage";
 import MusiciansConcertCyclesPage from "./pages/MusiciansConcertCyclesPage";
 import PiecesConcertCyclesPage from "./pages/PiecesConcertCyclesPage";
+import Footer from './components/Footer';
 
 
 function App() {
   return (
-    <Router>
+   
+
+    <Router> 
+    <div className="content">
+
       <NavigationBar />
 
       <Route exact path="/" component={HomePage} />
@@ -79,10 +84,11 @@ function App() {
         <EntityAPIProvider entityName="PiecesConcertCycles">
           <PiecesConcertCyclesPage />
         </EntityAPIProvider>
-      </Route>
-
-    {/* site footer */}
+      </Route> 
+      </div>
+      <Footer/>
     </Router>
+   
   );
 }
 
