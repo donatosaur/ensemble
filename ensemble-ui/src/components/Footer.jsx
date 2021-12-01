@@ -37,7 +37,7 @@ export default function Footer() {
             </p>
           </Col>
           <Col lg={2} md={6}>
-            <h5 className="text-black mb-3">Our Projects</h5>
+            <h5 className="mb-3">Our Projects</h5>
             <ul className="list-unstyled text-muted py-0">
               <li>
                 <a className="text-reset" href="https://github.com/donatosaur/ensemble">
@@ -57,7 +57,7 @@ export default function Footer() {
             </ul>
           </Col>
           <Col lg={4} md={6}>
-            <h5 className="text-black mb-3">Inquiries</h5>
+            <h5 className="mb-3">Inquiries</h5>
             <p className="small text-muted">
               Interested in using this tool for managing your ensemble?
             </p>
