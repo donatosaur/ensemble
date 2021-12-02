@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 
 // site header and footer
 import NavigationBar from './components/NavigationBar';
+import Footer from './components/Footer';
 
 // context provider
 import EntityAPIProvider from "./hooks/useEntity";
@@ -18,16 +19,13 @@ import PiecesPage from "./pages/PiecesPage";
 import MusiciansInstrumentsPage from "./pages/MusiciansInstrumentsPage";
 import MusiciansConcertCyclesPage from "./pages/MusiciansConcertCyclesPage";
 import PiecesConcertCyclesPage from "./pages/PiecesConcertCyclesPage";
-import Footer from './components/Footer';
 
 
-function App() {
+export default function App() {
   return (
-   
+    <Router>
 
-    <Router> 
     <div className="content">
-
       <NavigationBar />
 
       <Route exact path="/" component={HomePage} />
@@ -84,12 +82,11 @@ function App() {
         <EntityAPIProvider entityName="PiecesConcertCycles">
           <PiecesConcertCyclesPage />
         </EntityAPIProvider>
-      </Route> 
+      </Route>
       </div>
+
       <Footer/>
     </Router>
    
   );
 }
-
-export default App;

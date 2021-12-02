@@ -1,23 +1,21 @@
 import React, { useState } from "react";
-import { Navbar, Button, Container, Row, Col, Form } from "react-bootstrap";
+import { Navbar, Button, Row, Col, Form, InputGroup } from 'react-bootstrap';
 
 export default function Footer() {
   const [validated, setValidated] = useState(false);
-  const [emailAddress, setEmailAddress] = useState(null);
+  const [emailAddress, setEmailAddress] = useState('');
 
-  const onSubmit = (e) => {
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
+  const onSubmit = (event) => {
+    // use the native HTML validator for this field
+    if (event.currentTarget?.checkValidity() === false) {
+      // prevent the form from being submitted
+      event.preventDefault();
+      event.stopPropagation();
     }
     setValidated(true);
-    // store in db, to be implemented after the semester
-    // sendPostRequest(emailAddress);
-  };
-
-  const onChange = (e) => {
-    setEmailAddress({ email: e.target.value });
+    // store in db, to be implemented after the quarter
+    // sendPostRequest({ email: emailAddress});
+    event.preventDefault(); // disable functionality for now
   };
 
   // const sendPostRequest = async (emailObject) => {
@@ -32,140 +30,78 @@ export default function Footer() {
   // };
 
   return (
-    <Navbar className="footer pb-2" bg="light">
-      <Container className="py-4">
-        <Row className="gy-4 gx-5">
-          <Col lg={4} md={6}>
-            <img
-              src="clef.svg"
-              width="30"
-              height="30"
-              className="d-inline-block mb-2"
-              alt="Ensemble app logo"
-            />
-            <h4 className="d-inline-block ">Ensemble</h4>
-            <p className="small text-muted">
-              A database driven webapp to assist in managing orchestra personnel
-              and performances created by Donato Quartuccia and Fahad Awan.
-            </p>
-            <p className="small text-muted mb-0">
-              &copy; copyright? MIT license? potato?
-            </p>
-          </Col>
-          <Col lg={2} md={6}>
-            <h5 className="mb-3">Our Projects</h5>
-            <ul className="list-unstyled text-muted py-0">
-              <li>
-                <a
-                  className="text-reset"
-                  href="https://github.com/donatosaur/ensemble"
-                >
-                  Ensemble
-                </a>
-              </li>
-              <li>
-                <a
-                  className="text-reset"
-                  href="https://marble-game.herokuapp.com/"
-                >
-                  Kuba Libre
-                </a>
-              </li>
-              <li>
-                <a
-                  className="text-reset"
-                  href="http://www.ozarkfloatplanner.com/"
-                >
-                  Ozark Float Planner
-                </a>
-              </li>
-            </ul>
-          </Col>
-          <Col lg={4} md={6}>
-            <h5 className="mb-3">Inquiries</h5>
-            <p className="small text-muted">
-              Interested in using this tool for managing your ensemble?
-            </p>
+    <Navbar
+      className="flex-column flex-shrink-0 px-3 pb-2"
+      bg="light"
+    >
+      <Row>
 
-            <Form
-              className="position-relative"
-              validated={validated}
-              onSubmit={onSubmit}
-            >
-              <Form.Group
-                className="d-flex flex-row"
-                controlId="formBasicEmail"
-              >
-                <Form.Control
-                  onChange={onChange}
-                  required
-                  type="email"
-                  placeholder="Contact Us"
-                />
+        {/* About */}
+        <Col className="py-2 align-self-center" xs={12} sm={4}>
+          <h3 className="d-inline-block me-2">
+            𝄞
+          </h3>
+          <h5 className="d-inline-block">
+            Ensemble
+          </h5>
+          <p className="mx-5 mx-sm-0 small text-muted">
+            A database driven webapp to assist in managing orchestra personnel
+            and performances.
+          </p>
+          <p className="mx-3 mx-sm-0 small text-muted text-center">
+            Copyright &copy; 2021 Donato Quartuccia & Fahad Awan
+          </p>
+        </Col>
 
-                <Button type="submit">
-                  <i className="bi bi-envelope"></i>
-                </Button>
+        {/* Other Project Links */}
+        <Col className="py-2" xs={12} sm={4}>
+          <h5 className="pb-1">Our Projects</h5>
+          <ul className="navbar-nav flex-column py-0">
+            <li>
+              <a className="nav-link p-0 pb-1" href="https://github.com/donatosaur/ensemble">
+                Ensemble
+              </a>
+            </li>
+            <a className="nav-link p-0 pb-1" href="https://github.com/donatosaur/kuba-libre">
+              Kuba Libre
+            </a>
+            <li>
+              <a className="nav-link p-0 pb-1" href="http://www.ozarkfloatplanner.com/">
+                Ozark Float Planner
+              </a>
+            </li>
+          </ul>
+        </Col>
 
-                <Form.Control.Feedback type="valid" tooltip>
-                  Thanks! We'll be in touch.
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+        {/* Inquiries Form */}
+        <Col className="py-2" xs={12} sm={4}>
+          <h5>Inquiries</h5>
+          <p className="small text-muted">
+            Interested in using this tool for managing your ensemble?
+          </p>
+          <Form validated={validated} onSubmit={onSubmit}>
+            <InputGroup className="mb-3" hasValidation>
+              <Form.Control
+                required
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Contact Us"
+                onChange={(event) => setEmailAddress(event.target.value)}
+                value={emailAddress}
+              />
+              <Button type="submit">
+                <i className="bi bi-envelope" />
+              </Button>
+              <Form.Control.Feedback type="valid" tooltip>
+                Thanks! We'll be in touch.
+              </Form.Control.Feedback>
+            </InputGroup>
+          </Form>
+        </Col>
+
+      </Row>
+
     </Navbar>
-    // </div>
-    //   <Navbar bg="light" className="footer-test">
-    //     <Container className="justify-content-center">
-    //       <Row lg={4} xs={2}>
-    //         <Col >
-    //           <Nav className="flex-column">
-    //           <NavLink>
-    //               <h3>About</h3>
-    //           </NavLink>
-    //             <NavLink >Active</NavLink>
-    //             <NavLink >Link</NavLink>
-    //             <NavLink >Link</NavLink>
-    //           </Nav>
-    //         </Col>
-
-    //         <Col  >
-    //           <Nav className="flex-column">
-    //           <NavLink>
-    //               <h3>About</h3>
-    //           </NavLink>
-    //             <NavLink >Active</NavLink>
-    //             <NavLink >Link</NavLink>
-    //             <NavLink >Link</NavLink>
-    //           </Nav>
-    //         </Col>
-
-    //         <Col  >
-    //           <Nav className="flex-column">
-    //           <NavLink>
-    //               <h3>About</h3>
-    //           </NavLink>
-    //             <NavLink >Active</NavLink>
-    //             <NavLink >Link</NavLink>
-    //             <NavLink >Link</NavLink>
-    //           </Nav>
-    //         </Col>
-
-    //         <Col >
-    //           <Nav className="flex-column">
-    //           <NavLink>
-    //               <h3>About</h3>
-    //           </NavLink>
-    //             <NavLink >Active</NavLink>
-    //             <NavLink >Link</NavLink>
-    //             <NavLink >Link</NavLink>
-    //           </Nav>
-    //         </Col>
-
-    //       </Row>
-    //     </Container>
-    //   </Navbar> */
   );
 }

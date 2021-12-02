@@ -393,11 +393,6 @@ export const deletePieceConcertCycle = async (pieceID, concertID) => {
 
 
 // ----------------------------------------------  HELPERS  ----------------------------------------------
-/**
- * Since we're just sending basic GET requests for most of the endpoints here, this will help reduce
- * code duplication.
- */
-
  /**
  * GET requests
   *
