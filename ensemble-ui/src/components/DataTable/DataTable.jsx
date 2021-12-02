@@ -46,11 +46,11 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
     void async function getData() {
       try {
         setLoading(true);
+        // if there are search parameters, call the API using them; otherwise, get everything
         const rowData = !!searchParameters ? await getEntity(searchParameters) : await getEntity();
         setRows(rowData);
       } catch (error) {
-        console.warn(error);
-        setAlertContent(error);
+        setAlertContent(`${error}`);
       } finally {
         setLoading(false);
       }
