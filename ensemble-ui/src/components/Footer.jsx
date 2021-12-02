@@ -1,20 +1,11 @@
-import React from "react";
-import {
-  Navbar,
-  Button,
-  Container,
-  Row,
-  Col,
-  Form,
-  NavLink,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Button, Container, Row, Col, Form } from "react-bootstrap";
 
 export default function Footer() {
-
   const onSubmit = (e) => {
     e.preventDefault()
+    e.stopPropagation()
   };
-
   return (
     <Navbar className="footer pb-2" bg="light">
       <Container className="py-4">
@@ -40,17 +31,26 @@ export default function Footer() {
             <h5 className="mb-3">Our Projects</h5>
             <ul className="list-unstyled text-muted py-0">
               <li>
-                <a className="text-reset" href="https://github.com/donatosaur/ensemble">
+                <a
+                  className="text-reset"
+                  href="https://github.com/donatosaur/ensemble"
+                >
                   Ensemble
                 </a>
               </li>
               <li>
-                <a className="text-reset" href="https://marble-game.herokuapp.com/">
+                <a
+                  className="text-reset"
+                  href="https://marble-game.herokuapp.com/"
+                >
                   Kuba Libre
                 </a>
               </li>
               <li>
-                <a className="text-reset" href="http://www.ozarkfloatplanner.com/">
+                <a
+                  className="text-reset"
+                  href="http://www.ozarkfloatplanner.com/"
+                >
                   Ozark Float Planner
                 </a>
               </li>
@@ -62,22 +62,20 @@ export default function Footer() {
               Interested in using this tool for managing your ensemble?
             </p>
 
-            <Form >
+            <Form className="position-relative" onSubmit={onSubmit}>
               <Form.Group
                 className="d-flex flex-row"
                 controlId="formBasicEmail"
               >
-                <Form.Control
-                  required
-                  type="email"
-                  placeholder="Contact Us"
-                  //   isInvalid={!!true}
-                />
+                <Form.Control required type="email" placeholder="Contact Us" />
 
-                <Button onClick={onSubmit}>
+                <Button  type="submit">
                   <i className="bi bi-envelope"></i>
                 </Button>
-                {/* <Form.Control.Feedback type="invalid" tooltip={{placement:"auto"}}/> */}
+
+                <Form.Control.Feedback type="invalid" tooltip>
+                  Thanks! We'll be in touch.
+                </Form.Control.Feedback>
               </Form.Group>
             </Form>
           </Col>

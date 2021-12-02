@@ -8,7 +8,14 @@ export default function NavigationBar() {
 
   return (
     <Navbar className="navbar mb-2 text-start" bg="light" sticky="top" fixed="top" expand="xl">
-      <Navbar.Brand>Ensemble</Navbar.Brand>
+     {/* <img
+              src="clef.svg"
+              width="30"
+              height="30"
+              
+              alt="Ensemble app logo"
+            /> */}
+      <Navbar.Brand >Ensemble</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
