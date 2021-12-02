@@ -223,14 +223,14 @@
       {
         "field": "startTime",
         "columnConfig": {
-          "headerName": "Starts",
+          "headerName": "Start Time",
           "type": "dateTime"
         }
       },
       {
         "field": "endTime",
         "columnConfig": {
-          "headerName": "Ends",
+          "headerName": "End Time",
           "type": "dateTime"
         }
       },

@@ -205,7 +205,25 @@ export const deleteConcertCycle = async (id) => {
  *
  * @returns {Promise} a promise resolving to all rows for the Services table
  */
-export const getServices = async () => await sendGetRequest("Services");
+export const getServices = async () => {
+  /**
+   * DATETIME SQL strings will be in the form `YYYY-MM-DD HH:mm:ss` but the HTML spec for
+   * datetime-local is `YYYY=MM-DDTHH:mm:ss`, so we need to convert all these values; normally
+   * this sort of consistency should be enforced on the backend but it was easier to handle it
+   * here in order to maintain compliance with the project requirements\
+   */
+  /** @type {Object[]} */
+  const services = await sendGetRequest("Services");
+  services.forEach((service) => {
+    if (service?.startTime !== undefined) {
+      service.startTime = service.startTime.toString().replace(' ', 'T');
+    }
+    if (service ?.endTime !== undefined) {
+      service.endTime = service.endTime.toString().replace(' ', 'T');
+    }
+  });
+  return services;
+}
 
 
 /**

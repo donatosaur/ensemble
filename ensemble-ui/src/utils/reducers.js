@@ -4,7 +4,7 @@
  */
 
 /**
- * Reducer to be used in forms. Set errorMessage to null to indicate a validated state.
+ * Reducer to be used in forms.
  * See {@link https://reactjs.org/docs/hooks-reference.html#usereducer React Documentation}
  *
  * @param {Object} entityState original form state
