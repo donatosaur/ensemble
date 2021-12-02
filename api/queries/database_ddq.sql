@@ -123,7 +123,7 @@ COMMENT 'an intersection table that implements M:M relationships between Musicia
 CREATE TABLE MusiciansConcertCycles (
     musicianID INT NOT NULL,
     concertID INT NOT NULL,
-    FOREIGN KEY (musicianID) REFERENCES Musicians(id),
+    FOREIGN KEY (musicianID) REFERENCES Musicians(id) ON DELETE CASCADE,
     FOREIGN KEY (concertID) REFERENCES ConcertCycles(id),
     PRIMARY KEY (musicianID, concertID)
 )
