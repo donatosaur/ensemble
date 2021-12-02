@@ -2,10 +2,35 @@ import React, { useState } from "react";
 import { Navbar, Button, Container, Row, Col, Form } from "react-bootstrap";
 
 export default function Footer() {
+  const [validated, setValidated] = useState(false);
+  const [emailAddress, setEmailAddress] = useState(null);
+
   const onSubmit = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setValidated(true);
+    // store in db, to be implemented after the semester
+    // sendPostRequest(emailAddress);
   };
+
+  const onChange = (e) => {
+    setEmailAddress({ email: e.target.value });
+  };
+
+  // const sendPostRequest = async (emailObject) => {
+  //   const today = { date: new Date() };
+  //   const request = await fetch("/api/email", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(emailObject),
+  //   });
+  // };
+
   return (
     <Navbar className="footer pb-2" bg="light">
       <Container className="py-4">
@@ -62,18 +87,27 @@ export default function Footer() {
               Interested in using this tool for managing your ensemble?
             </p>
 
-            <Form className="position-relative" onSubmit={onSubmit}>
+            <Form
+              className="position-relative"
+              validated={validated}
+              onSubmit={onSubmit}
+            >
               <Form.Group
                 className="d-flex flex-row"
                 controlId="formBasicEmail"
               >
-                <Form.Control required type="email" placeholder="Contact Us" />
+                <Form.Control
+                  onChange={onChange}
+                  required
+                  type="email"
+                  placeholder="Contact Us"
+                />
 
-                <Button  type="submit">
+                <Button type="submit">
                   <i className="bi bi-envelope"></i>
                 </Button>
 
-                <Form.Control.Feedback type="invalid" tooltip>
+                <Form.Control.Feedback type="valid" tooltip>
                   Thanks! We'll be in touch.
                 </Form.Control.Feedback>
               </Form.Group>
