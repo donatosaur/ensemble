@@ -110,10 +110,8 @@ export default function MusiciansForm({ initialFormValues, mode  }) {
           console.log(response);
           history.go(0);  // refresh the page; history[0] represents the current path
         } catch (error) {
-          // rejected promises should already be parsed: if the backend send back an error message from
-          // the sql database, we can display that error here, otherwise we should display whatever other
-          // error message the backend sends instead
-          setFormAlert(error?.sqlMessage ?? error);
+          // rejected promises for call API are guaranteed to be strings
+          setFormAlert(`${error}`);
         }
       }();
     }

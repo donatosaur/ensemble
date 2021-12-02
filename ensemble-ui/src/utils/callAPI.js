@@ -1,11 +1,21 @@
 /**
+ * @module callAPI
+ *
  * All API calls made by the frontend are located in this file, with the following notation:
  *
  *    * `API_BASE` means the base url for all API endpoints. This could be a full URL or simply the relative
  *      path to the endpoints (e.g. /api if all endpoints are located at http://localhost/api/...). This
  *      value is expected to be a constant declared at the top of the module.
+ *
  *    * `path` means the path relative to API_BASE for a particular endpoint; this means that the expected
  *      path for something like "http://localhost/api/Musicians" would be "Musicians"
+ *
+ *
+ * API calls are guaranteed to resolve to the following:
+ *    * getEntities: JSON array if successful; string if rejected
+ *    * createEntity: JSON object if successful; string if rejected
+ *    * updateEntity: JSON object if successful; string if rejected
+ *    * deleteEntity: JSON object if successful; string if rejected
  */
 
 // set API path
@@ -372,7 +382,7 @@ export const deletePieceConcertCycle = async (pieceID, concertID) => {
 
  /**
  * GET requests
- *
+  *
  * @param {string} path the entity's path
  * @returns {Promise} a promise resolving to the rows returned for that entity
  */
@@ -380,13 +390,8 @@ async function sendGetRequest(path) {
   const response = await fetch(`${API_BASE}/${path}`, {
     method: "GET",
   });
-  
-  if (!response.ok) {
-    return Promise.reject(await response.json());
-  }
-  return await response.json();
+  return await handleResponse(response);
 }
-
 
 /**
  * POST requests
@@ -403,13 +408,8 @@ async function sendPostRequest(path, body) {
     },
     body: JSON.stringify(body),
   });
-
-  if (!response.ok) {
-    return Promise.reject(await response.json());
-  }
-  return await response.json();
+  return await handleResponse(response);
 }
-
 
 /**
  * PUT requests
@@ -428,13 +428,8 @@ async function sendPutRequest(path, body, queryString, replacer = null) {
     },
     body: JSON.stringify(body, replacer),
   });
-
-  if (!response.ok) {
-    return Promise.reject(await response.json());
-  }
-  return await response.json();
+  return await handleResponse(response);
 }
-
 
 /**
  * DELETE requests
@@ -447,9 +442,34 @@ async function sendDeleteRequest(path, queryString) {
   const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
     method: "DELETE"
   });
+  return await handleResponse(response);
+}
 
-  if (!response.ok) {
-    return Promise.reject(await response.json());
+/**
+ * Parses the response. Resolves to {@type Object} if successful, {@type string} if rejected.
+ *
+ * @param {Response} response response object
+ */
+async function handleResponse(response) {
+  // attempt to parse the response as JSON
+  let parsedResponse;
+  try {
+    parsedResponse = await response.json();
+  } catch (error) {
+    // this will happen only when the response was not formatted as JSON; this isn't expected, but is here
+    // for safety: we should have a way to handle unexpected response types
+    console.error('Error parsing response: response was not formatted as JSON');
+    return Promise.reject(`${response.status}: ${response.statusText}`);
   }
-  return await response.json();
+
+  /**
+   * At this point, we have a valid JSON object, but we must still check whether the response was successful. If
+   * it wasn't, reject the promise in a way that is consistent by resolving to a string as the reason for rejection.
+   * If the backend sends back an error message from the sql database, that error message is helpful and will be
+   * used as the reason for rejection; otherwise, we can fall back to the status text.
+   */
+  if (!response.ok) {
+    return Promise.reject(parsedResponse?.sqlMessage ?? `${response.status}: ${response.statusText}`)
+  }
+  return parsedResponse;
 }

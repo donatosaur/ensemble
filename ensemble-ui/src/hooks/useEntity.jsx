@@ -3,24 +3,30 @@ import * as callAPI from "../utils/callAPI";
 import entityConfig from "../entityConfig.json";
 
 /**
- * @module useEntity
- *
- * JSON field definition
+* @module useEntity
+*/
+
+/**
+ * JSON field
  * @typedef {Object} field
  * @property {string} field
  * @property {{"headerName": string; "type"?: string; "wrap"?: boolean}} columnConfig
  * @property {{"label": string; "errorText"?: string}} formConfig
- *
+ */
+
+/**
  * Entity context returned by useEntity
  * @typedef {Object} entityContext
  * @property {field[]} fields
- * @property {() => Promise} getEntity async API call for READ
- * @property {() => Promise} createEntity async API for CREATE
- * @property {() => Promise} updateEntity async API call for UPDATE
- * @property {() => Promise} deleteEntity async API call for DELETE
+ * @property {(searchParams?: string) => Promise} getEntity async API call for READ
+ * @property {(entity: Object) => Promise} createEntity async API for CREATE
+ * @property {(entity: Object) => Promise} updateEntity async API call for UPDATE
+ * @property {(id1: string, id2?: string) => Promise} deleteEntity async API call for DELETE
  * @property {string[]} deleteParamsAsFields  the parameters required to send a DELETE request
- * 
- * 
+ */
+
+/**
+ * Supported entity names
  * @typedef { "Musicians" | "Instruments" | "Pieces" | "Services" | "Venues" | "ConcertCycles" | 
  *            "MusiciansInstruments" | "MusiciansConcertCycles" | "PiecesConcertCycles" } entityName
  */
@@ -140,7 +146,7 @@ export default function EntityAPIProvider({ entityName, children }) {
 
 
 /**
- * Returns the entityAPI context hook provided by an EntityAPIProvider
+ * Returns the entityAPI context hook provided by an EntityAPIProvider See {@link module:callAPI callAPI}
  *
  * @returns {entityContext}
  * @throws Error if the entity or context provider are undefined
