@@ -38,7 +38,7 @@ export default function Footer() {
 
         {/* About */}
         <Col className="py-2 align-self-center" xs={12} sm={4}>
-          <h3 className="d-inline-block me-2">
+          <h3 id="ensemble" className="d-inline-block me-2">
             𝄞
           </h3>
           <h5 className="d-inline-block">
