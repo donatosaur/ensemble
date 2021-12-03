@@ -21,15 +21,17 @@ const morganConfig = (tokens, req, res) => {
     const requestColor = req.method === "PUT" ? "#EAEA1A" : req.method === "POST" ? "#EA461A" : "#1AEA20";
 
     /**
-     * Customize the morgan logger by adding color to it. Using a slightly modified version of Morgan"s dev
-     * format (see https://www.npmjs.com/package/morgan) helps line up the log output nicely.
-     * 
-     * The modified output format here is important request info, then important response info, then less important
-     * response info. Specifically: date, request method, url, response status, time taken, ip address, user agent
+     * Customize the morgan logger by adding color to it. Using a slightly modified version of Morgan's dev
+     * format (see https://www.npmjs.com/package/morgan) helps line up the log output nicely. Specifically,
+     * our output is `date, request method, url, response status, time taken, ip address, user agent` which
      * 
      * For chalk colors, see https://www.npmjs.com/package/chalk
      * For the token formatting, see "using a custom format function" at https://github.com/expressjs/morgan#readme
      * For padding, our longest endpoint is /api/MusiciansConcertCycles which is 28 characters long
+     * 
+     * **NOTE** the color scheme was adapted from the following github issue post made by Param Singh (source url 
+     * https://github.com/expressjs/morgan/issues/53#issuecomment-393182002) but with several color choices replaced
+     * to remain as close to standard ANSI terminal output colors as possible.
      */
     return [
       chalk.redBright.bold(tokens.date(req, res)),                                    // date
