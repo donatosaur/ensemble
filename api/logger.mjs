@@ -15,56 +15,45 @@ const logFileStream = fs.createWriteStream(
   { flags: "a" }
 );
 
-// determines which requests to log response for
-function skip(req) {
-  // do not skip requests for homepage
-  if (req.url === "/") {
-    return false;
-  }
-  // skip requests for these file extensions
-  if (/(js|jpg|png|json|ico|css|woff|woff2|map|txt)$/.test(req.url)) {
-    return true;
-  }
-  // do not skip any other requests
-  return false;
-}
-
 const morganConfig = (tokens, req, res) => {
   try {
-    let color;
-    switch (req.method) {
-      case "PUT": {
-        color = "#EAEA1A";
-        break;
-      }
-      case "POST": {
-        color = "#EA461A";
-        break;
-      }
-      default: {
-        color = "#1AEA20";
-      }
-    }
+    // color requests by CRUD type (PUT -> yellow, POST -> red, GET -> green, DELETE -> green)
+    const requestColor = req.method === "PUT" ? "#EAEA1A" : req.method === "POST" ? "#EA461A" : "#1AEA20";
 
+    /**
+     * Customize the morgan logger by adding color to it. Using a slightly modified version of Morgan"s dev
+     * format (see https://www.npmjs.com/package/morgan) helps line up the log output nicely.
+     * 
+     * The modified output format here is important request info, then important response info, then less important
+     * response info. Specifically: date, request method, url, response status, time taken, ip address, user agent
+     * 
+     * For chalk colors, see https://www.npmjs.com/package/chalk
+     * For the token formatting, see "using a custom format function" at https://github.com/expressjs/morgan#readme
+     * For padding, our longest endpoint is /api/MusiciansConcertCycles which is 28 characters long
+     */
     return [
-      chalk.greenBright.bold(tokens["response-time"](req, res) + " ms"),
-      chalk.redBright.bold("@ " + tokens.date(req, res)),
-      chalk.hex(color).bold(tokens.method(req, res)),
-      chalk.hex("#ffb142").bold(tokens.status(req, res)),
-      chalk.hex("#ff5252").bold(tokens.url(req, res)),
-      // chalk.hex("#2ed573").bold(tokens.res(req, res, "content-length")),
-      chalk.yellow(tokens["remote-addr"](req, res)),
-      chalk.hex("#fffa65").bold("from " + tokens.referrer(req, res)),
-      chalk.hex("#1e90ff")(tokens["user-agent"](req, res)),
+      chalk.redBright.bold(tokens.date(req, res)),                                    // date
+      chalk.hex(requestColor).bold(tokens.method(req, res)),                          // method
+      chalk.hex("#F74542").bold(tokens.url(req, res)?.toString().padEnd(28, " ")),    // url
+      chalk.yellowBright.bold(tokens.status(req, res)),                               // status
+      chalk.green.bold(`${tokens["response-time"](req, res)} ms`),                    // response time
+      chalk.yellow.bold(tokens["remote-addr"](req, res)),                             // remote ip
+      chalk.blue(tokens["user-agent"](req, res)),                                     // user agent
     ].join(" ");
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    // if something goes wrong, log it and just fall back to morgan's defaults (by not returning anything)
+    console.error(error);
   }
 };
 
-// response logging middleware function
+/**
+ * Create morgan logging middleware. We only want to log requests for an actual endpoint on the server, and not
+ * for any files (JS, fonts, css, images etc). Our endpoints don't have a dot in them, but file extensions always
+ * will, so we can accomplish this by simply checking for a dot character in the request url.
+ */
+
 const loggingMiddleware = morgan(morganConfig, {
-  skip: skip,
+  skip: (req) => req.url?.includes("."),
   stream: logFileStream,
 });
 

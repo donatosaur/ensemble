@@ -29,9 +29,9 @@ app.use(loggingMiddleware);
  * empty strings to explicit null values whenever we parse a JSON body for consistency.
  */
 app.use(
-    express.json({
-        reviver: (key, value) => (value === "" ? null : value),
-    })
+  express.json({
+      reviver: (key, value) => (value === "" ? null : value),
+  })
 );
 
 // Attach table endpoint routes
@@ -57,14 +57,10 @@ app.use("/api/PiecesConcertCycles", piecesConcertCycles);
  */
 app.use(express.static(STATIC_CONTENT_DIR));
 app.get("/*", function (req, res) {
-    res.sendFile(path.resolve(STATIC_CONTENT_DIR, "index.html"));
+  res.sendFile(path.resolve(STATIC_CONTENT_DIR, "index.html"));
 });
 
 // Attach listener
-app.listen(PORT, function () {
-    console.log(
-        "Express started on http://localhost:" +
-        PORT +
-        "; press Ctrl-C to terminate."
-    );
+app.listen(PORT, () => {
+  console.log(`Express listening on port ${PORT}. Press Ctrl + C to terminate.`);
 });

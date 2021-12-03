@@ -1,6 +1,5 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
-import services from "./services.mjs";
 
 const instruments = express.Router();
 
