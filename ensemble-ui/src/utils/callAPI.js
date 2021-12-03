@@ -218,7 +218,7 @@ export const getServices = async () => {
     if (service?.startTime !== undefined) {
       service.startTime = service.startTime.toString().replace(' ', 'T');
     }
-    if (service ?.endTime !== undefined) {
+    if (service?.endTime !== undefined) {
       service.endTime = service.endTime.toString().replace(' ', 'T');
     }
   });
