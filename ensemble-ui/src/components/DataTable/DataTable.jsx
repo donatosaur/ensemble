@@ -118,7 +118,7 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
       history.go(0);  // refresh the page; history[0] is the current path
     } catch (error) {
       console.warn(error);
-      setAlertContent('That entity could not be deleted. Please delete any many-to-many relationships first.');
+      setAlertContent('That row could not be deleted. Please delete any many-to-many relationships first.');
       console.log(error.sqlMessage ?? error);
     } finally {
       setDeleteParams(null);
@@ -129,7 +129,7 @@ export default function DataTable({ setCreateFormOpen, setEditFormOpen, setEditF
       <ConfirmationModal
         show={deleteParams !== null}
         title="Confirm Delete"
-        description={`Are you sure you want to delete the entity with ${deleteParamsAsFields}=${deleteParams}?`}
+        description={`Are you sure you want to delete the row with ${deleteParamsAsFields} ${deleteParams}?`}
         handleCancel={() => setDeleteParams(null)}  // setting to null closes the modal
         handleConfirm={handleDelete}  
       />
