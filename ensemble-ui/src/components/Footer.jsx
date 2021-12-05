@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navbar, Button, Row, Col, Form, InputGroup } from "react-bootstrap";
+import { Navbar, Button, Row, Col, Form, InputGroup, Container } from "react-bootstrap";
 
 export default function Footer() {
   const [validated, setValidated] = useState(false);
@@ -34,10 +34,10 @@ export default function Footer() {
       className="flex-column flex-shrink-0 px-3 pb-2"
       bg="light"
     >
-      <Row>
+      <Row className="align-items-start">
 
         {/* About */}
-        <Col className="py-2 align-self-center" xs={12} sm={4}>
+        <Col  xs={12} sm={4}>
           <h3 id="ensemble" className="d-inline-block me-2">
             𝄞
           </h3>
@@ -54,8 +54,8 @@ export default function Footer() {
         </Col>
 
         {/* Other Project Links */}
-        <Col className="py-2" xs={12} sm={4}>
-          <h5 className="pb-1">Our Projects</h5>
+        <Col className="pt-2" xs={12} sm={4}>
+          <h5>Our Projects</h5>
           <ul className="navbar-nav flex-column py-0">
             <li>
               <a className="nav-link p-0 pb-1" href="https://github.com/donatosaur/ensemble">
@@ -74,7 +74,7 @@ export default function Footer() {
         </Col>
 
         {/* Inquiries Form */}
-        <Col className="py-2" xs={12} sm={4}>
+        <Col className="pt-2" xs={12} sm={4}>
           <h5>Inquiries</h5>
           <p className="small text-muted">
             Interested in using this tool for managing your ensemble?
