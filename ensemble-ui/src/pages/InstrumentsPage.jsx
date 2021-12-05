@@ -34,7 +34,6 @@ export default function InstrumentsPage() {
     <>
       <h1>{entityName}</h1>
 
-
         <Container>
           <DataTable
             setEditFormValues={setEditFormValues}

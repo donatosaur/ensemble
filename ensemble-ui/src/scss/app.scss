@@ -4,7 +4,7 @@
 
 /* ---------------------------------------------- variable overrides ---------------------------------------------- */
 
-// colors
+// colors; use the bootstrap defaults except for the primary color
 $theme-colors: (
   "primary":    #4444ff,
   "secondary":  $secondary,
@@ -16,22 +16,18 @@ $theme-colors: (
   "dark":       $dark
 );
 
-// text
+// center all text by default
 $body-text-align:           center;
-
-// table
 $table-cell-vertical-align: middle;
 
-// containers
+// adjust default container padding
 $container-padding-x:       1em;
 $container-padding-y:       1.25em;
 $navbar-padding-x:          1em;
 $navbar-padding-y:          0.4em;
 
-// buttons
+// adjust default button margin
 $btn-margin-y:              1em;
-
-
 
 
 /* -------------------------------------- import bootstrap defaults & icons -------------------------------------- */
@@ -46,30 +42,33 @@ $btn-margin-y:              1em;
 @import "./cards";
 @import "./datatable";
 
-// for responsive footer
-html, body,#root {
+// force pages to take up 100% of the browser height and all children to display in a css flexbox (to fix
+// the footer to the bottom of the page and make it responsive); #root is the root element where the React
+// app is rendered: see https://reactjs.org/docs/rendering-elements.html#rendering-an-element-into-the-dom
+html, body {
   height: 100%;
 }
+
 #root {
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
-.content {
-  flex: 1 0 auto;
-}
 
 // animate the treble clef (see https://mzl.la/31w45p4 for syntax)
-#ensemble{
+#ensembleLogo {
   animation-name: fade-in;
   animation-duration: 3s;
   animation-delay: 0s;
   animation-iteration-count: 1;
 }
+
+// define fade-in animation (grow from no opacity to full opacity over time)
 @keyframes fade-in{
   0% {
     opacity: 0;
   }
-  100%{
+  100% {
     opacity: 1;
   }
 }

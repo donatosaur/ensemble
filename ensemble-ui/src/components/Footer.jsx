@@ -5,6 +5,7 @@ export default function Footer() {
   const [validated, setValidated] = useState(false);
   const [emailAddress, setEmailAddress] = useState('');
 
+  // this is disabled for now
   const onSubmit = (event) => {
     // use the native HTML validator for this field
     if (event.currentTarget?.checkValidity() === false) {
@@ -31,14 +32,14 @@ export default function Footer() {
 
   return (
     <Navbar
-      className="flex-column flex-shrink-0 px-3 pb-2"
+      className="flex-column flex-shrink-0 px-3 pb-2 mt-5"
       bg="light"
     >
       <Row className="align-items-start">
 
         {/* About */}
-        <Col  xs={12} sm={4}>
-          <h3 id="ensemble" className="d-inline-block me-2">
+        <Col className="py-2 align-self-center" xs={12} sm={4}>
+          <h3 id="ensembleLogo" className="d-inline-block me-2">
             𝄞
           </h3>
           <h5 className="d-inline-block">
@@ -82,6 +83,7 @@ export default function Footer() {
           <Form validated={validated} onSubmit={onSubmit}>
             <InputGroup className="mb-3" hasValidation>
               <Form.Control
+                disabled
                 required
                 id="email"
                 name="email"
@@ -90,7 +92,7 @@ export default function Footer() {
                 onChange={(event) => setEmailAddress(event.target.value)}
                 value={emailAddress}
               />
-              <Button type="submit">
+              <Button type="submit" disabled>
                 <i className="bi bi-envelope" />
               </Button>
               <Form.Control.Feedback type="valid" tooltip>

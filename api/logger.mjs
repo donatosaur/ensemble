@@ -35,7 +35,8 @@ const morganConfig = (tokens, req, res) => {
       chalk.hex(requestColor)(tokens.method(req, res)),                         // method
       chalk.hex("#FCBA03")(tokens.status(req, res)),                            // status
       chalk.hex("#FF4040")(tokens.url(req, res)),                               // url
-      chalk.hex("#FFDD00")(tokens["remote-addr"](req, res)),                    // ip
+      chalk.hex("#FFDD00")(`from ${tokens["referrer"](req, res)}`),             // referrer url
+      chalk.yellow(tokens["remote-addr"](req, res)),                            // ip
       chalk.blueBright(tokens["user-agent"](req, res)),                         // agent (browser, OS)
     ].join(" ");
   } catch (error) {
