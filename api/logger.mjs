@@ -18,29 +18,25 @@ const logFileStream = fs.createWriteStream(
 const morganConfig = (tokens, req, res) => {
   try {
     // color requests by CRUD type (PUT -> yellow, POST -> red, GET -> green, DELETE -> green)
-    const requestColor = req.method === "PUT" ? "#EAEA1A" : req.method === "POST" ? "#EA461A" : "#1AEA20";
+    const requestColor = req.method === "PUT" ? "#EAEA1A" : req.method === "POST" ? "#EA461A" : "#19EA20";
 
     /**
-     * Customize the morgan logger by adding color to it. Using a slightly modified version of Morgan's dev
-     * format (see https://www.npmjs.com/package/morgan) helps line up the log output nicely. Specifically,
-     * our output is `date, request method, url, response status, time taken, ip address, user agent` which
-     * 
-     * For chalk colors, see https://www.npmjs.com/package/chalk
+     * Customize the morgan logger by adding color to it.
      * For the token formatting, see "using a custom format function" at https://github.com/expressjs/morgan#readme
-     * For padding, our longest endpoint is /api/MusiciansConcertCycles which is 28 characters long
-     * 
-     * **NOTE** the color scheme was adapted from the following github issue post made by Param Singh (source url 
-     * https://github.com/expressjs/morgan/issues/53#issuecomment-393182002) but with several color choices replaced
-     * to remain as close to standard ANSI terminal output colors as possible.
+     * For chalk color definitions, see https://www.npmjs.com/package/chalk (especially "define your own theme")
+     *
+     *
+     * **NOTE**: the color scheme and text formatting here was adapted from the following github post made by Param
+     * Singh (source url https://github.com/expressjs/morgan/issues/53#issuecomment-393182002 accessed Nov 2021)
      */
     return [
-      chalk.redBright.bold(tokens.date(req, res)),                                    // date
-      chalk.hex(requestColor).bold(tokens.method(req, res)),                          // method
-      chalk.hex("#F74542").bold(tokens.url(req, res)?.toString().padEnd(28, " ")),    // url
-      chalk.yellowBright.bold(tokens.status(req, res)),                               // status
-      chalk.green.bold(`${tokens["response-time"](req, res)} ms`),                    // response time
-      chalk.yellow.bold(tokens["remote-addr"](req, res)),                             // remote ip
-      chalk.blue(tokens["user-agent"](req, res)),                                     // user agent
+      chalk.green(`${tokens["total-time"](req, res)?.padStart(8, " ")} ms`),    // total time (####.### is 8 chars)
+      chalk.redBright(`@ ${tokens.date(req, res)}`),                            // date
+      chalk.hex(requestColor)(tokens.method(req, res)),                         // method
+      chalk.hex("#FCBA03")(tokens.status(req, res)),                            // status
+      chalk.hex("#FF4040")(tokens.url(req, res)),                               // url
+      chalk.hex("#FFDD00")(tokens["remote-addr"](req, res)),                    // ip
+      chalk.blueBright(tokens["user-agent"](req, res)),                         // agent (browser, OS)
     ].join(" ");
   } catch (error) {
     // if something goes wrong, log it and just fall back to morgan's defaults (by not returning anything)

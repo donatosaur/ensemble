@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navbar, Button, Row, Col, Form, InputGroup } from 'react-bootstrap';
+import { Navbar, Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 
 export default function Footer() {
   const [validated, setValidated] = useState(false);

@@ -31,7 +31,11 @@ import entityConfig from "../entityConfig.json";
  *            "MusiciansInstruments" | "MusiciansConcertCycles" | "PiecesConcertCycles" } entityName
  */
 
- // create the context hook
+/**
+ * Create the context hook (see https://reactjs.org/docs/context.html#reactcreatecontext). A parameter
+ * is required for defaultValue, but the actual context here will depend on the entity name that is
+ * passed when the element is created ({@see initializeContext})
+ */
 const EntityAPIContext = createContext(null);
 
 // fetch the data and api calls we want to provide depending on the entity
@@ -119,7 +123,7 @@ const initializeContext = (entityName) => {
         deleteParamsAsFields: ['pieceID', 'concertID'],
       }
     default: {
-      console.warn("initializeContext called with undefined entityName");
+      console.error("initializeContext called with undefined entityName");
       return null;
     }
   }
@@ -141,7 +145,7 @@ export default function EntityAPIProvider({ entityName, children }) {
     <EntityAPIContext.Provider value={initializeContext(entityName)}>
       {children}
     </EntityAPIContext.Provider>
-  )
+  );
 }
 
 
@@ -149,20 +153,24 @@ export default function EntityAPIProvider({ entityName, children }) {
  * Returns the entityAPI context hook provided by an EntityAPIProvider See {@link module:callAPI callAPI}
  *
  * @returns {entityContext}
- * @throws Error if the entity or context provider are undefined
+ * @throws Error if the entity or context provider not defined
  */
 export function useEntity() {
-  // make sure the context was actually provided
-  if (EntityAPIContext === undefined || EntityAPIContext === null) {
+  /**
+   * Before returning the context hook, we need to make sure the context was actually provided. This helps
+   * keep the code extensible if we want to add additional entities later. A very good explanation about this
+   * strategy, and the place we learned it from, is provided by Kent Dodd's blogpost about custom provider hooks:
+   * https://kentcdodds.com/blog/how-to-use-react-context-effectively#the-custom-provider-component
+   */
+  if (EntityAPIContext === null) {
     throw new Error("useEntity may only be called from within an EntityAPIProvider");
   }
 
   // get the context and make sure it was actually populated
   const entityAPI = useContext(EntityAPIContext);
-  if (entityAPI === undefined || entityAPI === null) {
+  if (entityAPI === null) {
     throw new Error("EntityAPIContext was called with an undefined entity");
   }
 
-  // at this point, we can safely return the context hook
   return entityAPI;
 }

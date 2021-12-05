@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import HelpButton from "./ToolbarButtons/HelpButton";
 import AddButton from "./ToolbarButtons/AddButton";
-import ReloadButton from './ToolbarButtons/ReloadButton';
+import ReloadButton from "./ToolbarButtons/ReloadButton";
 
 /**
  * Creates a toolbar with any combination of the following buttons: Add, Search, Reload.

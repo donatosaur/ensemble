@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Container } from 'react-bootstrap';
+import { Modal, Container } from "react-bootstrap";
 
 /**
  * Creates a modal intended to house a form. Only a close button is included, and should be passed

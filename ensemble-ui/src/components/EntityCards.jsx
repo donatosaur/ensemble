@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { CardGroup, Card, Button } from "react-bootstrap";
-import entityConfig from '../entityConfig.json';
+import entityConfig from "../entityConfig.json";
 
 
 export default function EntityCards() {

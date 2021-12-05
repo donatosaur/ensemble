@@ -1,6 +1,6 @@
 -- CS-340 Project Step 4
 -- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
--- Last Modified: 2021-12-02
+-- Last Modified: 2021-12-04
 
 -- Drop all tables simultaneously and in reverse order to avoid FK conflicts
 DROP TABLE IF EXISTS
@@ -285,27 +285,3 @@ INSERT INTO PiecesConcertCycles (pieceID, concertID)
 VALUES (1, 1),
        (2, 1),
        (3, 1);
-
-
--- Test code: describe each table...
--- DESCRIBE PiecesConcertCycles;
--- DESCRIBE MusiciansConcertCycles;
--- DESCRIBE MusiciansInstruments;
--- DESCRIBE Pieces;
--- DESCRIBE Services;
--- DESCRIBE ConcertCycles;
--- DESCRIBE Venues;
--- DESCRIBE Instruments;
--- DESCRIBE Musicians;
-
--- Test code: ...and query to ensure all values were inserted
--- SELECT * FROM PiecesConcertCycles;
--- SELECT * FROM MusiciansConcertCycles;
--- SELECT * FROM MusiciansInstruments;
--- SELECT * FROM Pieces;
--- SELECT * FROM Services;
--- SELECT * FROM ConcertCycles;
--- SELECT * FROM Venues;
--- SELECT * FROM Instruments;
--- SELECT * FROM Musicians;
-

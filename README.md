@@ -67,3 +67,4 @@ Ensemble aims to store a historical record of: over 10,000 musician, over 5,000 
 - (November 2021) Chalk (Version 4.1.2) [Package] https://github.com/chalk/chalk
 - (November 2021) Mysql (Version 2.18.1) [Package] https://github.com/mysqljs/mysql
 - Singh, Parminder (November 2021) ExpressJS/Morgan Issue #53 [Source Code] https://github.com/expressjs/morgan/issues/53#issuecomment-393182002
+- Dodds, Kent (November 2021) How to use React Context effectively [Article] https://kentcdodds.com/blog/how-to-use-react-context-effectively

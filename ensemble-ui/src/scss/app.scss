@@ -58,6 +58,7 @@ html, body,#root {
   flex: 1 0 auto;
 }
 
+// animate the treble clef (see https://mzl.la/31w45p4 for syntax)
 #ensemble{
   animation-name: fade-in;
   animation-duration: 3s;
@@ -65,12 +66,10 @@ html, body,#root {
   animation-iteration-count: 1;
 }
 @keyframes fade-in{
-
-0%{
-  opacity: 0
-
-}
-100%{
-  opacity: 1
-}
+  0% {
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
 }
