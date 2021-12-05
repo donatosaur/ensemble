@@ -60,12 +60,12 @@ export default function ServicesPage() {
 
       {/* render the edit form modal */}
       { editFormOpen &&
-      <FormModal
-        show={editFormOpen}
-        title="Edit Service"
-        form={EditForm}
-        handleCancel={() => setEditFormOpen(false)}
-      />
+        <FormModal
+          show={editFormOpen}
+          title="Edit Service"
+          form={EditForm}
+          handleCancel={() => setEditFormOpen(false)}
+        />
       }
     </>
   );

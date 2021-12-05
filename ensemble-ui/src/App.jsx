@@ -24,69 +24,67 @@ import PiecesConcertCyclesPage from "./pages/PiecesConcertCyclesPage";
 export default function App() {
   return (
     <Router>
+      {/* wrap navbar and pages so that the footer never covers page content */}
+      <div className="flex-grow-1 flex-shrink-0">
+        <NavigationBar />
 
-    <div className="content">
-      <NavigationBar />
+        <Route exact path="/" component={HomePage} />
 
-      <Route exact path="/" component={HomePage} />
+        <Route exact path="/Musicians">
+          <EntityAPIProvider entityName="Musicians">
+            <MusiciansPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/Musicians">
-        <EntityAPIProvider entityName="Musicians">
-          <MusiciansPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/Instruments">
+          <EntityAPIProvider entityName="Instruments">
+            <InstrumentsPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/Instruments">
-        <EntityAPIProvider entityName="Instruments">
-          <InstrumentsPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/Venues">
+          <EntityAPIProvider entityName="Venues">
+            <VenuesPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/Venues">
-        <EntityAPIProvider entityName="Venues">
-          <VenuesPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/ConcertCycles">
+          <EntityAPIProvider entityName="ConcertCycles">
+            <ConcertCyclesPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/ConcertCycles">
-        <EntityAPIProvider entityName="ConcertCycles">
-          <ConcertCyclesPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/Services">
+          <EntityAPIProvider entityName="Services">
+            <ServicesPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/Services">
-        <EntityAPIProvider entityName="Services">
-          <ServicesPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/Pieces">
+          <EntityAPIProvider entityName="Pieces">
+            <PiecesPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/Pieces">
-        <EntityAPIProvider entityName="Pieces">
-          <PiecesPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/MusiciansInstruments">
+          <EntityAPIProvider entityName="MusiciansInstruments">
+            <MusiciansInstrumentsPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/MusiciansInstruments">
-        <EntityAPIProvider entityName="MusiciansInstruments">
-          <MusiciansInstrumentsPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/MusiciansConcertCycles">
+          <EntityAPIProvider entityName="MusiciansConcertCycles">
+            <MusiciansConcertCyclesPage />
+          </EntityAPIProvider>
+        </Route>
 
-      <Route exact path="/MusiciansConcertCycles">
-        <EntityAPIProvider entityName="MusiciansConcertCycles">
-          <MusiciansConcertCyclesPage />
-        </EntityAPIProvider>
-      </Route>
-
-      <Route exact path="/PiecesConcertCycles">
-        <EntityAPIProvider entityName="PiecesConcertCycles">
-          <PiecesConcertCyclesPage />
-        </EntityAPIProvider>
-      </Route>
+        <Route exact path="/PiecesConcertCycles">
+          <EntityAPIProvider entityName="PiecesConcertCycles">
+            <PiecesConcertCyclesPage />
+          </EntityAPIProvider>
+        </Route>
       </div>
-
       <Footer/>
     </Router>
-   
   );
 }

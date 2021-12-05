@@ -53,12 +53,12 @@ export default function ConcertCyclesPage() {
 
       {/* render the create form modal */}
       { createFormOpen &&
-      <FormModal
-        show={createFormOpen}
-        title="Create a ConcertCycle"
-        form={CreateForm}
-        handleCancel={() => setCreateFormOpen(false)}
-      />
+        <FormModal
+          show={createFormOpen}
+          title="Create a ConcertCycle"
+          form={CreateForm}
+          handleCancel={() => setCreateFormOpen(false)}
+        />
       }
 
       {/* render the edit form modal */}
