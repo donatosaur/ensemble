@@ -1,6 +1,6 @@
 {
   "name": "ensemble-ui",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "proxy": "http://localhost:4444",
   "dependencies": {
@@ -17,8 +17,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "npm": "^8.1.1",
-    "react-scripts": "4.0.3",
-    "sass": "^1.43.3"
+    "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

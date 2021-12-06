@@ -1,6 +1,8 @@
 -- CS-340 Project Step 4
 -- Group 42: Team Mango - Fahad Awan, Donato Quartuccia
--- Last Modified: 2021-12-04
+-- Last Modified: 2021-12-05
+
+-- ------------------------------------ Drop Tables ------------------------------------
 
 -- Drop all tables simultaneously and in reverse order to avoid FK conflicts
 DROP TABLE IF EXISTS
@@ -15,31 +17,33 @@ DROP TABLE IF EXISTS
     Musicians;
 
 
--- Create new tables for each entity
+-- ------------------------------------ Create Tables ------------------------------------
+
+-- Create Musicians Table
+-- Regarding the constraints, we had issues getting regular expression to behave; normally, we would have used \d here,
+-- which the MariaDB documentation indicates is supported (https://mariadb.com/kb/en/pcre/), but it didn't work when
+-- combined with any other operators like intervals or + so we resorted to using character ranges instead.
+
 CREATE TABLE Musicians (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     birthdate DATE NOT NULL,
     email VARCHAR(100),
-    phoneNumber CHAR(10),
+    phoneNumber CHAR(10) CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
     street VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
-    zip CHAR(5) NOT NULL,
+    zip CHAR(5) NOT NULL CHECK (zip REGEXP '^[0-9]{5}$'),
     inEnsemble BOOLEAN NOT NULL,
     active BOOLEAN NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT tenDigitPhoneNumber CHECK (phoneNumber IS NULL OR phoneNumber REGEXP '^[0-9]{10}$'),
-    CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$')
+    PRIMARY KEY (id)
 )
 ENGINE = InnoDB,
 COMMENT 'records the details and contact records of all musicians contracted for service by the orchestra';
 
 
--- Regarding the constraints, we had issues getting regular expression to behave; normally, we would have used \d here,
--- which the MariaDB documentation indicates is supported (https://mariadb.com/kb/en/pcre/), but it didn't work when
--- combined with any other operators like intervals or + so we resorted to using character ranges instead.
+-- Create Instruments Table
 
 CREATE TABLE Instruments (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
@@ -57,13 +61,14 @@ CREATE TABLE Venues (
     street VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
-    zip CHAR(5) NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT fiveDigitZip CHECK (zip REGEXP '^[0-9]{5}$')
+    zip CHAR(5) NOT NULL CHECK (zip REGEXP '^[0-9]{5}$'),
+    PRIMARY KEY (id)
 )
 ENGINE = InnoDB,
 COMMENT 'records the details of venues where the orchestra may perform';
 
+
+-- Create ConcertCycles Table
 
 CREATE TABLE ConcertCycles (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
@@ -80,6 +85,8 @@ ENGINE = InnoDB,
 COMMENT 'records the details of a group (cycle) of concerts';
 
 
+-- Create Services Table
+
 CREATE TABLE Services (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
     startTime DATETIME NOT NULL,
@@ -95,6 +102,8 @@ ENGINE = InnoDB,
 COMMENT 'records the details of specific services (i.e., performances) made by the orchestra';
 
 
+-- Create Pieces Table
+
 CREATE TABLE Pieces (
     id INT AUTO_INCREMENT UNIQUE NOT NULL,
     pieceTitle VARCHAR(100) NOT NULL,
@@ -109,6 +118,8 @@ ENGINE = InnoDB,
 COMMENT 'records details about the musical pieces that are performed by the orchestra during concert cycles';
 
 
+-- Create MusiciansInstruments Table
+
 CREATE TABLE MusiciansInstruments (
     musicianID INT NOT NULL,
     instrumentID INT NOT NULL,
@@ -119,6 +130,8 @@ CREATE TABLE MusiciansInstruments (
 ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Musicians and Instruments';
 
+
+-- Create MusiciansConcertCycles Table
 
 CREATE TABLE MusiciansConcertCycles (
     musicianID INT NOT NULL,
@@ -131,6 +144,8 @@ ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Musicians and ConcertCycles';
 
 
+-- Create PiecesConcertCycles Table
+
 CREATE TABLE PiecesConcertCycles (
     pieceID INT NOT NULL,
     concertID INT NOT NULL,
@@ -142,7 +157,9 @@ ENGINE = InnoDB,
 COMMENT 'an intersection table that implements M:M relationships between Pieces and ConcertCycles';
 
 
--- Write initial data to each table
+-- ------------------------------------ Write Initial Data ------------------------------------
+
+-- Write initial Musicians data
 INSERT INTO Musicians (firstName,
                        lastName,
                        birthdate,
@@ -191,6 +208,7 @@ VALUES ('Annabelle',
         0);
 
 
+-- Write initial Instruments data
 INSERT INTO Instruments (name)
 VALUES ('Viola'),
        ('Sousaphone'),
@@ -198,12 +216,14 @@ VALUES ('Viola'),
        ('Ocarina');
 
 
+-- Write initial Venues data
 INSERT INTO Venues (capacity, name, street, city, state, zip)
 VALUES (1742, 'Orpheus Theatre', '765 S Grandview Dr', 'Paoli', 'IN', '47454'),
        (22634, 'Capital Theatre', '4548 Akialoa Rd', 'Kekaha', 'HI', '96752'),
        (05443, 'Red Rocks Theatre', '22 Harvard St', 'Boston', 'MA', '02124');
 
 
+-- Write initial ConcertCycles data
 INSERT INTO ConcertCycles (concertTitle,
                             startDate,
                             endDate,
@@ -236,12 +256,14 @@ VALUES ('Celebrating the Season',
         NULL);
 
 
+-- Write initial Services data
 INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID)
 VALUES ('2021-12-20 13:00:21', '2021-12-20 15:00:00', 1, 1, 1),
        ('2021-12-24 13:00:00', '2021-12-24 15:00:00', 0, 1, 1),
        ('2022-05-02 08:00:00', '2022-05-02 11:00:00', 0, NULL, 2);
 
 
+-- Write initial Pieces data
 INSERT INTO Pieces (pieceTitle,
                     composerFirstName,
                     composerLastName,
@@ -271,16 +293,21 @@ VALUES ('The Star Spangled Banner',
        );
 
 
+-- Write initial MusiciansInstruments data
 INSERT INTO MusiciansInstruments (musicianID, instrumentID)
 VALUES (1, 2),
        (2, 1),
        (3, 2);
 
+
+-- Write initial MusiciansConcertCycles data
 INSERT INTO MusiciansConcertCycles (musicianID, concertID)
 VALUES (2, 1),
        (1, 1),
        (1, 2);
 
+
+-- Write initial PiecesConcertCycles data
 INSERT INTO PiecesConcertCycles (pieceID, concertID)
 VALUES (1, 1),
        (2, 1),
