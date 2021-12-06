@@ -38,7 +38,7 @@ export default function Footer() {
       <Row className="align-items-start">
 
         {/* About */}
-        <Col className="py-2 align-self-center" xs={12} sm={4}>
+        <Col xs={12} sm={4}>
           <h3 id="ensembleLogo" className="d-inline-block me-2">
             𝄞
           </h3>
