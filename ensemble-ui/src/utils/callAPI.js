@@ -21,6 +21,101 @@
 // set API path
 const API_BASE = "/api";
 
+// ----------------------------------------------  HELPERS  ----------------------------------------------
+/**
+   * Parses the response. Resolves to {@type Object} if successful, {@type string} if rejected.
+   *
+   * @param {Response} response response object
+   * @returns {Promise}
+   */
+async function handleResponse(response) {
+  // attempt to parse the response as JSON
+  let parsedResponse;
+  try {
+    parsedResponse = await response.json();
+  } catch (error) {
+    // this will happen only when the response was not formatted as JSON; this isn't expected, but is here
+    // for safety: we should have a way to handle unexpected response types
+    // console.error("Error parsing response: response was not formatted as JSON");
+    return Promise.reject(`${response.status}: ${response.statusText}`);
+  }
+
+  /**
+     * At this point, we have a valid JSON object, but we must still check whether the response was successful. If
+     * it wasn't, reject the promise in a way that is consistent by resolving to a string as the reason for rejection.
+     * If the backend sends back an error message from the sql database, that error message is helpful and will be
+     * used as the reason for rejection; otherwise, we can fall back to the status text.
+     */
+  if (!response.ok) {
+    return Promise.reject(parsedResponse?.sqlMessage ?? `${response.status}: ${response.statusText}`);
+  }
+  return parsedResponse;
+}
+
+/**
+ * GET requests
+  *
+ * @param {string} path the entity's path
+ * @returns {Promise} a promise resolving to the rows returned for that entity
+ */
+async function sendGetRequest(path) {
+  const response = await fetch(`${API_BASE}/${path}`, {
+    method: "GET",
+  });
+  return await handleResponse(response);
+}
+
+/**
+   * POST requests
+   *
+   * @param {string} path the entity's path
+   * @param {Object} body a JSON-compatible object
+   * @returns {Promise} a promise resolving to server response
+   */
+async function sendPostRequest(path, body) {
+  const response = await fetch(`${API_BASE}/${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  return await handleResponse(response);
+}
+
+/**
+   * PUT requests
+   *
+   * @param {string} path the entity's path
+   * @param {Object} body a JSON-compatible object
+   * @param {string} queryString a query string consisting of entityID-value pairs(s) *without* a leading `?` character
+   * @param {function} [replacer] a {@link https://mzl.la/2YNrn8W replacer function}
+   * @returns {Promise} a promise resolving to server response
+   */
+async function sendPutRequest(path, body, queryString, replacer = null) {
+  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body, replacer),
+  });
+  return await handleResponse(response);
+}
+
+/**
+   * DELETE requests
+   *
+   * @param {string} path the entity's path
+   * @param {string} queryString a query string consisting of entityID-value pairs(s) *without* a leading `?` character
+   * @returns {Promise} a promise resolving to server response
+   */
+async function sendDeleteRequest(path, queryString) {
+  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
+    method: "DELETE",
+  });
+  return await handleResponse(response);
+}
 
 // ------------------------------------ Musicians -----------------------------------
 /**
@@ -31,16 +126,15 @@ const API_BASE = "/api";
  *                    (optionally, that match the searchParameters passed)
  */
 export async function getMusicians(searchParameters) {
-  if (!!searchParameters) {
+  if (searchParameters) {
     let path = "Musicians";
     Object.entries(searchParameters).forEach(([key, value], i) => {
       // slot ?key=value if this is the first search parameter, otherwise string together with &
       path = i === 0 ? `${path}?${key}=${value}` : `${path}&${key}=${value}`;
     });
     return await sendGetRequest(path);
-  } else {
-    return await sendGetRequest("Musicians");
   }
+  return await sendGetRequest("Musicians");
 }
 
 /**
@@ -51,7 +145,6 @@ export async function getMusicians(searchParameters) {
  */
 export const createMusician = async (body) => await sendPostRequest("Musicians", body);
 
-
 /**
  * Issues a PUT request for Musicians
  *
@@ -60,10 +153,9 @@ export const createMusician = async (body) => await sendPostRequest("Musicians",
  */
 export const updateMusician = async (body) => {
   // split id from response body
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("Musicians", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for Musicians
@@ -71,10 +163,7 @@ export const updateMusician = async (body) => {
  * @param {string | number} id the musicianID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deleteMusician = async (id) => {
-  return await sendDeleteRequest("Musicians", `id=${id}`);
-}
-
+export const deleteMusician = async (id) => await sendDeleteRequest("Musicians", `id=${id}`);
 
 // ----------------------------------- Instruments -----------------------------------
 /**
@@ -84,7 +173,6 @@ export const deleteMusician = async (id) => {
  */
 export const getInstruments = async () => await sendGetRequest("Instruments");
 
-
 /**
  * Issues a POST request for Instruments
  *
@@ -93,7 +181,6 @@ export const getInstruments = async () => await sendGetRequest("Instruments");
  */
 export const createInstrument = async (body) => await sendPostRequest("Instruments", body);
 
-
 /**
  * Issues a PUT request for Instruments
  *
@@ -101,10 +188,9 @@ export const createInstrument = async (body) => await sendPostRequest("Instrumen
  * @returns {Promise} a promise resolving to server response
  */
 export const updateInstrument = async (body) => {
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("Instruments", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for Instruments
@@ -112,10 +198,7 @@ export const updateInstrument = async (body) => {
  * @param {string | number} id the instrumentID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deleteInstrument = async (id) => {
-  return await sendDeleteRequest("Instruments", `id=${id}`);
-}
-
+export const deleteInstrument = async (id) => await sendDeleteRequest("Instruments", `id=${id}`);
 
 // ------------------------------------- Venues --------------------------------------
 /**
@@ -125,7 +208,6 @@ export const deleteInstrument = async (id) => {
  */
 export const getVenues = async () => await sendGetRequest("Venues");
 
-
 /**
  * Issues a POST request for Venues
  *
@@ -134,7 +216,6 @@ export const getVenues = async () => await sendGetRequest("Venues");
  */
 export const createVenue = async (body) => await sendPostRequest("Venues", body);
 
-
 /**
  * Issues a PUT request for Venues
  *
@@ -142,10 +223,9 @@ export const createVenue = async (body) => await sendPostRequest("Venues", body)
  * @returns {Promise} a promise resolving to server response
  */
 export const updateVenue = async (body) => {
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("Venues", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for Venues
@@ -153,10 +233,7 @@ export const updateVenue = async (body) => {
  * @param {string | number} id the venueID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deleteVenue = async (id) => {
-  return await sendDeleteRequest("Venues", `id=${id}`);
-}
-
+export const deleteVenue = async (id) => await sendDeleteRequest("Venues", `id=${id}`);
 
 // ---------------------------------- ConcertCycles ----------------------------------
 /**
@@ -166,7 +243,6 @@ export const deleteVenue = async (id) => {
  */
 export const getConcertCycles = async () => await sendGetRequest("ConcertCycles");
 
-
 /**
  * Issues a POST request for ConcertCycles
  *
@@ -175,7 +251,6 @@ export const getConcertCycles = async () => await sendGetRequest("ConcertCycles"
  */
 export const createConcertCycle = async (body) => await sendPostRequest("ConcertCycles", body);
 
-
 /**
  * Issues a PUT request for ConcertCycles
  *
@@ -183,10 +258,9 @@ export const createConcertCycle = async (body) => await sendPostRequest("Concert
  * @returns {Promise} a promise resolving to server response
  */
 export const updateConcertCycle = async (body) => {
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("ConcertCycles", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for ConcertCycles
@@ -194,10 +268,7 @@ export const updateConcertCycle = async (body) => {
  * @param {string | number} id the concertID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deleteConcertCycle = async (id) => {
-  return await sendDeleteRequest("ConcertCycles", `id=${id}`);
-}
-
+export const deleteConcertCycle = async (id) => await sendDeleteRequest("ConcertCycles", `id=${id}`);
 
 // ------------------------------------- Services ------------------------------------
 /**
@@ -216,15 +287,16 @@ export const getServices = async () => {
   const services = await sendGetRequest("Services");
   services.forEach((service) => {
     if (service?.startTime !== undefined) {
-      service.startTime = service.startTime.toString().replace(' ', 'T');
+      // eslint-disable-next-line no-param-reassign
+      service.startTime = service.startTime.toString().replace(" ", "T");
     }
     if (service?.endTime !== undefined) {
-      service.endTime = service.endTime.toString().replace(' ', 'T');
+      // eslint-disable-next-line no-param-reassign
+      service.endTime = service.endTime.toString().replace(" ", "T");
     }
   });
   return services;
-}
-
+};
 
 /**
  * Issues a POST request for Services
@@ -234,7 +306,6 @@ export const getServices = async () => {
  */
 export const createService = async (body) => await sendPostRequest("Services", body);
 
-
 /**
  * Issues a PUT request for Services
  *
@@ -242,10 +313,9 @@ export const createService = async (body) => await sendPostRequest("Services", b
  * @returns {Promise} a promise resolving to server response
  */
 export const updateService = async (body) => {
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("Services", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for Services
@@ -253,10 +323,7 @@ export const updateService = async (body) => {
  * @param {string | number} id the serviceID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deleteService = async (id) => {
-  return await sendDeleteRequest("Services", `id=${id}`);
-}
-
+export const deleteService = async (id) => await sendDeleteRequest("Services", `id=${id}`);
 
 // -------------------------------------- Pieces -------------------------------------
 /**
@@ -266,7 +333,6 @@ export const deleteService = async (id) => {
  */
 export const getPieces = async () => await sendGetRequest("Pieces");
 
-
 /**
  * Issues a POST request for Pieces
  *
@@ -275,7 +341,6 @@ export const getPieces = async () => await sendGetRequest("Pieces");
  */
 export const createPiece = async (body) => await sendPostRequest("Pieces", body);
 
-
 /**
  * Issues a PUT request for Pieces
  *
@@ -283,10 +348,9 @@ export const createPiece = async (body) => await sendPostRequest("Pieces", body)
  * @returns {Promise} a promise resolving to server response
  */
 export const updatePiece = async (body) => {
-  const {id, ...rest} = body;
+  const { id, ...rest } = body;
   return await sendPutRequest("Pieces", rest, `id=${id}`);
-}
-
+};
 
 /**
  * Issues a DELETE request for Pieces
@@ -294,10 +358,7 @@ export const updatePiece = async (body) => {
  * @param {string | number} id the pieceID of the row to be deleted
  * @returns {Promise} a promise resolving to server response
  */
-export const deletePiece = async (id) => {
-  return await sendDeleteRequest("Pieces", `id=${id}`);
-}
-
+export const deletePiece = async (id) => await sendDeleteRequest("Pieces", `id=${id}`);
 
 // ------------------------------ MusiciansInstruments -------------------------------
 /**
@@ -307,7 +368,6 @@ export const deletePiece = async (id) => {
  */
 export const getMusiciansInstruments = async () => await sendGetRequest("MusiciansInstruments");
 
-
 /**
  *  Issues a POST request for MusiciansInstruments
  *
@@ -315,7 +375,6 @@ export const getMusiciansInstruments = async () => await sendGetRequest("Musicia
  * @returns {Promise} a promise resolving to server response
  */
 export const createMusicianInstrument = async (body) => await sendPostRequest("MusiciansInstruments", body);
-
 
 /**
  * Issues a DELETE request for MusiciansInstruments
@@ -325,10 +384,9 @@ export const createMusicianInstrument = async (body) => await sendPostRequest("M
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteMusicianInstrument = async (musicianID, instrumentID) => {
-  const queryString = `musicianID=${musicianID}&instrumentID=${instrumentID}`
+  const queryString = `musicianID=${musicianID}&instrumentID=${instrumentID}`;
   return await sendDeleteRequest("MusiciansInstruments", queryString);
-}
-
+};
 
 // ------------------------------ MusiciansConcertCycles ------------------------------
 /**
@@ -338,7 +396,6 @@ export const deleteMusicianInstrument = async (musicianID, instrumentID) => {
  */
 export const getMusiciansConcertCycles = async () => await sendGetRequest("MusiciansConcertCycles");
 
-
 /**
  * Issues a POST request for MusiciansConcertCycles
  *
@@ -346,7 +403,6 @@ export const getMusiciansConcertCycles = async () => await sendGetRequest("Music
  * @returns {Promise} a promise resolving to server response
  */
 export const createMusicianConcertCycle = async (body) => await sendPostRequest("MusiciansConcertCycles", body);
-
 
 /**
  * Issues a DELETE request for MusiciansConcertCycles
@@ -356,10 +412,9 @@ export const createMusicianConcertCycle = async (body) => await sendPostRequest(
  * @returns {Promise} a promise resolving to server response
  */
 export const deleteMusicianConcertCycle = async (musicianID, concertID) => {
-  const queryString = `musicianID=${musicianID}&concertID=${concertID}`
+  const queryString = `musicianID=${musicianID}&concertID=${concertID}`;
   return await sendDeleteRequest("MusiciansConcertCycles", queryString);
-}
-
+};
 
 // ------------------------------- PiecesConcertCycles --------------------------------
 /**
@@ -369,7 +424,6 @@ export const deleteMusicianConcertCycle = async (musicianID, concertID) => {
  */
 export const getPiecesConcertCycles = async () => await sendGetRequest("PiecesConcertCycles");
 
-
 /**
  * Issues a POST request for PiecesConcertCycles
  *
@@ -377,7 +431,6 @@ export const getPiecesConcertCycles = async () => await sendGetRequest("PiecesCo
  * @returns {Promise} a promise resolving to server response
  */
 export const createPieceConcertCycle = async (body) => await sendPostRequest("PiecesConcertCycles", body);
-
 
 /**
  * Issues a DELETE request for PiecesConcertCycles
@@ -387,102 +440,6 @@ export const createPieceConcertCycle = async (body) => await sendPostRequest("Pi
  * @returns {Promise} a promise resolving to server response
  */
 export const deletePieceConcertCycle = async (pieceID, concertID) => {
-  const queryString = `pieceID=${pieceID}&concertID=${concertID}`
+  const queryString = `pieceID=${pieceID}&concertID=${concertID}`;
   return await sendDeleteRequest("PiecesConcertCycles", queryString);
-}
-
-
-// ----------------------------------------------  HELPERS  ----------------------------------------------
- /**
- * GET requests
-  *
- * @param {string} path the entity's path
- * @returns {Promise} a promise resolving to the rows returned for that entity
- */
-async function sendGetRequest(path) {
-  const response = await fetch(`${API_BASE}/${path}`, {
-    method: "GET",
-  });
-  return await handleResponse(response);
-}
-
-/**
- * POST requests
- *
- * @param {string} path the entity's path
- * @param {Object} body a JSON-compatible object
- * @returns {Promise} a promise resolving to server response
- */
-async function sendPostRequest(path, body) {
-  const response = await fetch(`${API_BASE}/${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  return await handleResponse(response);
-}
-
-/**
- * PUT requests
- *
- * @param {string} path the entity's path
- * @param {Object} body a JSON-compatible object
- * @param {string} queryString a query string consisting of entityID-value pairs(s) *without* a leading `?` character
- * @param {function} [replacer] a {@link https://mzl.la/2YNrn8W replacer function}
- * @returns {Promise} a promise resolving to server response
- */
-async function sendPutRequest(path, body, queryString, replacer = null) {
-  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body, replacer),
-  });
-  return await handleResponse(response);
-}
-
-/**
- * DELETE requests
- *
- * @param {string} path the entity's path
- * @param {string} queryString a query string consisting of entityID-value pairs(s) *without* a leading `?` character
- * @returns {Promise} a promise resolving to server response
- */
-async function sendDeleteRequest(path, queryString) {
-  const response = await fetch(`${API_BASE}/${path}?${queryString}`, {
-    method: "DELETE"
-  });
-  return await handleResponse(response);
-}
-
-/**
- * Parses the response. Resolves to {@type Object} if successful, {@type string} if rejected.
- *
- * @param {Response} response response object
- */
-async function handleResponse(response) {
-  // attempt to parse the response as JSON
-  let parsedResponse;
-  try {
-    parsedResponse = await response.json();
-  } catch (error) {
-    // this will happen only when the response was not formatted as JSON; this isn't expected, but is here
-    // for safety: we should have a way to handle unexpected response types
-    console.error('Error parsing response: response was not formatted as JSON');
-    return Promise.reject(`${response.status}: ${response.statusText}`);
-  }
-
-  /**
-   * At this point, we have a valid JSON object, but we must still check whether the response was successful. If
-   * it wasn't, reject the promise in a way that is consistent by resolving to a string as the reason for rejection.
-   * If the backend sends back an error message from the sql database, that error message is helpful and will be
-   * used as the reason for rejection; otherwise, we can fall back to the status text.
-   */
-  if (!response.ok) {
-    return Promise.reject(parsedResponse?.sqlMessage ?? `${response.status}: ${response.statusText}`)
-  }
-  return parsedResponse;
-}
+};

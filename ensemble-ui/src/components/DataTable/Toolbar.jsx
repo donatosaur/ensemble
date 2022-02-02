@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 import HelpButton from "./ToolbarButtons/HelpButton";
@@ -9,8 +8,8 @@ import ReloadButton from "./ToolbarButtons/ReloadButton";
  * Creates a toolbar with any combination of the following buttons: Add, Search, Reload.
  *
  * @param {Object} props
- * @param {() => {}} props.handleAddButtonClick
- * @param {() => {}} props.handleReloadButtonClick
+ * @param {function(): void} props.handleAddButtonClick
+ * @param {function(): void} props.handleReloadButtonClick
  * @returns {JSX.Element}
  */
 export default function Toolbar({ handleAddButtonClick, handleReloadButtonClick }) {
@@ -19,7 +18,7 @@ export default function Toolbar({ handleAddButtonClick, handleReloadButtonClick 
       <Row className="text-start">
         <Col xs={8}>
           { handleAddButtonClick && <AddButton onClick={handleAddButtonClick}/> }
-          <HelpButton/>
+          <HelpButton />
         </Col>
         <Col xs={4} className="text-end">
           { handleReloadButtonClick && <ReloadButton onClick={handleReloadButtonClick} /> }

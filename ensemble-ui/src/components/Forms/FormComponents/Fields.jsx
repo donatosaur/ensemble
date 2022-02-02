@@ -1,6 +1,5 @@
-import React from "react";
+/* eslint-disable react/jsx-props-no-spreading */
 import { Form, FloatingLabel } from "react-bootstrap";
-
 
 /**
  * Creates a react-bootstrap input form group
@@ -9,11 +8,16 @@ import { Form, FloatingLabel } from "react-bootstrap";
  * @param {string} props.name a unique field name
  * @param {string} props.label a floating label
  * @param {string} [props.errorText] error text to display on isInvalid
- * @param props.props any other props to pass to Form.Control
+ * @param {object} [props.props] any other props to pass to Form.Control
  * @returns {JSX.Element}
  */
-export function InputField({name, label, errorText, ...props}){
-  const {placeholder, ...formControlProps} = props;
+export function InputField({
+  name,
+  label,
+  errorText,
+  ...props
+}) {
+  const { placeholder, ...formControlProps } = props;
   return (
     <Form.Group controlId={name}>
       <FloatingLabel controlId={name} label={label ?? name}>
@@ -22,13 +26,11 @@ export function InputField({name, label, errorText, ...props}){
           placeholder={placeholder ?? label ?? name}
           {...formControlProps}
         />
-        { errorText && <Form.Control.Feedback tooltip type="invalid" children={errorText} />
-        }
+        { errorText && <Form.Control.Feedback tooltip type="invalid">{errorText}</Form.Control.Feedback> }
       </FloatingLabel>
     </Form.Group>
   );
 }
-
 
 /**
  * Creates a react-bootstrap checkbox form group
@@ -37,19 +39,23 @@ export function InputField({name, label, errorText, ...props}){
  * @param {string} props.name a unique field name
  * @param {string} props.label a floating label
  * @param {string} [props.errorText] error text to display on isInvalid
- * @param props.props any other props to pass to Form.Control
+ * @param {object} [props.props] any other props to pass to Form.Control
  * @returns {JSX.Element}
  */
-export function CheckboxField({name, label, errorText, ...props}){
+export function CheckboxField({
+  name,
+  label,
+  errorText,
+  ...props
+}) {
   return (
     <Form.Group className="float-start" controlId={name}>
       <Form.Check name={name} {...props} />
       <Form.Label>{label ?? name}</Form.Label>
-      { errorText && <Form.Control.Feedback tooltip type="invalid" children={errorText} /> }
+      { errorText && <Form.Control.Feedback tooltip type="invalid">{errorText}</Form.Control.Feedback> }
     </Form.Group>
   );
 }
-
 
 /**
  * Creates a react-bootstrap select form group
@@ -58,21 +64,25 @@ export function CheckboxField({name, label, errorText, ...props}){
  * @param {string} props.name a unique field name
  * @param {string} props.label a floating label
  * @param {string} [props.errorText] error text to display on isInvalid
- * @param props.props any other props to pass to Form.Control
+ * @param {object} [props.props] any other props to pass to Form.Control
  * @returns {JSX.Element}
  */
-export function SelectField({name, label, errorText, ...props}){
+export function SelectField({
+  name,
+  label,
+  errorText,
+  ...props
+}) {
   return (
     <Form.Group controlId={name}>
       <FloatingLabel controlId={name} label={label ?? name}>
-        <Form.Select name={name} {...props}/>
-        { errorText && <Form.Control.Feedback tooltip type="invalid" children={errorText} />}
+        <Form.Select name={name} {...props} />
+        { errorText && <Form.Control.Feedback tooltip type="invalid">{errorText}</Form.Control.Feedback> }
       </FloatingLabel>
     </Form.Group>
   );
 }
 
-
 /**
  * Creates a react-bootstrap select form group
  *
@@ -80,11 +90,16 @@ export function SelectField({name, label, errorText, ...props}){
  * @param {string} props.name a unique field name
  * @param {string} props.label a floating label
  * @param {string} [props.errorText] error text to display on isInvalid
- * @param props.props any other props to pass to Form.Control
+ * @param {object} [props.props] any other props to pass to Form.Control
  * @returns {JSX.Element}
  */
-export function TextAreaField({name, label, errorText, ...props}){
-  const {placeholder, ...formControlProps} = props;
+export function TextAreaField({
+  name,
+  label,
+  errorText,
+  ...props
+}) {
+  const { placeholder, ...formControlProps } = props;
   return (
     <Form.Group controlId={name}>
       <FloatingLabel controlId={name} label={label ?? name}>
@@ -94,7 +109,7 @@ export function TextAreaField({name, label, errorText, ...props}){
           placeholder={placeholder ?? label ?? name}
           {...formControlProps}
         />
-        { errorText && <Form.Control.Feedback type="invalid" children={errorText} />}
+        { errorText && <Form.Control.Feedback tooltip type="invalid">{errorText}</Form.Control.Feedback> }
       </FloatingLabel>
     </Form.Group>
   );

@@ -1,24 +1,30 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import { Col, Row, Form, Alert } from "react-bootstrap";
-import { SelectField } from './FormComponents/Fields';
+import { useReducer, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Col,
+  Row,
+  Form,
+  Alert,
+} from "react-bootstrap";
 import { entityFormReducer, entityFormInitializer } from "../../utils/reducers";
-import { useGetInstrumentOptions, useGetMusicianOptions } from '../../hooks/useGetOptions';
 import { useEntity } from "../../hooks/useEntity";
-import { useHistory } from "react-router-dom";
-import SpinnerButton from './FormComponents/SpinnerButton';
+import { SelectField } from "./FormComponents/Fields";
+import { useGetInstrumentOptions, useGetMusicianOptions } from "../../hooks/useGetOptions";
+import SpinnerButton from "./FormComponents/SpinnerButton";
+import { generateDefaultProps } from "./helpers";
 
 /**
  * Generates a form for CREATE operations.
  *
  * @param {Object} props
- * @param {Object} props.initialFormValues initial values to pass to entityFormReducer (see useEntity.js)
+ * @param {Object} props.initialFormValues initial values to pass to entityFormReducer (see useentity?.js)
  * @returns {JSX.Element}
  */
-export default function MusiciansInstrumentsForm({ initialFormValues }){
+export default function MusiciansInstrumentsForm({ initialFormValues }) {
   // get API calls from context hook and create reducer; dispatch signature is {field, value, isInvalid, modified}
   const { createEntity } = useEntity();
   const [entity, dispatch] = useReducer(entityFormReducer, initialFormValues, entityFormInitializer);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
   const { musicianOptions, error: musicianError } = useGetMusicianOptions();
@@ -33,40 +39,11 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
 
   // define validation checks
   const validate = new Map([
-    ['musicianID', /./],       // required
-    ['instrumentID', /./],     // required
+    ["musicianID", /./],       // required
+    ["instrumentID", /./],     // required
   ]);
-
-  /**
-   * Returns true only if *all* the following hold:
-   *   - the field was modified at least once AND
-   *   - there is a **valid** regex check defined on the field (this is why we null coalesce to false) AND
-   *   - the regex check fails (because the regex is defined on valid states)
-   * @returns {boolean} true if the input is invalid
-   */
   const setIsInvalid = (field, value) => validate.has(field) && (!validate.get(field)?.test(`${value}`) ?? false);
-
-  /**
-   * Construct default props for each entity (these are event handlers that will be identical for all fields).
-   * Since this may be a bit difficult to follow:
-   *  - `event.target.name` should match the field's name since `name` is a required attribute on our elements
-   *  - `event.target.value` will hold the value of each input element, since these are all controlled components
-   *  - `modified` is set if the input element was entered at least once (i.e., if onBlur has fired on it)
-   */
-  const defaultProps = {
-    onBlur: (event) => dispatch({
-      field: event.target.name,
-      isInvalid: setIsInvalid(event.target.name, event.target.value),
-      modified: true
-    }),
-    onChange: (event) => dispatch({
-      field: event.target.name,
-      value: event.target.type === 'checkbox' ? event.target.checked : event.target.value,
-      isInvalid: entity[event.target.name].modified  && setIsInvalid(event.target.name, event.target.value)
-    })
-  }
-
-
+  const defaultProps = generateDefaultProps(entity, setIsInvalid, dispatch);
 
   // override default form submit behavior
   const handleOnSubmit = (event) => {
@@ -83,40 +60,41 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
       // check validation state
       const fieldIsInvalid = setIsInvalid(field, fieldObject.value);
       if (fieldIsInvalid) {
-        dispatch({field: field, isInvalid: fieldIsInvalid});
+        dispatch({ field, isInvalid: fieldIsInvalid });
         validated = false;
       }
     });
 
     // if the input was invalid, let the user know; otherwise immediately submit the request
     if (!validated) {
-      setFormAlert('At least one input field is invalid. Please check the instructions under each field.');
+      setFormAlert("At least one input field is invalid. Please check the instructions under each field.");
     } else {
-      void async function submitForm() {
+      void (async function submitForm() {
         try {
-          const response = await createEntity(request)
+          const response = await createEntity(request);
           console.log(response);
-          history.go(0);  // refresh the page; history[0] represents the current path
+          navigate();  // refresh the page; history[0] represents the current path
         } catch (error) {
           // rejected promises for call API are guaranteed to be strings
           setFormAlert(`${error}`);
         }
-      }();
+      }());
     }
     setLoading(false);  // no matter what, we should return the button to its "not loading" state
-  }
+  };
 
   return (
     <Form noValidate className="entityForm" onSubmit={handleOnSubmit}>
-      { formAlert &&
-        <Alert 
-          key="formAlert" 
+      { formAlert && (
+        <Alert
+          key="formAlert"
           variant="danger"
           onClose={() => setFormAlert(null)}
-          children={formAlert}
           dismissible
-        />
-      }
+        >
+          { formAlert }
+        </Alert>
+      )}
 
       <Row xs={1} md={2}>
         <Col className="mb-3">
@@ -124,8 +102,8 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
             disabled={musicianOptions === null}
             name="musicianID"
             label="Musician"
-            value={entity.musicianID.value}
-            isInvalid={entity.musicianID.isInvalid}
+            value={entity?.musicianID.value}
+            isInvalid={entity?.musicianID.isInvalid}
             errorText="Please select a musician."
             {...defaultProps}
           >
@@ -137,8 +115,8 @@ export default function MusiciansInstrumentsForm({ initialFormValues }){
             disabled={instrumentOptions === null}
             name="instrumentID"
             label="Instrument"
-            value={entity.instrumentID.value}
-            isInvalid={entity.instrumentID.isInvalid}
+            value={entity?.instrumentID.value}
+            isInvalid={entity?.instrumentID.isInvalid}
             errorText="Please select an instrument."
             {...defaultProps}
           >

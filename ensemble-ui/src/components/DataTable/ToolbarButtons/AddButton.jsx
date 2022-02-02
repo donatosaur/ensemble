@@ -1,9 +1,8 @@
 import { Button } from "react-bootstrap";
-import React from "react";
 
 /**
- * @param {Object} props 
- * @param {() => {}} props.onClick
+ * @param {Object} props
+ * @param {(function(): void)} props.onClick
  * @returns {JSX.Element}
  */
 export default function AddButton({ onClick }) {
@@ -15,7 +14,7 @@ export default function AddButton({ onClick }) {
       onClick={onClick}
     >
       <i className="bi bi-plus-lg me-1" />
-      {`Add New`}
+      Add New
     </Button>
   );
 }

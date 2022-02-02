@@ -1,9 +1,16 @@
-import React, { useState } from "react";
-import { Navbar, Button, Row, Col, Form, InputGroup } from "react-bootstrap";
+import { useState } from "react";
+import {
+  Navbar,
+  Button,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
 
 export default function Footer() {
   const [validated, setValidated] = useState(false);
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState("");
 
   // this is disabled for now
   const onSubmit = (event) => {
@@ -96,7 +103,7 @@ export default function Footer() {
                 <i className="bi bi-envelope" />
               </Button>
               <Form.Control.Feedback type="valid" tooltip>
-                Thanks! We'll be in touch.
+                Thanks! We&rsquo;ll be in touch.
               </Form.Control.Feedback>
             </InputGroup>
           </Form>

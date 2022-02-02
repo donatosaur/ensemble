@@ -1,33 +1,34 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
 import entityConfig from "../entityConfig.json";
 
 export default function NavigationBar() {
-  const history = useHistory()
+  const navigate = useNavigate();
 
   return (
     <Navbar className="navbar mb-2 text-start" bg="light" sticky="top" fixed="top" expand="xl">
-      <Navbar.Brand >Ensemble</Navbar.Brand>
+      <Navbar.Brand>Ensemble</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link onClick={(event)=>{
+          <Nav.Link onClick={(event) => {
             event.preventDefault();
-            history.push("/");
-          }}>
+            navigate("/");
+          }}
+          >
             Home
           </Nav.Link>
 
-          { Object.keys(entityConfig).map((entity, index) => (
+          { Object.keys(entityConfig).map((entity) => (
             <Nav.Link
-              key={index}
-              onClick={(event)=>{
+              key={entity}
+              onClick={(event) => {
                 event.preventDefault();
-                history.push(`/${entity}`);
+                navigate(`/entity/${entity}`);
               }}
-              children={entity}
-            />
+            >
+              { entity }
+            </Nav.Link>
           ))}
         </Nav>
       </Navbar.Collapse>
