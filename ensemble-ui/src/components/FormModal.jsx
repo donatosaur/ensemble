@@ -30,7 +30,7 @@ export default function FormModal({
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Container>
-        <Modal.Body as={form} />
+        <Modal.Body as={() => form} />
       </Container>
       <Modal.Footer className="border-0" />
     </Modal>

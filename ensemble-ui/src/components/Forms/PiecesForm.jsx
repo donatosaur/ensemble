@@ -76,7 +76,7 @@ export default function PiecesForm({ initialFormValues, mode }) {
     setLoading(false);  // no matter what, we should return the button to its "not loading" state
   };
 
-  return (
+  return initialFormValues && (
     <Form noValidate className="entityForm" onSubmit={handleOnSubmit}>
       { formAlert && (
         <Alert

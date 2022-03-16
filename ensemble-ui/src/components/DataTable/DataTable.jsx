@@ -1,4 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-unused-vars */
+
 import { useEffect, useState, useMemo } from "react";
 import {
   Container,
@@ -27,19 +29,22 @@ import Pagination from "./TablePagination";
  * @param {function(boolean): void} props.setCreateFormOpen a function that toggles the display state of the EntityForm
  * @param {function(boolean): void} props.setEditFormOpen a function that toggles the display state of the EntityForm
  * @param {function(*): void} [props.setEditFormValues] function to the initial state of the edit form; to disable
- *        editing, pass a falsy value
+ *                                                      editing, pass a falsy value
  * @param {boolean} props.allowSearch whether search is enabled for this table
  * @returns {JSX.Element}
  */
 export default function DataTable({
   setCreateFormOpen,
-  setEditFormOpen,
+  setEditFormOpen = () => {},
   setEditFormValues,
   allowSearch,
 }) {
   /* ---------------------------------------------- Hooks ----------------------------------------------- */
   const {
-    fields, getEntity, deleteEntity, deleteParamsAsFields,
+    fields,
+    getEntity,
+    deleteEntity,
+    deleteParamsAsFields,
   } = useEntity();
 
   const [searchParameters, setSearchParameters] = useState(null); // search query parameters for API call
@@ -70,24 +75,19 @@ export default function DataTable({
   }, [getEntity, searchParameters]);
 
   /* -------------------------------------------- Action Cell ------------------------------------------- */
-  const ActionCell = useMemo(({ rowIndex }) => (
+  const ActionCell = ({ rowIndex }) => (
     <td key={rowIndex} className="text-nowrap">
       {/* Button for UPDATE: initializes the form with the correct row data */}
       { setEditFormValues && (
         <EditButton onClick={() => {
-        // make sure a row index was actually passed; if it was not, log it and stop
+          // make sure a row index was actually passed; if it was not, log it and stop
           if (rowIndex === null || rowIndex === undefined) {
             console.error("Edit button pressed, but row not found!");
             return;
           }
 
           // get a deep copy for safety: we want to avoid modifying the original row's underlying data
-          try {
-            setEditFormValues(cloneDeep(rows[rowIndex]));
-          } catch (error) {
-          // we should never get here; if something goes terribly wrong, avoid crashing the table
-            console.error(error);
-          }
+          setEditFormValues(cloneDeep(rows[rowIndex]));
 
           // we should only have one form open at any one time
           setCreateFormOpen(false);
@@ -95,7 +95,6 @@ export default function DataTable({
         }}
         />
       )}
-
       {/* Button for DELETE: sets the correct params for the query string and opens a modal */}
       <DeleteButton onClick={() => {
         // close other forms
@@ -107,45 +106,39 @@ export default function DataTable({
           return;
         }
         // get the correct parameters to pass to deleteEntity
-        const params = deleteParamsAsFields?.map((field) => rows[rowIndex]?.[field]);
-        // console.log(`Setting delete to fields ${deleteParamsAsFields} as ${deleteParams}.`);
-        setDeleteParams(params);
+        const newDeleteParams = deleteParamsAsFields?.map((field) => rows[rowIndex]?.[field]);
+        console.log(`Setting delete to fields ${deleteParamsAsFields} as ${deleteParams}.`);
+        setDeleteParams(newDeleteParams);
       }}
       />
     </td>
-  ), [deleteParamsAsFields, rows, setCreateFormOpen, setEditFormOpen, setEditFormValues]);
+  );
 
   /* ------------------------------------- Delete Confirmation Modal -------------------------------------- */
-  const DeleteConfirmation = useMemo(() => (
+  const handleDelete = async () => {
+    try {
+      await deleteEntity(...deleteParams);
+    } catch (error) {
+      setAlertContent("That row could not be deleted. Please delete any many-to-many relationships first.");
+    } finally {
+      setDeleteParams(null);
+    }
+  };
+
+  const DeleteConfirmation = () => (
     <ConfirmationModal
       show={deleteParams !== null}
       title="Confirm Delete"
       description={`Are you sure you want to delete the row with ${deleteParamsAsFields} ${deleteParams}?`}
       handleCancel={() => setDeleteParams(null)}  // setting to null closes the modal
-      handleConfirm={() => {
-        void (async () => {
-          try {
-            await deleteEntity(...deleteParams);
-          } catch (error) {
-            setAlertContent("That row could not be deleted. Please delete any many-to-many relationships first.");
-            // console.error(error.sqlMessage ?? error);
-          } finally {
-            setDeleteParams(null);
-          }
-        })();
-      }}
+      handleConfirm={handleDelete}
     />
-  ), [deleteParams, deleteParamsAsFields, deleteEntity]);
+  );
 
   /* --------------------------------------------- Data Table -------------------------------------------- */
   /* eslint-disable react/no-array-index-key */
-  /**
-   * The visual inspiration here was {@link https://mui.com/components/data-grid/pagination/ MUI's pagination}
-   * We can do some basic math to render the correct slice of table rows: the range to be displayed is the
-   * slice from one less than the 1-indexed page number to the page number.
-   */
 
-  const PaginatedTableBody = useMemo(() => {
+  const PaginatedTableBody = () => {
     // determine the range of rows to display (without exceeding the array boundaries)
     const i = Math.round((currentPage - 1) * pageSize);
     const j = Math.round(currentPage * pageSize) <= rows.length ? Math.round(currentPage * pageSize) : rows.length;
@@ -171,18 +164,18 @@ export default function DataTable({
         ))}
       </tbody>
     );
-  }, [currentPage, fields, pageSize, rows]);
+  };
 
-  const TableHeader = useMemo(() => (
+  const TableHeader = () => (
     <thead className="text-nowrap">
       <tr>
         { fields.map((field, i) => <td key={i}>{field.columnConfig?.headerName}</td>) }
-        <td key={fields.length}>Actions</td>
+        <td key={fields.length}> Actions </td>
       </tr>
     </thead>
-  ), [fields]);
+  );
 
-  const TableToolbar = useMemo(() => (
+  const TableToolbar = () => (
     <Toolbar
       handleAddButtonClick={(event) => {
         event.preventDefault();
@@ -204,9 +197,9 @@ export default function DataTable({
           : null
       }
     />
-  ), [allowSearch, searchParameters, setCreateFormOpen, setEditFormOpen]);
+  );
 
-  const TablePagination = useMemo(() => (
+  const TablePagination = () => (
     <Container className="paginationContainer">
       <Pagination
         currentPage={currentPage}
@@ -215,37 +208,33 @@ export default function DataTable({
         setCurrentPage={setCurrentPage}
       />
     </Container>
-  ), [currentPage, pageSize, rows]);
-  /* eslint-enable react/no-array-index-key */
+  );
 
   return (
     <>
       {/* Render alerts (if any) above table */}
-      { alertContent
-        && (
-          <Alert
-            key="tableAlert"
-            variant="danger"
-            onClose={() => setAlertContent(null)}
-            dismissible
-          >
-            {alertContent}
-          </Alert>
-        )}
+      { alertContent && (
+        <Alert
+          key="tableAlert"
+          variant="danger"
+          onClose={() => setAlertContent(null)}
+          dismissible
+        >
+          { alertContent }
+        </Alert>
+      )}
 
       {/* Render Table */}
       <Container className="dataTableContainer">
         <TableToolbar />
         <Table responsive hover size="lg">
           <TableHeader />
-          {/* While Loading: Loading Indicator */}
-          { loading
-            && (
-              <caption className="border-0 mt-4 text-center">
-                <Spinner animation="border" variant="secondary" />
-              </caption>
-            )}
-          {/* After Loading: Table Body */}
+          { loading && (
+            <caption className="border-0 mt-4 text-center">
+              <Spinner animation="border" variant="secondary" />
+            </caption>
+          )}
+
           { !loading && (rows.length === 0
             ? (
               <caption className="border-0 mt-4 text-center">
@@ -262,12 +251,11 @@ export default function DataTable({
       <DeleteConfirmation />
 
       {/* Render Search Panel */}
-      { allowSearch
-        && (
-          <Container className="searchContainer">
-            <SearchForm setSearchParameters={setSearchParameters} />
-          </Container>
-        )}
+      { allowSearch && (
+        <Container className="searchContainer">
+          <SearchForm setSearchParameters={setSearchParameters} />
+        </Container>
+      )}
     </>
   );
 }
