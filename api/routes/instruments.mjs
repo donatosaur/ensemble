@@ -1,5 +1,7 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import * as sendResponse from "../responses.mjs";
+import { safeParseInt } from "../parsers.mjs";
 
 const instruments = express.Router();
 
@@ -14,73 +16,36 @@ const instruments = express.Router();
 
 // CREATE
 instruments.post("/", (req, res) => {
-  // destructure body params
-  let { name } = req.body;
+  const values = [req.body.name];
+  const insertQuery = "INSERT INTO Instruments (name) VALUE (?);";
 
-  const insertQuery = "INSERT INTO Instruments (name) VALUE (?);"
-
-  db.query(insertQuery, [name],(error) => {
-    if (error) {
-      // send back a description of the error as well as the error status
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(201).json( {status: "Created"});
-    }
-  });
+  db.query(insertQuery, queryParams, sendResponseinsertResponse(res));
 });
 
 
 // READ
 instruments.get("/", (req, res) => {
-  db.query("SELECT * FROM Instruments;", (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query("SELECT * FROM Instruments;", sendResponse.selectResponse(res));
 });
 
 
 // UPDATE
 instruments.put("/", (req, res) => {
-  // destructure
-  let { name } = req.body;
-
-  // parse
-  let id = parseInt(req.query.id);
-  id = isNaN(id) ? null : id;
+  const values = [
+    req.body.name,
+    safeParseInt(req.query.id),
+  ];
 
   const updateQuery = "UPDATE Instruments SET name = ? WHERE id = ?";
 
-  db.query(updateQuery, [name, id], (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "OK" });
-    }
-  });
+  db.query(updateQuery, values, sendResponse.updateResponse(res));
 });
 
 instruments.delete("/",  (req, res) => {
-  // parse
-  let id = parseInt(req.query.id);
-  id = isNaN(id) ? null : id;
+  const values = [safeParseInt(req.query.id)];
+  const deleteQuery = "DELETE FROM Instruments WHERE id = ?;";
 
-  const deleteQuery = `DELETE FROM Instruments WHERE id = ?;`
-
-  db.query(deleteQuery, [id],(error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "OK" });
-    }
-  });
+  db.query(deleteQuery, values, sendResponse.deleteResponse(res));
 });
 
 export default instruments;

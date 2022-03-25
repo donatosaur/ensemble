@@ -1,5 +1,8 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import * as sendResponse from "../responses.mjs";
+import { safeParseInt } from "../parsers.mjs";
+
 
 const concertCycles = express.Router();
 
@@ -13,122 +16,54 @@ const concertCycles = express.Router();
 
 // CREATE
 concertCycles.post("/", (req, res) => {
-  // destructure body params
-  let {
-    concertTitle,
-    startDate,
-    endDate,
-    conductorFirstName,
-    conductorLastName,
-    soloistFirstName,
-    soloistLastName,
-  } = req.body;
+  const values = [
+    req.body.concertTitle,
+    req.body.startDate,
+    req.body.endDate,
+    req.body.conductorFirstName,
+    req.body.conductorLastName,
+    req.body.soloistFirstName,
+    req.body.soloistLastName,
+  ];
 
   const insertQuery = "INSERT INTO ConcertCycles (concertTitle, startDate, endDate, conductorFirstName, " +
                       "conductorLastName, soloistFirstName, soloistLastName) VALUES (?, ?, ?, ?, ?, ?, ?);";
-                      
-  db.query(
-    insertQuery, 
-    [
-      concertTitle,
-      startDate,
-      endDate,
-      conductorFirstName,
-      conductorLastName,
-      soloistFirstName,
-      soloistLastName,
-    ],
-    (error) => {
-    if (error) {
-      // send back a description of the error as well as the error status
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(201).json({status: "Created"});
-    }
-  });
-});
 
+  db.query(insertQuery, values, sendResponse.insertResponse(res));
+});
 
 // READ
 concertCycles.get("/", (req, res) => {
-  db.query("SELECT * FROM ConcertCycles;", (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query("SELECT * FROM ConcertCycles;", sendResponse.selectResponse(res));
 });
 
 
 // UPDATE
 concertCycles.put("/", (req, res) => {
-  // get body and query params
-  let id = req.query.id;
-  let {
-    concertTitle,
-    startDate,
-    endDate,
-    conductorFirstName,
-    conductorLastName,
-    soloistFirstName,
-    soloistLastName,
-  } = req.body;
-
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
+  const values = [
+    safeParseInt(req.query.id),
+    req.body.concertTitle,
+    req.body.startDate,
+    req.body.endDate,
+    req.body.conductorFirstName,
+    req.body.conductorLastName,
+    req.body.soloistFirstName,
+    req.body.soloistLastName,
+  ];
 
   const updateQuery = "UPDATE ConcertCycles SET concertTitle = ?, startDate = ?, endDate = ?, " +
                       "conductorFirstName = ?, conductorLastName = ?, soloistFirstName = ?, " +
-                      "soloistLastName = ? WHERE id = ?;"
+                      "soloistLastName = ? WHERE id = ?;";
 
-  db.query(
-    updateQuery,
-    [
-      concertTitle,
-      startDate,
-      endDate,
-      conductorFirstName,
-      conductorLastName,
-      soloistFirstName,
-      soloistLastName,
-      id
-    ],
-    (error) => {
-      if (error) {
-        console.log(error);
-        res.status(400).json(error);
-      } else {
-        res.status(200).json({ status: "OK" });
-      }
-    }
-  );
+  db.query(updateQuery, values, sendResponse.updateResponse(res));
 });
 
 
 // DELETE
 concertCycles.delete("/", (req, res) => {
-  // get query params
-  let id = req.query.id;
-
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  const deleteQuery = "DELETE FROM ConcertCycles WHERE id = ?;"
-
-  db.query(deleteQuery, [id],(error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "OK" });
-    }
-  });
+  const values = [safeParseInt(req.query.id)];
+  const deleteQuery = "DELETE FROM ConcertCycles WHERE id = ?;";
+  db.query(deleteQuery, values, sendResponse.deleteResponse(res));
 });
 
 

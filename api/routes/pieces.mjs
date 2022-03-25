@@ -1,5 +1,8 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import * as sendResponse from "../responses.mjs";
+import { safeParseInt } from "../parsers.mjs";
+
 
 const pieces = express.Router();
 
@@ -14,120 +17,55 @@ const pieces = express.Router();
 
 // CREATE
 pieces.post("/", (req, res) => {
-  // get body params
-  let {
-    pieceTitle,
-    composerFirstName,
-    composerLastName,
-    arrangerFirstName,
-    arrangerLastName,
-    instrumentation,
-  } = req.body;
+  const values = [
+    req.body.pieceTitle,
+    req.body.composerFirstName,
+    req.body.composerLastName,
+    req.body.arrangerFirstName,
+    req.body.arrangerLastName,
+    req.body.instrumentation,
+  ];
 
-  // query
   const insertQuery = "INSERT INTO Pieces (pieceTitle, composerFirstName, composerLastName, arrangerFirstName, " +
                       "arrangerLastName, instrumentation) VALUES (?, ?, ?, ?, ?, ?);";
 
-  db.query(
-    insertQuery,
-    [
-      pieceTitle,
-      composerFirstName,
-      composerLastName,
-      arrangerFirstName,
-      arrangerLastName,
-      instrumentation,
-    ],
-    (error) => {
-      if (error) {
-        // send back a description of the error as well as the error status
-        console.log(error);
-        res.status(400).json(error);
-      } else {
-        res.status(201).json( {status: "Created"});
-      }
-  });
+  db.query(insertQuery, values, sendResponse.insertResponse(res));
 });
 
 
 // READ
 pieces.get("/", (req, res) => {
-  db.query(`SELECT * FROM Pieces;`, (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query("SELECT * FROM Pieces;", sendResponse.selectResponse(res));
 });
 
 
 // UPDATE
 pieces.put("/", (req, res) => {
-  // get body and query params
-  let id = req.query.id;
-  let {
-    pieceTitle,
-    composerFirstName,
-    composerLastName,
-    arrangerFirstName,
-    arrangerLastName,
-    instrumentation,
-  } = req.body;
-
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
+  const values = [
+    req.body.pieceTitle,
+    req.body.composerFirstName,
+    req.body.composerLastName,
+    req.body.arrangerFirstName,
+    req.body.arrangerLastName,
+    req.body.instrumentation,
+    safeParseInt(req.query.id),
+  ];
 
   // query
   const updateQuery = "UPDATE Pieces SET pieceTitle = ?, composerFirstName = ?, composerLastName = ?, " +
                       "arrangerFirstName = ?, arrangerLastName = ?, instrumentation = ? WHERE id = ?;";
 
-  db.query(
-    updateQuery,
-    [
-      pieceTitle,
-      composerFirstName,
-      composerLastName,
-      arrangerFirstName,
-      arrangerLastName,
-      instrumentation,
-      id
-    ],
-    (error) => {
-      if (error) {
-        // send back a description of the error as well as the error status
-        console.log(error);
-        res.status(400).json(error);
-      } else {
-        res.status(200).json( {status: "OK"});
-      }
-    });
+  db.query(updateQuery, values, sendResponse.insertResponse(res));
 });
 
 
 // DELETE
 pieces.delete("/",  (req, res) => {
-  // get query params
-  let id = req.query.id;
+  const values = safeParseInt(req.query.id);
 
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  // query
   const deleteQuery = "DELETE FROM Pieces WHERE id = ?;";
 
-  db.query(deleteQuery, [id], (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "OK" });
-    }
-  });
+  db.query(deleteQuery, values, sendResponse.deleteResponse(res));
 });
 
 export default pieces;

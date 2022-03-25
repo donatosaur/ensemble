@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import * as sendResponse from "../responses.mjs";
 
 let musicians = express.Router();
 
@@ -11,51 +12,25 @@ let musicians = express.Router();
  */
 
 // CREATE
-musicians.post("/", function (req, res) {
-  // get body params
-  let {
-    firstName,
-    lastName,
-    birthdate,
-    email,
-    phoneNumber,
-    street,
-    city,
-    state,
-    zip,
-    inEnsemble,
-    active,
-  } = req.body;
+musicians.post("/", (req, res) => {
+  const values = [
+    req.body.firstName,
+    req.body.lastName,
+    req.body.birthdate,
+    req.body.email,
+    req.body.phoneNumber,
+    req.body.street,
+    req.body.city,
+    req.body.state,
+    req.body.zip,
+    req.body.inEnsemble,
+    req.body.active,
+  ];
 
-  // query
   const createQuery = "INSERT INTO Musicians (firstName, lastName, birthdate, email, phoneNumber, street, city, " +
                       "state, zip, inEnsemble, active) VALUES (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);";
 
-  db.query(
-    createQuery,
-    [
-      firstName,
-      lastName,
-      birthdate,
-      email,
-      phoneNumber,
-      street,
-      city,
-      state,
-      zip,
-      inEnsemble,
-      active,
-    ],
-    (error) => {
-      if (error) {
-        // send back a description of the error as well as the error status
-        console.log(error);
-        res.status(400).json(error);
-      } else {
-        res.status(201).json({ status: "Created" });
-      }
-    }
-  );
+  db.query(createQuery, values, sendResponse.insertResponse(res));
 });
 
 
@@ -67,11 +42,8 @@ musicians.get("/", (req, res, next) => {
     return;
   }
 
-  // get the first key-value pair (currently, only filtering by one field at a time is allowed)
-  let [key, value] = Object.entries(req.query)[0];
-
-  // value parser (reduce code duplication)
-  function formatString() { value = `%${value}%` }
+  let [key, value] = Object.entries(req.query)[0];  // only look for the first key-value pair
+  const formatString = () => value = `%${value}%`;  // properly format LIKE queries
 
   // choose the correct query
   let filterQuery;
@@ -139,104 +111,43 @@ musicians.get("/", (req, res, next) => {
       return;
   }
 
-  db.query(filterQuery, [value], (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query(filterQuery, [value], sendResponse.selectResponse(res));
 });
 
 
 musicians.get("/", (req, res) => {
-
-  db.query("SELECT * FROM Musicians;", (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query("SELECT * FROM Musicians;", sendResponse.selectResponse(res));
 });
 
 
 // UPDATE
 musicians.put("/", function (req, res) {
-  // get params
-  let id = req.query.id;
-  let {
-    firstName,
-    lastName,
-    birthdate,
-    email,
-    phoneNumber,
-    street,
-    city,
-    state,
-    zip,
-    inEnsemble,
-    active,
-  } = req.body;
+  const values = [
+    safeParseInt(req.query.id),
+    req.body.firstName,
+    req.body.lastName,
+    req.body.birthdate,
+    req.body.email,
+    req.body.phoneNumber,
+    req.body.street,
+    req.body.city,
+    req.body.state,
+    req.body.zip,
+    req.body.inEnsemble,
+    req.body.active,
+  ];
 
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  // query
   const updateQuery = "UPDATE Musicians SET firstName = ?, lastName = ?, birthdate = ?, email = ?, phoneNumber= ?, " +
                       "street= ?, city = ?, state = ?, zip = ?, inEnsemble = ?, active = ? WHERE id = ?";
 
-  db.query(
-    updateQuery,
-    [
-      firstName,
-      lastName,
-      birthdate,
-      email,
-      phoneNumber,
-      street,
-      city,
-      state,
-      zip,
-      inEnsemble,
-      active,
-      id,
-    ],
-    (error) => {
-      if (error) {
-        console.log(error);
-        res.status(400).json(error);
-      } else {
-        res.status(200).json({ status: "OK" });
-      }
-    }
-  );
+  db.query(updateQuery, values, sendResponse.insertResponse(res));
 });
 
 musicians.delete("/", function (req, res) {
-  // get query param
-  let id = req.query.id;
-
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  // query
+  const values = [safeParseInt(req.query.id)];
   const deleteQuery = "DELETE FROM Musicians WHERE id = ?;";
 
-  db.query(deleteQuery, [id], (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "OK" });
-    }
-  });
+  db.query(deleteQuery, values, sendResponse.deleteResponse(res));
 });
 
 export default musicians;

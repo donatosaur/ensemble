@@ -1,5 +1,8 @@
 import express from "express";
 import db from "../database/db_connector.mjs";
+import * as sendResponse from "../responses.mjs";
+import { safeParseInt } from "../parsers.mjs";
+
 
 const services = express.Router();
 
@@ -14,95 +17,50 @@ const services = express.Router();
 
 // CREATE
 services.post("/", (req, res) => {
-  // get body params
-  let { startTime, endTime, isRehearsal, venueID, concertID } = req.body;
+  const values = [
+    startTime,
+    endTime,
+    isRehearsal,
+    safeParseInt(venueID),
+    safeParseInt(concertID),
+  ];
 
-  // parse
-  venueID = parseInt(venueID);
-  venueID = isNaN(venueID) ? null : venueID;
-
-  concertID = parseInt(concertID);
-  concertID = isNaN(concertID) ? null : concertID;
-
-  // query
   const insertQuery = "INSERT INTO Services (startTime, endTime, isRehearsal, venueID, concertID) " +
                       "VALUES (?, ?, ?, ?, ?);";
 
-  db.query(insertQuery, [startTime, endTime, isRehearsal, venueID, concertID],(error) => {
-    if (error) {
-      // send back a description of the error as well as the error status
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(201).json( {status: "created"});
-    }
-  });
+  db.query(insertQuery, values, sendResponse.insertResponse(res));
 });
 
 
 // READ
 services.get("/", (req, res) => {
-  db.query("SELECT * FROM Services;", (error, rows) => {
-    if (error) {
-      // we should only get an error here if something's wrong with the database connection
-      console.log(error);
-      res.status(503).json(error);
-    } else {
-      res.status(200).json(rows);
-    }
-  });
+  db.query("SELECT * FROM Services;", sendResponse.selectResponse(res));
 });
 
 
 // UPDATE
 services.put("/", (req, res) => {
-  // get body and query params
-  let id = req.query.id;
-  let { startTime, endTime, isRehearsal, venueID, concertID } = req.body;
-
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  venueID = parseInt(venueID);
-  venueID = isNaN(venueID) ? null : venueID;
-
-  concertID = parseInt(concertID);
-  concertID = isNaN(concertID) ? null : concertID;
-
-  // query
+  const values = [
+    req.body.startTime,
+    req.body.endTime,
+    req.body.isRehearsal,
+    safeParseInt(req.body.venueID),
+    safeParseInt(req.body.concertID),
+    safeParseInt(req.query.id),
+  ];
+  
   const updateQuery = "UPDATE Services SET startTime = ?, endTime = ?, isRehearsal = ?, venueID = ?, " +
                       "concertID = ? WHERE id = ?;";
 
-  db.query(updateQuery, [startTime, endTime, isRehearsal, venueID, concertID, id], (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "ok" });
-    }
-  });
+  db.query(updateQuery, values, sendResponse.insertResponse(res));
 });
 
 services.delete("/",  (req, res) => {
-  // get query params
-  let id = req.query.id;
+  const values = [safeParseInt(req.query.id)];
 
-  // parse
-  id = parseInt(id);
-  id = isNaN(id) ? null : id;
-
-  // query
   const deleteQuery = "DELETE FROM Services WHERE id = ?;";
 
-  db.query(deleteQuery, [id], (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json(error);
-    } else {
-      res.status(200).json({ status: "ok" });
-    }
-  });
+  db.query(deleteQuery, values, sendResponse.deleteResponse(res));
 });
 
 export default services;
